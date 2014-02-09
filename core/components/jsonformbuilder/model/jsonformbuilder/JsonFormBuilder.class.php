@@ -109,10 +109,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	/**
 	 * @ignore 
 	 */
-	private $_placeholderJavascript;
-	/**
-	 * @ignore 
-	 */
 	private $_emailFromName;
 	/**
 	 * @ignore 
@@ -226,12 +222,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		$this->_emailFontSize='13px';
 		$this->_emailFontFamily='Helvetica,Arial,sans-serif';
 		$this->_emailFootHtml='<p>You can use this link to reply: <a href="mailto:{{fromEmailAddress}}?subject=RE: {{subject}}">{{fromEmailAddress}}</a></p>';
-		
-		//test that required snippets are available
-		$snippet_formIt = $this->modx->getObject('modSnippet',array('name'=>'FormIt'));
-		if($snippet_formIt===NULL){
-			JsonFormBuilder::throwError('FormIt snippet does not appear to be installed. Please install FormIt package.');
-		}
 	}
 	/**
 	 * addRule(FormRule $formRule)
@@ -438,13 +428,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	 * @return boolean
 	 */
 	public function getStore() { return $this->_store; }
-	/**
-	 * getPlaceholderJavascript()
-	 * 
-	 * Returns javascript placeholder setting used.
-	 * @return string
-	 */
-	public function getPlaceholderJavascript() { return $this->_placeholderJavascript; } 
 	/**
 	 * getAutoResponderTpl()
 	 * 
@@ -717,24 +700,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	 * Sets the store option used by FormIt. If true, will store the data in the cache for retrieval using the FormItRetriever snippet.
 	 * @param boolean $value 
 	 */
-	public function setStore($value) { $this->_store = self::forceBool($value); }
-	/**
-	 * setPlaceholderJavascript($value)
-	 * 
-	 * Sets a placeholder to use to inject any javascript used to control the form (jQuery Validate etc). By default any javascript required for forms is output inline after the closeure of the form (as you can see when viewing the HTML source). This may not be desirable for some developers as javascript order may be an issue. For simplicity it has been set this way by default for the majority of users that want to get their form up and running with minimal fuss.
-	 * 
-	 * To do this add the following code to your form object.
-	 * <code>
-	 * $o_form->setPlaceholderJavascript('JsonFormBuilder_javascript_myForm');
-	 * </code>
-	 * The string used in this method will be your placeholder name. Simply add the placeholder code to your template like so
-	 * <code>
-	 * [[+JsonFormBuilder_javascript_myForm]]
-	 * </code>
-	 * @param string $value 
-	 */
-	public function setPlaceholderJavascript($value) { $this->_placeholderJavascript = $value; }
-	
+	public function setStore($value) { $this->_store = self::forceBool($value); }	
 	/**
 	 * setAutoResponderTpl($value)
 	 * 
@@ -861,9 +827,8 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		foreach($a_mapping as $a){
 			$o_formObj = $a[0];
 			$s_keyName = $a[1];
-			
-			$fields[$s_keyName]=$_POST[$o_formObj->getId()];
-		};
+			$fields[$s_keyName]=$this->postVal($o_formObj->getId());
+		}
 		$newObj = $this->modx->newObject($s_ObjName, $fields);
 		$res = $newObj->save();
 		if($res===true){
@@ -920,7 +885,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		$bgColDarkerBG='#cddaeb';
 		$colOutline='#8a99ae';
 		$rowCount=0;
-		$s_ret='<table cellpadding="5" cellspacing="0" style="'.$s_style.'">'.$NL;
+		$s_ret='<table cellpadding="5" cellspacing="0" style="'.$s_style.'">';
 		foreach($this->_formElements as $o_el){
 			if(get_class($o_el)=='JsonFormBuilder_htmlBlock'){
 				//do nothing
@@ -958,10 +923,11 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 											$s_val.=htmlspecialchars($_REQUEST[$elId.'_'.$r_cnt.'_'.$c_cnt]);
 											break;
 										case 'radio':
-											$s_val.=($c_cnt==$_REQUEST[$elId.'_'.$r_cnt]?'&#10004;':'-');
+											$s_val.=($c_cnt==$this->postVal($elId.'_'.$r_cnt)?'&#10004;':'-');
 											break;
 										case 'check':
-											if(isset($_REQUEST[$elId.'_'.$r_cnt]) && in_array($c_cnt,$_REQUEST[$elId.'_'.$r_cnt])===true){
+                                            $s_postVal = $this->postVal($elId.'_'.$r_cnt);
+											if(empty($s_postVal)===false && in_array($c_cnt,$s_postVal)===true){
 												$s_val.='&#10004;';
 											}else{
 												$s_val.='-';
@@ -991,12 +957,12 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 							break;
 					}
 					
-					$s_ret.='<tr valign="top" bgcolor="'.$bgCol.'"><td><b>'.htmlspecialchars($o_el->getLabel()).':</b></td><td>'.$s_val.'</td></tr>'.$NL;
+					$s_ret.='<tr valign="top" bgcolor="'.$bgCol.'"><td><b>'.htmlspecialchars($o_el->getLabel()).':</b></td><td>'.$s_val.'</td></tr>';
 					$rowCount++;
 				}
 			}
 		}
-		$s_ret.='</table>'.$NL;
+		$s_ret.='</table>';
 		return $s_ret;
 	}
 	/**
@@ -1010,8 +976,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		$NL="\r\n";
 		$s_style = 'font-size:'.$this->_emailFontSize.'; font-family:'.$this->_emailFontFamily.';';
 		
-		$s_emailContent = $this->_autoResponderEmailContent;
-		$s_emailContent = str_replace('{{tableContent}}', $this->getFormTableContent(), $s_emailContent);
+		$s_emailContent = str_replace('{{tableContent}}', $this->getFormTableContent(), $this->_autoResponderEmailContent);
 		
 		$s_ret='<div style="'.$s_style.'">'.$NL.$s_emailContent.$NL.'</div>';
 		return $s_ret;
@@ -1028,11 +993,10 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		$NL="\r\n";
 		$s_style = 'font-size:'.$this->_emailFontSize.'; font-family:'.$this->_emailFontFamily.';';
 		
-		$s_footHTML = $this->_emailFootHtml;
 		$s_footHTML	= str_replace(
 			array('{{fromEmailAddress}}','{{subject}}'),
 			array(htmlspecialchars($this->_emailFromAddress),htmlspecialchars($this->_emailSubject)),
-			$s_footHTML
+			$this->_emailFootHtml
 		);
 
 		$s_ret='<div style="'.$s_style.'">'.$NL.$this->_emailHeadHtml.$NL
@@ -1130,7 +1094,8 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		}
 		$s_recaptchaJS='';
 		$b_posted = false;
-		if(isset($_REQUEST[$s_submitVar])===true){
+        $s_submittedVal = $this->postVal($s_submitVar);
+		if(empty($s_submittedVal)===false){
 			$b_posted=true;
 		}
 		$nl="\r\n";
@@ -1139,7 +1104,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		$a_fieldProps=array();
 		$a_fieldProps_jqValidate=array();
 		$a_fieldProps_jqValidateGroups=array();
-		$a_fieldProps_errstringFormIt=array();
+		$a_fieldProps_errstringForm=array();
 		$a_fieldProps_errstringJq=array();
 		
 		$a_formProps=array();
@@ -1164,8 +1129,8 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 			if(isset($a_fieldProps_jqValidate[$elId])===false){
 				$a_fieldProps_jqValidate[$elId]=array();
 			}
-			if(isset($a_fieldProps_errstringFormIt[$elId])===false){
-				$a_fieldProps_errstringFormIt[$elId]=array();
+			if(isset($a_fieldProps_errstringForm[$elId])===false){
+				$a_fieldProps_errstringForm[$elId]=array();
 			}
 			if(isset($a_fieldProps_errstringJq[$elId])===false){
 				$a_fieldProps_errstringJq[$elId]=array();
@@ -1178,13 +1143,13 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 			switch($rule->getType()){
 				case FormRuleType::email:
 					$a_fieldProps[$elId][] = 'email';
-					$a_fieldProps_errstringFormIt[$elId][] = 'vTextEmailInvalid=`'.$s_validationMessage.'`';
+					$a_fieldProps_errstringForm[$elId][] = 'vTextEmailInvalid=`'.$s_validationMessage.'`';
 					$a_fieldProps_jqValidate[$elName][] = 'email:true';
 					$a_fieldProps_errstringJq[$elName][] = 'email:"'.$s_validationMessage.'"';
 					break;
 				case FormRuleType::fieldMatch:
 					$a_fieldProps[$elId][] = 'password_confirm=^'.$o_elFull[1]->getId().'^';
-					$a_fieldProps_errstringFormIt[$elId][] = 'vTextPasswordConfirm=`'.$s_validationMessage.'`';
+					$a_fieldProps_errstringForm[$elId][] = 'vTextPasswordConfirm=`'.$s_validationMessage.'`';
 					$a_fieldProps_jqValidate[$elName][] = 'equalTo:"#'.$o_elFull[1]->getId().'"';
 					$a_fieldProps_errstringJq[$elName][] = 'equalTo:"'.$s_validationMessage.'"';
 					break;
@@ -1194,14 +1159,14 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 					}else{
 						$a_fieldProps[$elId][] = 'maxLength=^'.$rule->getValue().'^';
-						$a_fieldProps_errstringFormIt[$elId][] = 'vTextMaxLength=`'.$s_validationMessage.'`';
+						$a_fieldProps_errstringForm[$elId][] = 'vTextMaxLength=`'.$s_validationMessage.'`';
 					}
 					$a_fieldProps_jqValidate[$elName][] = 'maxlength:'.$rule->getValue();
 					$a_fieldProps_errstringJq[$elName][] = 'maxlength:"'.$s_validationMessage.'"';
 					break;
 				case FormRuleType::maximumValue:
 					$a_fieldProps[$elId][] = 'maxValue=^'.$rule->getValue().'^';
-					$a_fieldProps_errstringFormIt[$elId][] = 'vTextMaxValue=`'.$s_validationMessage.'`';
+					$a_fieldProps_errstringForm[$elId][] = 'vTextMaxValue=`'.$s_validationMessage.'`';
 					$a_fieldProps_jqValidate[$elName][] = 'max:'.$rule->getValue();
 					$a_fieldProps_errstringJq[$elName][] = 'max:"'.$s_validationMessage.'"';
 					break;
@@ -1220,13 +1185,13 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 					break;
 				case FormRuleType::minimumValue:
 					$a_fieldProps[$elId][] = 'minValue=^'.$rule->getValue().'^';
-					$a_fieldProps_errstringFormIt[$elId][] = 'vTextMinValue=`'.$s_validationMessage.'`';
+					$a_fieldProps_errstringForm[$elId][] = 'vTextMinValue=`'.$s_validationMessage.'`';
 					$a_fieldProps_jqValidate[$elName][] = 'min:'.$rule->getValue();
 					$a_fieldProps_errstringJq[$elName][] = 'min:"'.$s_validationMessage.'"';
 					break;
 				case FormRuleType::numeric:
 					$a_fieldProps[$elId][] = 'isNumber';
-					$a_fieldProps_errstringFormIt[$elId][] = 'vTextIsNumber=`'.$s_validationMessage.'`';
+					$a_fieldProps_errstringForm[$elId][] = 'vTextIsNumber=`'.$s_validationMessage.'`';
 					$a_fieldProps_jqValidate[$elName][] = 'digits:true';
 					$a_fieldProps_errstringJq[$elName][] = 'digits:"'.$s_validationMessage.'"';
 					break;
@@ -1376,7 +1341,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 			}
 		}
 		//add formIT error messages
-		foreach($a_fieldProps_errstringFormIt as $fieldID=>$msgArray){
+		foreach($a_fieldProps_errstringForm as $fieldID=>$msgArray){
 			foreach($msgArray as $msg){
 				$a_formItErrorMessage[]='&'.$fieldID.'.'.$msg;
 			}
@@ -1400,7 +1365,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 			$this->_hooks[]='JsonFormBuilder_hooks';
 		}
 		
-		
+		/*
 		$s_formItCmd='[[!FormIt?'
 		.$nl.'&hooks=`'.$this->_postHookName.(count($this->_hooks)>0?','.implode(',',$this->_hooks):'').'`'
 				
@@ -1440,7 +1405,8 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		.$nl.'&submitVar=`'.$s_submitVar.'`'
 		.$nl.implode($nl,$a_formItErrorMessage)
 		.$nl.'&validate=`'.(isset($this->_validate)?$this->_validate.',':'').implode(','.$nl.' ',$a_formItCmds).','.$nl.'`]]'.$nl;
-		
+		*/
+        
 		if($this->_jqueryValidation===true){
 			$s_js='	
 $().ready(function() {
@@ -1541,21 +1507,13 @@ $this->jqueryValidateJSON(
 	
 });
 ';
+            //Allows output of the javascript into a paceholder so in can be inserted elsewhere in html (head etc)
+            $this->modx->setPlaceholder('JsonFormBuilder_'.$this->_id,$s_js);
 		}
 		
-		//Allows output of the javascript into a paceholder so in can be inserted elsewhere in html (head etc)
-		if(empty($this->_placeholderJavascript)===false){
-			$this->modx->setPlaceholder($this->_placeholderJavascript,$s_js);
-			return $s_formItCmd.$s_form;
-		}else{
-			return $s_formItCmd.$s_form.
-'<script type="text/javascript">
-// <![CDATA[
-'.$s_js.'
-// ]]>
-</script>';
-            
-		}
+
+		return $s_form;
+		
 	}
     
     /**
@@ -1569,4 +1527,3 @@ $this->jqueryValidateJSON(
 	}
 	
 }
-?>

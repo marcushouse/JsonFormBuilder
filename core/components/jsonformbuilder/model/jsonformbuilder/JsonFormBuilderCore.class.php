@@ -8,7 +8,7 @@
 /**
  * Required Files
  */
-require_once dirname(__FILE__).'/FormElement.class.php';
+require_once dirname(__FILE__).'/elements/JsonFormBuilder_baseElement.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder.class.php';
 require_once dirname(__FILE__).'/FormRule.class.php';
 
@@ -98,6 +98,11 @@ class JsonFormBuilderCore{
 			self::throwError('Element "'.$element.'" is not a JsonFormBuilder_baseElement');
 		}
 	}
+    
+    public function postVal($field){
+        $val = trim(filter_input(INPUT_POST,$field, FILTER_SANITIZE_SPECIAL_CHARS));
+        return $val;
+    }
 	
 	/**
 	 * Test if a string is a valid date against the specified format and return useful information about the date (such as a unix timestamp and processed version of the same date).

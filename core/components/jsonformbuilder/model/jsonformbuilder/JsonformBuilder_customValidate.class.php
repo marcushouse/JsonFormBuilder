@@ -30,13 +30,13 @@ class JsonformBuilder_customValidate extends JsonFormBuilderCore{
 						if($option['required']===true){
 							//make sure no posted values inside grid are filled out
 							$invalCount=0;
-							$gridInfo = explode(',',$_POST[$elID.'_gridInfo']);
+							$gridInfo = explode(',',$this->postVal($elID.'_gridInfo'));
 							$rows=$gridInfo[0];
 							$columns=$gridInfo[1];
 							for($a=0;$a<$rows;$a++){
 								for($b=0;$b<$columns;$b++){
-									if(isset($_POST[$elID.'_'.$a.'_'.$b])===true){
-										if(trim($_POST[$elID.'_'.$a.'_'.$b])==''){
+									if($this->postVal($elID.'_'.$a.'_'.$b)!==NULL){
+										if(trim($this->postVal($elID.'_'.$a.'_'.$b))==''){
 											$invalCount++;
 										}
 									}else{
@@ -54,12 +54,12 @@ class JsonformBuilder_customValidate extends JsonFormBuilderCore{
 						if($option['required']===true){
 							//make sure no posted values inside grid are filled out
 							$invalCount=0;
-							$gridInfo = explode(',',$_POST[$elID.'_gridInfo']);
+							$gridInfo = explode(',',$this->postVal($elID.'_gridInfo'));
 							$rows=$gridInfo[0];
 							$columns=$gridInfo[1];
 							for($a=0;$a<$rows;$a++){
-								if(isset($_POST[$elID.'_'.$a])===true){
-									if(trim($_POST[$elID.'_'.$a])==''){
+								if($this->postVal($elID.'_'.$a)!==NULL){
+									if($this->postVal($elID.'_'.$a)==''){
 										$invalCount++;
 									}
 								}else{
@@ -76,13 +76,13 @@ class JsonformBuilder_customValidate extends JsonFormBuilderCore{
 						if($option['required']===true){
 							//make sure no posted values inside grid are filled out
 							$invalCount=0;
-							$gridInfo = explode(',',$_POST[$elID.'_gridInfo']);
+							$gridInfo = explode(',',$this->postVal($elID.'_gridInfo'));
 							$rows=$gridInfo[0];
 							$columns=$gridInfo[1];
 							for($a=0;$a<$rows;$a++){
 								$itemsInRowTicked=0;
 								for($b=0;$b<$columns;$b++){
-									if(isset($_POST[$elID.'_'.$a])===true && count($_POST[$elID.'_'.$a])>0){
+									if($this->postVal($elID.'_'.$a)!==NULL && count($this->postVal($elID.'_'.$a))>0){
 										$itemsInRowTicked++;
 									}else{
 										$invalCount++;
@@ -100,7 +100,10 @@ class JsonformBuilder_customValidate extends JsonFormBuilderCore{
 						break;
 					case 'elementDate':
 						if($option['required']===true){
-							if(empty($_POST[$elID.'_0'])===false && empty($_POST[$elID.'_1'])===false && empty($_POST[$elID.'_2'])===false){
+                            $postVal0 = $this->postVal($elID.'_0');
+                            $postVal1 = $this->postVal($elID.'_1');
+                            $postVal2 = $this->postVal($elID.'_2');
+							if(empty($postVal0)===false && empty($postVal1)===false && empty($postVal2)===false){
 								//all three date elements must be selected
 							}else{
 								$returnStatus = false;

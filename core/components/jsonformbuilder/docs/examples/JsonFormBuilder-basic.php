@@ -20,10 +20,10 @@ $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please pr
 //CREATE FORM AND SETUP
 $o_form = new JsonFormBuilder($modx,'contactForm');
 $o_form->setHooks(array('spam','email','redirect'));
-$o_form->setRedirectDocument(5);
+$o_form->setRedirectDocument(3);
 $o_form->addRules($a_formRules);
 $o_form->setPostHookName($snippetName);
-$o_form->setEmailToAddress('your@email.address');
+$o_form->setEmailToAddress('[[+emailsender]]');
 $o_form->setEmailFromAddress('[[+email_address]]');
 $o_form->setEmailSubject('JsonFormBuilder Contact Form Submission - From: [[+name_full]]');
 $o_form->setEmailHeadHtml('<p>This is a response sent by [[+name_full]] using the contact us form:</p>');
@@ -33,7 +33,6 @@ $o_form->setJqueryValidation(true);
 $o_form->addElements(
     array(
         $o_fe_name,$o_fe_email,$o_fe_notes,
-        new JsonFormBuilder_htmlBlock('<hr class="formSpltter" />'),
         $o_fe_buttSubmit
     )
 );
