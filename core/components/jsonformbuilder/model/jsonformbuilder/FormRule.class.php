@@ -1,7 +1,7 @@
 <?php
 /**
  * Contains rule processor class.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
 
 /**
@@ -10,10 +10,10 @@
 require_once dirname(__FILE__).'/FormRuleType.class.php';
 
 /**
- * Contains rule methods applied to an element. The FormItBuilder object is then assigned rules using the addRules method.
- * @package FormItBuilder
+ * Contains rule methods applied to an element. The JsonFormBuilder object is then assigned rules using the addRules method.
+ * @package JsonFormBuilder
  */
-class FormRule extends FormItBuilderCore{
+class FormRule extends JsonFormBuilderCore{
 	/**
 	 * @ignore
 	 */
@@ -68,10 +68,10 @@ class FormRule extends FormItBuilderCore{
 	function __construct($type, $element, $value=NULL, $validationMessage=NULL ) {
 		//verify we have a single form element or an array of them
 		if(is_array($element)===false){
-			FormItBuilder::verifyFormElement($element);
+			JsonFormBuilder::verifyFormElement($element);
 		}else{
 			foreach($element as $el){
-				FormItBuilder::verifyFormElement($el);
+				JsonFormBuilder::verifyFormElement($el);
 			}
 		}
 		//main switch
@@ -80,7 +80,7 @@ class FormRule extends FormItBuilderCore{
 			//form field match, password confirm etc
 			case FormRuleType::fieldMatch:
 				if(is_array($element)===false || count($element)!==2){
-					FormItBuilder::throwError('Rule "'.self::fieldMatch.'" must be applied to 2 elements (e.g. password and password_confirm). Pass 2 form elements in an array.');
+					JsonFormBuilder::throwError('Rule "'.self::fieldMatch.'" must be applied to 2 elements (e.g. password and password_confirm). Pass 2 form elements in an array.');
 				}
 				if($validationMessage===NULL){
 					$this->_validationMessage = $element[0]->getLabel().' must match '.$element[1]->getLabel();
@@ -107,11 +107,11 @@ class FormRule extends FormItBuilderCore{
 				
 			//value driven number type validators
 			case FormRuleType::maximumLength:
-				$value = FormItBuilder::forceNumber($value);
+				$value = JsonFormBuilder::forceNumber($value);
 				if($validationMessage===NULL){
 					
 				}
-				if(is_a($element, 'FormItBuilder_elementCheckboxGroup')){
+				if(is_a($element, 'JsonFormBuilder_elementCheckboxGroup')){
 					$this->_validationMessage = $element->getLabel().' must have less than '.($value+1).' selected';
 				}else{
 					$this->_validationMessage = $element->getLabel().' can only contain up to '.$value.' characters';
@@ -120,16 +120,16 @@ class FormRule extends FormItBuilderCore{
 				$element->setMaxLength($value);
 				break;
 			case FormRuleType::maximumValue:
-				$value = FormItBuilder::forceNumber($value);
+				$value = JsonFormBuilder::forceNumber($value);
 				if($validationMessage===NULL){
 					$this->_validationMessage = $element->getLabel().' must not be greater than '.$value;
 				}
 				$element->setMaxValue($value);
 				break;
 			case FormRuleType::minimumLength:
-				$value = FormItBuilder::forceNumber($value);
+				$value = JsonFormBuilder::forceNumber($value);
 				if($validationMessage===NULL){
-					if(is_a($element, 'FormItBuilder_elementCheckboxGroup')){
+					if(is_a($element, 'JsonFormBuilder_elementCheckboxGroup')){
 						$this->_validationMessage = $element->getLabel().' must have at least '.$value.' selected';
 					}else{
 						$this->_validationMessage = $element->getLabel().' must be at least '.$value.' characters';
@@ -138,7 +138,7 @@ class FormRule extends FormItBuilderCore{
 				$element->setMinLength($value);
 				break;
 			case FormRuleType::minimumValue:
-				$value = FormItBuilder::forceNumber($value);
+				$value = JsonFormBuilder::forceNumber($value);
 				if($validationMessage===NULL){
 					$this->_validationMessage = $element->getLabel().' must not be less than '.$value;
 				}
@@ -152,7 +152,7 @@ class FormRule extends FormItBuilderCore{
 				*/
 				$value=strtolower(trim($value));
 				if(empty($value)===true){
-					FormItBuilder::throwError('Date type field must have a value (date format) specified.');
+					JsonFormBuilder::throwError('Date type field must have a value (date format) specified.');
 				}
 				if($validationMessage===NULL){
 					$this->_validationMessage = $element->getLabel().' must be a valid date (===dateformat===).';
@@ -164,7 +164,7 @@ class FormRule extends FormItBuilderCore{
 				}
 				break;			
 			default:
-				FormItBuilder::throwError('Type "'.$type.'" not valid. Recommend using FormRule constant');
+				JsonFormBuilder::throwError('Type "'.$type.'" not valid. Recommend using FormRule constant');
 				break;
 		}
 		

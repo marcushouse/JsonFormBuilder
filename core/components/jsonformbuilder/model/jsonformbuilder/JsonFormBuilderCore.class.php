@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Contains methods that can be used from any part of FormItBuilder.
- * @package FormItBuilder
+ * Contains methods that can be used from any part of JsonFormBuilder.
+ * @package JsonFormBuilder
  */
 
 /**
  * Required Files
  */
 require_once dirname(__FILE__).'/FormElement.class.php';
-require_once dirname(__FILE__).'/FormItBuilder.class.php';
+require_once dirname(__FILE__).'/JsonFormBuilder.class.php';
 require_once dirname(__FILE__).'/FormRule.class.php';
 
 /**
-* The core class for FormItBuilder every other class extends this class which allows easy access to the common static methods.
-* @package FormItBuilder
+* The core class for JsonFormBuilder every other class extends this class which allows easy access to the common static methods.
+* @package JsonFormBuilder
 */
-class FormItBuilderCore{
+class JsonFormBuilderCore{
 	
 	/**
 	 * Setter function. This should always be overwritten, if not throw an error (forces extending classes to define setters).
@@ -90,12 +90,12 @@ class FormItBuilderCore{
 	
 	/**
 	 * Verify that the specified object is a valid form element object (if not an error is thrown).
-	 * @param FormItBuilder_baseElement $element Element object
+	 * @param JsonFormBuilder_baseElement $element Element object
 	 * @ignore
 	 */
-	public static function verifyFormElement(FormItBuilder_baseElement $element){
-		if(is_a($element, 'FormItBuilder_baseElement')===false){
-			self::throwError('Element "'.$element.'" is not a FormItBuilder_baseElement');
+	public static function verifyFormElement(JsonFormBuilder_baseElement $element){
+		if(is_a($element, 'JsonFormBuilder_baseElement')===false){
+			self::throwError('Element "'.$element.'" is not a JsonFormBuilder_baseElement');
 		}
 	}
 	

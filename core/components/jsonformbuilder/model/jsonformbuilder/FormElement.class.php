@@ -1,20 +1,20 @@
 <?php
 /**
  * Contains all the form element classes.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
 
 /**
  * Required Files
  */
-require_once dirname(__FILE__).'/FormItBuilderCore.class.php';
+require_once dirname(__FILE__).'/JsonFormBuilderCore.class.php';
 
 
 /**
  * A primitive form element used as a base to extend into a variety of elements
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_baseElement extends FormItBuilderCore{
+class JsonFormBuilder_baseElement extends JsonFormBuilderCore{
 	/**
 	 * @ignore 
 	 */
@@ -22,7 +22,7 @@ class FormItBuilder_baseElement extends FormItBuilderCore{
 	/**
 	 * setCustomObject($value)
 	 * 
-	 * Not used via FormItBuilder in anyway, however lets users attach object references or data into this property and then retrive the data via script. Very much a power user feature.
+	 * Not used via JsonFormBuilder in anyway, however lets users attach object references or data into this property and then retrive the data via script. Very much a power user feature.
 	 * @param mixed $value Can set anything here.
 	 */
 	public function setCustomObject($value) { $this->_customObject = $value; }
@@ -38,15 +38,15 @@ class FormItBuilder_baseElement extends FormItBuilderCore{
 
 /**
  * A primitive form element used only to inject raw html and place between other elements.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_htmlBlock extends FormItBuilder_baseElement{
+class JsonFormBuilder_htmlBlock extends JsonFormBuilder_baseElement{
 	/**
 	 * @ignore 
 	 */
 	private $_html;
 	/**
-	 * FormItBuilder_htmlBlock
+	 * JsonFormBuilder_htmlBlock
 	 * 
 	 * Creates a segment of the specified html. This is great for introducing your own separators or wrappers around other elements in the form.
 	 * @param string $html The html code to use as the element
@@ -68,9 +68,9 @@ class FormItBuilder_htmlBlock extends FormItBuilder_baseElement{
 
 /**
  * A less primitive form element used as a base to extend into a variety of elements containing properties and methods used by all physical form elements.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-abstract class FormItBuilder_element extends FormItBuilder_baseElement{
+abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
 	/**
 	 * @ignore
 	 */
@@ -116,7 +116,7 @@ abstract class FormItBuilder_element extends FormItBuilder_baseElement{
 	abstract protected function outputHTML();
 	
 	/**
-	 * FormItBuilder_element
+	 * JsonFormBuilder_element
 	 * 
 	 * Main element constructor.
 	 * @param string $id
@@ -233,7 +233,7 @@ abstract class FormItBuilder_element extends FormItBuilder_baseElement{
 		if(func_num_args() == 0) {
 			return $this->_showLabel;
 		}else{
-			$this->_showLabel = FormItBuilder::forceBool(func_get_arg(0));
+			$this->_showLabel = JsonFormBuilder::forceBool(func_get_arg(0));
 		}
 	}
 	/**
@@ -252,7 +252,7 @@ abstract class FormItBuilder_element extends FormItBuilder_baseElement{
 		if(func_num_args() == 0) {
 			return $this->_required;
 		}else{
-			$this->_required = FormItBuilder::forceBool(func_get_arg(0));
+			$this->_required = JsonFormBuilder::forceBool(func_get_arg(0));
 		}
 	}
 	/**
@@ -272,24 +272,24 @@ abstract class FormItBuilder_element extends FormItBuilder_baseElement{
 		if(func_num_args() == 0) {
 			return $this->_showInEmail;
 		}else{
-			$this->_showInEmail = FormItBuilder::forceBool(func_get_arg(0));
+			$this->_showInEmail = JsonFormBuilder::forceBool(func_get_arg(0));
 		}
 	}
 }
 /**
  * Creates a recaptcha field with the FormIt integrated recaptcha systems.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementReCaptcha extends FormItBuilder_element{
+class JsonFormBuilder_elementReCaptcha extends JsonFormBuilder_element{
 	/**
 	 * @ignore
 	 */
 	protected $_jsonConfig;
 	
 	/**
-	 * FormItBuilder_elementReCaptcha
+	 * JsonFormBuilder_elementReCaptcha
 	 * 
-	 * Constructor for the FormItBuilder_elementReCaptcha object.
+	 * Constructor for the JsonFormBuilder_elementReCaptcha object.
 	 * @param string $label 
 	 */
 	function __construct($label) {
@@ -329,9 +329,9 @@ class FormItBuilder_elementReCaptcha extends FormItBuilder_element{
 
 /**
  * Creates a select (dropdown) field element.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementSelect extends FormItBuilder_element{
+class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 	/**
 	 * @ignore 
 	 */
@@ -342,7 +342,7 @@ class FormItBuilder_elementSelect extends FormItBuilder_element{
 	private $_defaultVal;
 	
 	/**
-	 * FormItBuilder_elementSelect
+	 * JsonFormBuilder_elementSelect
 	 * 
 	 * Creates a select dropdown element.
 	 *
@@ -357,7 +357,7 @@ class FormItBuilder_elementSelect extends FormItBuilder_element{
 	 *	'CO'=>'Colorado',
 	 *	'CT'=>'Connecticut'
 	 * );
-	 * $o_fe_usstates = new FormItBuilder_elementSelect('ussuate','Select a state',$a_usstates,'AR');
+	 * $o_fe_usstates = new JsonFormBuilder_elementSelect('ussuate','Select a state',$a_usstates,'AR');
 	 * </code>
 	 * 
 	 * @param string $id The ID of the element
@@ -406,9 +406,9 @@ class FormItBuilder_elementSelect extends FormItBuilder_element{
 
 /**
  * Creates a radio button group.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementRadioGroup extends FormItBuilder_element{
+class JsonFormBuilder_elementRadioGroup extends JsonFormBuilder_element{
 	/**
 	 * @ignore 
 	 */
@@ -423,7 +423,7 @@ class FormItBuilder_elementRadioGroup extends FormItBuilder_element{
 	private $_showIndividualLabels;
 	
 	/**
-	 * FormItBuilder_elementRadioGroup
+	 * JsonFormBuilder_elementRadioGroup
 	 * 
 	 * Creates a group of radio button elements.
 	 * 
@@ -435,7 +435,7 @@ class FormItBuilder_elementRadioGroup extends FormItBuilder_element{
 	 *	'opt4'=>'Good',
 	 *	'opt5'=>'Excellent'
 	 * );
-	 * $o_fe_staff = new FormItBuilder_elementRadioGroup('staff_performance','How would you rate staff performance?',$a_performanceOptions,'opt3');
+	 * $o_fe_staff = new JsonFormBuilder_elementRadioGroup('staff_performance','How would you rate staff performance?',$a_performanceOptions,'opt3');
 	 * </code>
 	 *
 	 * @param string $id The ID of the element
@@ -461,7 +461,7 @@ class FormItBuilder_elementRadioGroup extends FormItBuilder_element{
 		if(func_num_args() == 0) {
 			return $this->_showIndividualLabels;
 		}else{
-			$this->_showIndividualLabels = FormItBuilder::forceBool(func_get_arg(0));
+			$this->_showIndividualLabels = JsonFormBuilder::forceBool(func_get_arg(0));
 		}
 	}
 	/**
@@ -499,9 +499,9 @@ class FormItBuilder_elementRadioGroup extends FormItBuilder_element{
 
 /**
  * Creates a form button element (e.g button, image, reset, submit)
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementButton extends FormItBuilder_element{
+class JsonFormBuilder_elementButton extends JsonFormBuilder_element{
 	/**
 	 * @ignore
 	 */
@@ -516,7 +516,7 @@ class FormItBuilder_elementButton extends FormItBuilder_element{
 	protected $_src;
 
 	/**
-	 * FormItBuilder_elementButton
+	 * JsonFormBuilder_elementButton
 	 * 
 	 * Creates a form button element
 	 *
@@ -531,7 +531,7 @@ class FormItBuilder_elementButton extends FormItBuilder_element{
 		if($type=='button' || $type=='image' || $type=='reset' || $type=='submit'){
 			//ok -- valid type
 		}else{
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Button "'.htmlspecialchars($type).'" must be of type "button", "reset", "image" or "submit"');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Button "'.htmlspecialchars($type).'" must be of type "button", "reset", "image" or "submit"');
 		}
 		$this->_type = $type;
 	}
@@ -545,7 +545,7 @@ class FormItBuilder_elementButton extends FormItBuilder_element{
 		$s_ret='<input id="'.htmlspecialchars($this->_id).'" type="'.htmlspecialchars($this->_type).'" value="'.htmlspecialchars($this->_label).'"';
 		if($this->_type=='image'){
 			if($this->_src===NULL){
-				FormItBuilder::throwError('[Element: '.$this->_id.'] Button of type "image" must have a src set.');
+				JsonFormBuilder::throwError('[Element: '.$this->_id.'] Button of type "image" must have a src set.');
 			}else{
 				$s_ret.=' src="'.htmlspecialchars($this->_src).'"';
 			}
@@ -555,7 +555,7 @@ class FormItBuilder_elementButton extends FormItBuilder_element{
 	}
 }
 
-class FormItBuilder_elementMatrix extends FormItBuilder_element{
+class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
 	private $a_rows;
 	private $a_columns;
 	private $s_type;
@@ -565,7 +565,7 @@ class FormItBuilder_elementMatrix extends FormItBuilder_element{
 		$this->a_columns = self::forceArray($columnLabels);
 		$this->a_rows  = self::forceArray($rowLabels);
 		if($type!='select'&&$type!='text'&&$type!='radio'&&$type!='check'){
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Not a valid type, must be "select", "text", "radio" or "check".');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Not a valid type, must be "select", "text", "radio" or "check".');
 		}else{
 			$this->s_type = $type;
 		}
@@ -613,7 +613,7 @@ class FormItBuilder_elementMatrix extends FormItBuilder_element{
 			foreach($this->a_columns as $column){
 				switch($this->s_type){
 					case 'text':
-						$el=new FormItBuilder_elementText($this->_id.'_'.$r_cnt.'_'.$c_cnt,'');
+						$el=new JsonFormBuilder_elementText($this->_id.'_'.$r_cnt.'_'.$c_cnt,'');
 						$s_cellHTML=$el->outputHTML();
 						break;
 					case 'radio':
@@ -635,9 +635,9 @@ class FormItBuilder_elementMatrix extends FormItBuilder_element{
 }
 /**
  * Creates three combined form elements to allow users to enter a date using three dropdown lists.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementDate extends FormItBuilder_element{
+class JsonFormBuilder_elementDate extends JsonFormBuilder_element{
 	private $_dateFormat;
 	private $_yearStart;
 	private $_yearEnd;
@@ -646,7 +646,7 @@ class FormItBuilder_elementDate extends FormItBuilder_element{
 	private $_defaultVal2;
 	
 	/**
-	 * FormItBuilder_elementDate
+	 * JsonFormBuilder_elementDate
 	 * 
 	 * Creates three combined form elements to allow users to enter a date using three dropdown lists.
 	 *
@@ -684,7 +684,7 @@ class FormItBuilder_elementDate extends FormItBuilder_element{
 		array_multisort($ar1, $ar2);
 		
 		if(strlen($value)!==10 || $day===false || $month===false || $year===false){
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Date format "'.$value.'" is not valid.');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Date format "'.$value.'" is not valid.');
 		}else{
 			$this->_dateFormat=$ar2;
 		}
@@ -753,7 +753,7 @@ class FormItBuilder_elementDate extends FormItBuilder_element{
 		//year options
 		$a_years=array();
 		if($this->_yearStart>$this->_yearEnd){
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Date start "'.$this->_yearStart.'" is greater than the end year "'.$this->_yearEnd.'".');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Date start "'.$this->_yearStart.'" is greater than the end year "'.$this->_yearEnd.'".');
 		}
 		for($a=$this->_yearStart;$a<$this->_yearEnd+1;$a++){
 			$a_years[' '.$a]=$a; //blank space here to be a number instead of an index
@@ -766,7 +766,7 @@ class FormItBuilder_elementDate extends FormItBuilder_element{
 			if($datePart=='day'){ $selectArray=$a_days;	$default=$this->_defaultVal0; }
 			if($datePart=='month'){ $selectArray=$a_months; $default=$this->_defaultVal1; }
 			if($datePart=='year'){ $selectArray=$a_years; $default=$this->_defaultVal2; }
-			$drop = new FormItBuilder_elementSelect($this->_id.'_'.$cnt, '', $selectArray, $default);
+			$drop = new JsonFormBuilder_elementSelect($this->_id.'_'.$cnt, '', $selectArray, $default);
 			$s_ret.='<span class="elementDate_'.$cnt.'">'.$drop->outputHTML().'</span>';
 			$cnt++;
 		}
@@ -777,9 +777,9 @@ class FormItBuilder_elementDate extends FormItBuilder_element{
 
 /**
  * Creates a text area element.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementTextArea extends FormItBuilder_element{
+class JsonFormBuilder_elementTextArea extends JsonFormBuilder_element{
 	/**
 	 * @ignore 
 	 */
@@ -794,7 +794,7 @@ class FormItBuilder_elementTextArea extends FormItBuilder_element{
 	private $_cols;
 
 	/**
-	 * FormItBuilder_elementTextArea
+	 * JsonFormBuilder_elementTextArea
 	 * 
 	 * Creates a text area element.
 	 * @param string $id ID of text area
@@ -806,8 +806,8 @@ class FormItBuilder_elementTextArea extends FormItBuilder_element{
 	function __construct($id, $label, $rows, $cols, $defaultValue=NULL) {
 		parent::__construct($id,$label);
 		$this->_defaultVal = $defaultValue;
-		$this->_rows = FormItBuilderCore::forceNumber($rows);
-		$this->_cols = FormItBuilderCore::forceNumber($cols);
+		$this->_rows = JsonFormBuilderCore::forceNumber($rows);
+		$this->_cols = JsonFormBuilderCore::forceNumber($cols);
 	}
 	/**
 	 * outputHTML()
@@ -838,9 +838,9 @@ class FormItBuilder_elementTextArea extends FormItBuilder_element{
 
 /**
  * Creates a checkbox form element.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementCheckbox extends FormItBuilder_element{
+class JsonFormBuilder_elementCheckbox extends JsonFormBuilder_element{
 	/**
 	 * @ignore 
 	 */
@@ -854,7 +854,7 @@ class FormItBuilder_elementCheckbox extends FormItBuilder_element{
 	 */
 	private $_checked;
 	/**
-	 * FormItBuilder_elementCheckbox
+	 * JsonFormBuilder_elementCheckbox
 	 * 
 	 * Creates a checkbox form element.
 	 *
@@ -899,9 +899,9 @@ class FormItBuilder_elementCheckbox extends FormItBuilder_element{
 
 /**
  * Creates a group of checkbox elements.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementCheckboxGroup extends FormItBuilder_element{
+class JsonFormBuilder_elementCheckboxGroup extends JsonFormBuilder_element{
 	/**
 	 * @ignore 
 	 */
@@ -925,7 +925,7 @@ class FormItBuilder_elementCheckboxGroup extends FormItBuilder_element{
 	
 	
 	/**
-	 * FormItBuilder_elementCheckboxGroup
+	 * JsonFormBuilder_elementCheckboxGroup
 	 * 
 	 * Creates a group of checkboxes that allow rules such as required, minimum length (minimum number of items that must be checked) and maximum length (maximum number of items that can be checked). The list of checkbox values are specified in an array along with their default ticked state.
 	 * 
@@ -936,7 +936,7 @@ class FormItBuilder_elementCheckboxGroup extends FormItBuilder_element{
 	 *	array('title'=>'Salad','checked'=>false),
 	 *	array('title'=>'Bread','checked'=>true)
 	 * );
-	 * $o_fe_checkgroup		= new FormItBuilder_elementCheckboxGroup('favFoods','Favorite Foods',$a_checkArray);
+	 * $o_fe_checkgroup		= new JsonFormBuilder_elementCheckboxGroup('favFoods','Favorite Foods',$a_checkArray);
 	 * //Ensure at least 2 checkboxes are selected
 	 * $a_formRules[] = new FormRule(FormRuleType::minimumLength,$o_fe_checkgroup,2);
 	 * //Ensure no more than 3 checkboxes are selected
@@ -966,7 +966,7 @@ class FormItBuilder_elementCheckboxGroup extends FormItBuilder_element{
 		if(func_num_args() == 0) {
 			return $this->_showIndividualLabels;
 		}else{
-			$this->_showIndividualLabels = FormItBuilder::forceBool(func_get_arg(0));
+			$this->_showIndividualLabels = JsonFormBuilder::forceBool(func_get_arg(0));
 		}
 	}
 	
@@ -977,14 +977,14 @@ class FormItBuilder_elementCheckboxGroup extends FormItBuilder_element{
 	 * @param int $value 
 	 */
 	public function setMinLength($value) {
-		$value = FormItBuilder::forceNumber($value);
+		$value = JsonFormBuilder::forceNumber($value);
 		if($this->_maxLength!==NULL && $this->_maxLength<$value){
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when maximum length is "'.$this->_maxLength.'"');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when maximum length is "'.$this->_maxLength.'"');
 		}else{
 			//if($this->_required===false){
-				//FormItBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when field is not required.');
+				//JsonFormBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when field is not required.');
 			//}else{
-				$this->_minLength = FormItBuilder::forceNumber($value);
+				$this->_minLength = JsonFormBuilder::forceNumber($value);
 			//}
 		}
 	}
@@ -995,11 +995,11 @@ class FormItBuilder_elementCheckboxGroup extends FormItBuilder_element{
 	 * @param int $value 
 	 */
 	public function setMaxLength($value) {
-		$value = FormItBuilder::forceNumber($value);
+		$value = JsonFormBuilder::forceNumber($value);
 		if($this->_minLength!==NULL && $this->_minLength>$value){
-			throw FormItBuilder::throwError('[Element: '.$this->_id.'] Cannot set maximum length to "'.$value.'" when minimum length is "'.$this->_minLength.'"');
+			throw JsonFormBuilder::throwError('[Element: '.$this->_id.'] Cannot set maximum length to "'.$value.'" when minimum length is "'.$this->_minLength.'"');
 		}else{
-			$this->_maxLength = FormItBuilder::forceNumber($value);
+			$this->_maxLength = JsonFormBuilder::forceNumber($value);
 		}
 	}
 	/**
@@ -1048,9 +1048,9 @@ class FormItBuilder_elementCheckboxGroup extends FormItBuilder_element{
 
 /**
  * Creates a text field form element.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementText extends FormItBuilder_element{
+class JsonFormBuilder_elementText extends JsonFormBuilder_element{
 	/**
 	 * @ignore
 	 */
@@ -1081,7 +1081,7 @@ class FormItBuilder_elementText extends FormItBuilder_element{
 	protected $_defaultVal;
 
 	/**
-	 * FormItBuilder_elementText
+	 * JsonFormBuilder_elementText
 	 * 
 	 * Creates a text field.
 	 * @param string $id The ID of the text field
@@ -1141,11 +1141,11 @@ class FormItBuilder_elementText extends FormItBuilder_element{
 	 * @param int $value 
 	 */
 	public function setMaxLength($value) {
-		$value = FormItBuilder::forceNumber($value);
+		$value = JsonFormBuilder::forceNumber($value);
 		if($this->_minLength!==NULL && $this->_minLength>$value){
-			throw FormItBuilder::throwError('[Element: '.$this->_id.'] Cannot set maximum length to "'.$value.'" when minimum length is "'.$this->_minLength.'"');
+			throw JsonFormBuilder::throwError('[Element: '.$this->_id.'] Cannot set maximum length to "'.$value.'" when minimum length is "'.$this->_minLength.'"');
 		}else{
-			$this->_maxLength = FormItBuilder::forceNumber($value);
+			$this->_maxLength = JsonFormBuilder::forceNumber($value);
 		}
 	}
 	/**
@@ -1156,14 +1156,14 @@ class FormItBuilder_elementText extends FormItBuilder_element{
 	 * @param int $value 
 	 */
 	public function setMinLength($value) {
-		$value = FormItBuilder::forceNumber($value);
+		$value = JsonFormBuilder::forceNumber($value);
 		if($this->_maxLength!==NULL && $this->_maxLength<$value){
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when maximum length is "'.$this->_maxLength.'"');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when maximum length is "'.$this->_maxLength.'"');
 		}else{
 			//if($this->_required===false){
-				//FormItBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when field is not required.');
+				//JsonFormBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum length to "'.$value.'" when field is not required.');
 			//}else{
-				$this->_minLength = FormItBuilder::forceNumber($value);
+				$this->_minLength = JsonFormBuilder::forceNumber($value);
 			//}
 		}
 	}
@@ -1175,11 +1175,11 @@ class FormItBuilder_elementText extends FormItBuilder_element{
 	 * @param int $value 
 	 */
 	public function setMaxValue($value) {
-		$value = FormItBuilder::forceNumber($value);
+		$value = JsonFormBuilder::forceNumber($value);
 		if($this->_minValue!==NULL && $this->_minValue>$value){
-			FormItBuilder::throwError('Cannot set maximum value to "'.$value.'" when minimum value is "'.$this->_minValue.'"');
+			JsonFormBuilder::throwError('Cannot set maximum value to "'.$value.'" when minimum value is "'.$this->_minValue.'"');
 		}else{
-			$this->_maxValue = FormItBuilder::forceNumber($value);
+			$this->_maxValue = JsonFormBuilder::forceNumber($value);
 		}
 	}
 	/**
@@ -1190,11 +1190,11 @@ class FormItBuilder_elementText extends FormItBuilder_element{
 	 * @param int $value 
 	 */
 	public function setMinValue($value) {
-		$value = FormItBuilder::forceNumber($value);
+		$value = JsonFormBuilder::forceNumber($value);
 		if($this->_maxValue!==NULL && $this->_maxValue<$value){
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum value to "'.$value.'" when maximum value is "'.$this->_maxValue.'"');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Cannot set minimum value to "'.$value.'" when maximum value is "'.$this->_maxValue.'"');
 		}else{
-			$this->_minValue = FormItBuilder::forceNumber($value);
+			$this->_minValue = JsonFormBuilder::forceNumber($value);
 		}
 	}
 	/**
@@ -1207,7 +1207,7 @@ class FormItBuilder_elementText extends FormItBuilder_element{
 	public function setDateFormat($value) {
 		$value=trim($value);
 		if(empty($value)===true){
-			FormItBuilder::throwError('[Element: '.$this->_id.'] Date format is not valid.');
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Date format is not valid.');
 		}else{
 			$this->_dateFormat=$value;
 		}
@@ -1246,11 +1246,11 @@ class FormItBuilder_elementText extends FormItBuilder_element{
 
 /**
  * Creates a password field element.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementPassword extends FormItBuilder_elementText{
+class JsonFormBuilder_elementPassword extends JsonFormBuilder_elementText{
 	/**
-	 * FormItBuilder_elementPassword
+	 * JsonFormBuilder_elementPassword
 	 * 
 	 * Creates a password field.
 	 * @param string $id The ID of the password field
@@ -1265,11 +1265,11 @@ class FormItBuilder_elementPassword extends FormItBuilder_elementText{
 
 /**
  * Creates a hidden field form element.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementHidden extends FormItBuilder_elementText{
+class JsonFormBuilder_elementHidden extends JsonFormBuilder_elementText{
 	/**
-	 * FormItBuilder_elementHidden
+	 * JsonFormBuilder_elementHidden
 	 * 
 	 * Creates a hidden field.
 	 * @param string $id The ID of the hidden field
@@ -1283,12 +1283,12 @@ class FormItBuilder_elementHidden extends FormItBuilder_elementText{
 	}
 }
 /**
- * FormItBuilder_elementFile
+ * JsonFormBuilder_elementFile
  * 
  * Creates a file field form element.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormItBuilder_elementFile extends FormItBuilder_elementText{
+class JsonFormBuilder_elementFile extends JsonFormBuilder_elementText{
 	/**
 	 * Creates a file field element allowing upload of file to the server (and attached to email)
 	 * @param string $id The ID of the file element

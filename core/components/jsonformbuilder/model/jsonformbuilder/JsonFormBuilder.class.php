@@ -1,19 +1,19 @@
 <?php
 /**
- * Contains the classes used for the main FormItBuilder object.
- * @package FormItBuilder
+ * Contains the classes used for the main JsonFormBuilder object.
+ * @package JsonFormBuilder
  */
 
 /**
  * Required Files
  */
-require_once dirname(__FILE__).'/FormItBuilderCore.class.php';
+require_once dirname(__FILE__).'/JsonFormBuilderCore.class.php';
 
 /**
- * The main FormItBuilder methods. Most of the program bulk lives within this class and handles a great number of set/get methods and output methods.
- * @package FormItBuilder
+ * The main JsonFormBuilder methods. Most of the program bulk lives within this class and handles a great number of set/get methods and output methods.
+ * @package JsonFormBuilder
  */
-class FormItBuilder extends FormItBuilderCore{
+class JsonFormBuilder extends JsonFormBuilderCore{
 	/**
 	 * @ignore 
 	 */
@@ -200,9 +200,9 @@ class FormItBuilder extends FormItBuilderCore{
 	private $_submitVar;
 
 	/**
-	 * FormItBuilder
+	 * JsonFormBuilder
 	 * 
-	 * The main construction for FormItBuilder. All elements and rules are attached to this object.
+	 * The main construction for JsonFormBuilder. All elements and rules are attached to this object.
 	 * @param modx &$modx Reference to the core modX object
 	 * @param string $id Id of the form
 	 */
@@ -219,8 +219,8 @@ class FormItBuilder extends FormItBuilderCore{
 		$this->_redirectParams=NULL;
 		$this->_submitVar=NULL;
 		$this->_jqueryValidation=false;
-		$this->_emailTpl='FormItBuilderEmailTpl';
-		$this->_autoResponderTpl='FormItBuilderAutoResponderEmailTpl';
+		$this->_emailTpl='JsonFormBuilderEmailTpl';
+		$this->_autoResponderTpl='JsonFormBuilderAutoResponderEmailTpl';
 		$this->_autoResponderEmailContent='<p>Thank you for your submission. A copy of the information you sent is shown below.</p>{{tableContent}}';
 		
 		$this->_emailFontSize='13px';
@@ -230,18 +230,18 @@ class FormItBuilder extends FormItBuilderCore{
 		//test that required snippets are available
 		$snippet_formIt = $this->modx->getObject('modSnippet',array('name'=>'FormIt'));
 		if($snippet_formIt===NULL){
-			FormItBuilder::throwError('FormIt snippet does not appear to be installed. Please install FormIt package.');
+			JsonFormBuilder::throwError('FormIt snippet does not appear to be installed. Please install FormIt package.');
 		}
 	}
 	/**
 	 * addRule(FormRule $formRule)
 	 * 
-	 * Adds a single rule to the FormItBuilder object.
+	 * Adds a single rule to the JsonFormBuilder object.
 	 * @param FormRule $formRule 
 	 */
 	public function addRule(FormRule $formRule){
 		if(is_a($formRule,'FormRule')===false){
-			FormItBuilder::throwError('Form rule "'.$formRule.'" is not a valid FormRule type. Recommend using FormRuleType constants to define rule type.');
+			JsonFormBuilder::throwError('Form rule "'.$formRule.'" is not a valid FormRule type. Recommend using FormRuleType constants to define rule type.');
 		}else{
 			$this->_rules[]=$formRule;
 		}
@@ -249,7 +249,7 @@ class FormItBuilder extends FormItBuilderCore{
 	/**
 	 * addRules($rules)
 	 * 
-	 * Adds multiple FormRule objects to the FormItBuilder object.
+	 * Adds multiple FormRule objects to the JsonFormBuilder object.
 	 * @param array $rules 
 	 */
 	public function addRules($rules){
@@ -308,7 +308,7 @@ class FormItBuilder extends FormItBuilderCore{
 	/**
 	 * getPostHookName()
 	 * 
-	 * Returns the post hook snippet name (normally set to the same snippet name for the FormItBuilder form)
+	 * Returns the post hook snippet name (normally set to the same snippet name for the JsonFormBuilder form)
 	 * @return string
 	 */
 	public function getPostHookName() { return $this->_postHookName; }
@@ -357,7 +357,7 @@ class FormItBuilder extends FormItBuilderCore{
 	/**
 	 * getEmailTpl()
 	 * 
-	 * Returns the email template chunks used by the FormIt call. By default this is set to use FormItBuilderEmailTpl which is an installed chunk containing a single placeholder to allow FormItBuilder to dynamically generate and create the chunk content on the fly.
+	 * Returns the email template chunks used by the FormIt call. By default this is set to use JsonFormBuilderEmailTpl which is an installed chunk containing a single placeholder to allow JsonFormBuilder to dynamically generate and create the chunk content on the fly.
 	 * @return array
 	 */
 	public function getEmailTpl() { return $this->_emailTpl; }
@@ -568,7 +568,7 @@ class FormItBuilder extends FormItBuilderCore{
 	/**
 	 * setPostHookName($value)
 	 * 
-	 * Sets the post hook snippet name (normally set to the same snippet name for the FormItBuilder form).
+	 * Sets the post hook snippet name (normally set to the same snippet name for the JsonFormBuilder form).
 	 * @param string $value
 	 */
 	public function setPostHookName($value) { $this->_postHookName = $value; }
@@ -673,7 +673,7 @@ class FormItBuilder extends FormItBuilderCore{
 	/**
 	 * setEmailTpl($value)
 	 * 
-	 * Sets the email template chunk used by the FormIt call. By default this is set to use FormItBuilderEmailTpl which is an installed chunk containing a single placeholder to allow FormItBuilder to dynamically generate and create the chunk content on the fly.
+	 * Sets the email template chunk used by the FormIt call. By default this is set to use JsonFormBuilderEmailTpl which is an installed chunk containing a single placeholder to allow JsonFormBuilder to dynamically generate and create the chunk content on the fly.
 	 * @param string $value
 	 */
 	public function setEmailTpl($value){$this->_emailTpl = $value;}
@@ -725,11 +725,11 @@ class FormItBuilder extends FormItBuilderCore{
 	 * 
 	 * To do this add the following code to your form object.
 	 * <code>
-	 * $o_form->setPlaceholderJavascript('FormItBuilder_javascript_myForm');
+	 * $o_form->setPlaceholderJavascript('JsonFormBuilder_javascript_myForm');
 	 * </code>
 	 * The string used in this method will be your placeholder name. Simply add the placeholder code to your template like so
 	 * <code>
-	 * [[+FormItBuilder_javascript_myForm]]
+	 * [[+JsonFormBuilder_javascript_myForm]]
 	 * </code>
 	 * @param string $value 
 	 */
@@ -827,19 +827,19 @@ class FormItBuilder extends FormItBuilderCore{
 	 */
 	public function setAutoResponderEmailContent($value) { $this->_autoResponderEmailContent = $value; }
     /**
-	 * addElement(FormItBuilder_baseElement $o_formElement)
+	 * addElement(JsonFormBuilder_baseElement $o_formElement)
 	 * 
-	 * Adds a single element object to the main FormItBuilder object.
-	 * @param FormItBuilder_baseElement $o_formElement 
+	 * Adds a single element object to the main JsonFormBuilder object.
+	 * @param JsonFormBuilder_baseElement $o_formElement 
 	 */
-	public function addElement(FormItBuilder_baseElement $o_formElement){
+	public function addElement(JsonFormBuilder_baseElement $o_formElement){
 		$this->_formElements[]=$o_formElement;
 	}
     /**
 	 * addElements($a_elements)
 	 * 
-	 * Adds multiple element objects to the main FormItBuilder object.
-	 * @param array $a_elements An array of objects that extend FormItBuilder_baseElement. 
+	 * Adds multiple element objects to the main JsonFormBuilder object.
+	 * @param array $a_elements An array of objects that extend JsonFormBuilder_baseElement. 
 	 */
 	public function addElements($a_elements){
 		foreach($a_elements as $o_formElement){
@@ -875,7 +875,7 @@ class FormItBuilder extends FormItBuilderCore{
 	/**
 	 * processHooks($a_hookCommands)
 	 * 
-	 * Called from the FormItBuilder_hooks snippet. Not intended to be called publically in any other way. This process should be automatic.
+	 * Called from the JsonFormBuilder_hooks snippet. Not intended to be called publically in any other way. This process should be automatic.
 	 * @param array $a_hookCommands
 	 * @return boolean
 	 */
@@ -889,7 +889,7 @@ class FormItBuilder extends FormItBuilderCore{
 						if(isset($a_cmd['value']['tableObj'],$a_cmd['value']['mapping'])===true){
 							$b_res = $this->addToDatabase($a_cmd['value']['tableObj'],$a_cmd['value']['mapping']);
 						}else{
-							FormItBuilder::throwError('FormItBuilder processHooks failed. The tableObj or mapping attributes were not set for "'.$a_cmd['name'].'".');		
+							JsonFormBuilder::throwError('JsonFormBuilder processHooks failed. The tableObj or mapping attributes were not set for "'.$a_cmd['name'].'".');		
 						}
 						break;
 				}
@@ -897,7 +897,7 @@ class FormItBuilder extends FormItBuilderCore{
 					$i_okCount++;
 				}
 			}else{
-				FormItBuilder::throwError('FormItBuilder processHooks failed. The name and value pair is not set.');
+				JsonFormBuilder::throwError('JsonFormBuilder processHooks failed. The name and value pair is not set.');
 			}
 		}
 		if($i_okCount==count($a_hookCommands)){
@@ -922,7 +922,7 @@ class FormItBuilder extends FormItBuilderCore{
 		$rowCount=0;
 		$s_ret='<table cellpadding="5" cellspacing="0" style="'.$s_style.'">'.$NL;
 		foreach($this->_formElements as $o_el){
-			if(get_class($o_el)=='FormItBuilder_htmlBlock'){
+			if(get_class($o_el)=='JsonFormBuilder_htmlBlock'){
 				//do nothing
 			}else{
 				if($o_el->showInEmail()===true){
@@ -936,7 +936,7 @@ class FormItBuilder extends FormItBuilderCore{
 					$elId = $o_el->getId();
 					
 					switch($elType){
-						case 'FormItBuilder_elementMatrix':
+						case 'JsonFormBuilder_elementMatrix':
 							$type = $o_el->getType();
 							$cols = $o_el->getColumns();
 							$rows = $o_el->getRows();
@@ -976,14 +976,14 @@ class FormItBuilder extends FormItBuilderCore{
 							}
 							$s_val.='</table>';
 							break;
-						case 'FormItBuilder_elementFile':
+						case 'JsonFormBuilder_elementFile':
 							if(isset($_FILES[$elId])){
 								if($_FILES[$elId]['size']==0){
 									$s_val='None';
 								}
 							}
 							break;
-						case 'FormItBuilder_elementDate':
+						case 'JsonFormBuilder_elementDate':
 							$s_val='[[+'.htmlspecialchars($o_el->getId()).'_0]] [[+'.htmlspecialchars($o_el->getId()).'_1]] [[+'.htmlspecialchars($o_el->getId()).'_2]]';
 							break;							
 						default:
@@ -1047,13 +1047,13 @@ class FormItBuilder extends FormItBuilderCore{
 	 * 
 	 * Other hooks call this method which sets placeholder content for email and autoresponder template chunks.
 	 * @param hook $hook Reference to the formIt hook object.
-	 * @param FormItBuilder $formObj Reference to the FormItBuilder form object.
+	 * @param JsonFormBuilder $formObj Reference to the JsonFormBuilder form object.
 	 * @return boolean 
 	 */
 	public function processCoreHook(&$hook,&$formObj){
-		$hook->setValue('FormItBuilderEmailTpl',$formObj->postHook());
-		//$this->modx->setPlaceholder('FormItBuilderAutoResponderEmailTpl','asfsafa');
-		$hook->setValue('FormItBuilderAutoResponderEmailTpl',$formObj->autoResponderEmailStr());
+		$hook->setValue('JsonFormBuilderEmailTpl',$formObj->postHook());
+		//$this->modx->setPlaceholder('JsonFormBuilderAutoResponderEmailTpl','asfsafa');
+		$hook->setValue('JsonFormBuilderAutoResponderEmailTpl',$formObj->autoResponderEmailStr());
 		return true;
 	}
 	/**
@@ -1115,13 +1115,13 @@ class FormItBuilder extends FormItBuilderCore{
 		return $s_js;
 	}
 	/**
-	 * getFormItBuilderOutput()
+	 * getJsonFormBuilderOutput()
 	 * 
-	 * Constructs the FormItBuilder source. This is the main processing function.
+	 * Constructs the JsonFormBuilder source. This is the main processing function.
 	 * @return string
 	 * @ignore 
 	 */
-	private function getFormItBuilderOutput(){
+	private function getJsonFormBuilderOutput(){
 		$s_submitVar = 'submitVar_'.$this->_id;
 		$b_customSubmitVar=false;
 		if(empty($this->_submitVar)===false){
@@ -1189,9 +1189,9 @@ class FormItBuilder extends FormItBuilderCore{
 					$a_fieldProps_errstringJq[$elName][] = 'equalTo:"'.$s_validationMessage.'"';
 					break;
 				case FormRuleType::maximumLength:
-					if(is_a($o_el, 'FormItBuilder_elementCheckboxGroup')){
+					if(is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')){
 						$a_formProps_custValidate[$elId][]=array('type'=>'checkboxGroup','maxLength'=>$rule->getValue(),'errorMessage'=>$s_validationMessage);
-						$a_fieldProps[$elId][] = 'FormItBuilder_customValidation';
+						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 					}else{
 						$a_fieldProps[$elId][] = 'maxLength=^'.$rule->getValue().'^';
 						$a_fieldProps_errstringFormIt[$elId][] = 'vTextMaxLength=`'.$s_validationMessage.'`';
@@ -1206,12 +1206,12 @@ class FormItBuilder extends FormItBuilderCore{
 					$a_fieldProps_errstringJq[$elName][] = 'max:"'.$s_validationMessage.'"';
 					break;
 				case FormRuleType::minimumLength:
-					if(is_a($o_el, 'FormItBuilder_elementCheckboxGroup')){
+					if(is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')){
 						$a_formProps_custValidate[$elId][]=array('type'=>'checkboxGroup','minLength'=>$rule->getValue(),'errorMessage'=>$s_validationMessage);
-						$a_fieldProps[$elId][] = 'FormItBuilder_customValidation';
+						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 					}else{
 						$a_formProps_custValidate[$elId][]=array('type'=>'textfield','minLength'=>$rule->getValue(),'errorMessage'=>$s_validationMessage);
-						$a_fieldProps[$elId][] = 'FormItBuilder_customValidation';
+						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 					}
 					//Made own validation rule cause FormIt doesnt behave with required.
 					//$a_fieldProps_errstringFormIt[$elId][] = 'vTextMinLength=`'.$s_validationMessage.'`';
@@ -1231,10 +1231,10 @@ class FormItBuilder extends FormItBuilderCore{
 					$a_fieldProps_errstringJq[$elName][] = 'digits:"'.$s_validationMessage.'"';
 					break;
 				case FormRuleType::required:
-					if(is_a($o_el, 'FormItBuilder_elementMatrix')){
+					if(is_a($o_el, 'JsonFormBuilder_elementMatrix')){
 						$s_type=$o_el->getType();
 						$a_formProps_custValidate[$elId][]=array('type'=>'elementMatrix_'.$s_type,'required'=>true,'errorMessage'=>$s_validationMessage);
-						$a_fieldProps[$elId][] = 'FormItBuilder_customValidation';
+						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 						$a_rows = $o_el->getRows();
 						$a_columns = $o_el->getColumns();
 						$a_namesForGroup=array();
@@ -1265,14 +1265,14 @@ class FormItBuilder extends FormItBuilderCore{
 								break;
 						}
 						$a_fieldProps_jqValidateGroups[$elName]=implode(' ',$a_namesForGroup);
-					}else if(is_a($o_el, 'FormItBuilder_elementDate')){
+					}else if(is_a($o_el, 'JsonFormBuilder_elementDate')){
 						$a_formProps_custValidate[$elId][]=array('type'=>'elementDate','required'=>true,'errorMessage'=>$s_validationMessage);
-						$a_fieldProps[$elId][] = 'FormItBuilder_customValidation';
+						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 						$a_fieldProps_jqValidate[$elName.'_0'][] = 'required:true,dateElementRequired:true';
 						$a_fieldProps_errstringJq[$elName.'_0'][] = 'required:"'.$s_validationMessage.'",dateElementRequired:"'.$s_validationMessage.'"';
 					}else{
 						$a_formProps_custValidate[$elId][]=array('type'=>'textfield','required'=>true,'errorMessage'=>$s_validationMessage);
-						$a_fieldProps[$elId][] = 'FormItBuilder_customValidation';
+						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 						$a_fieldProps_jqValidate[$elName][] = 'required:true';
 						$a_fieldProps_errstringJq[$elName][] = 'required:"'.$s_validationMessage.'"';
 					}
@@ -1281,19 +1281,19 @@ class FormItBuilder extends FormItBuilderCore{
 					$s_thisVal = $rule->getValue();
 					$s_thisErrorMsg = str_replace('===dateformat===',$s_thisVal,$s_validationMessage);
 					$a_formProps_custValidate[$elId][]=array('type'=>'date','fieldFormat'=>$s_thisVal,'errorMessage'=>$s_thisErrorMsg);
-					$a_fieldProps[$elId][] = 'FormItBuilder_customValidation';
+					$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 					$a_fieldProps_jqValidate[$elName][] = 'dateFormat:\''.$s_thisVal.'\'';
 					$a_fieldProps_errstringJq[$elName][] = 'dateFormat:"'.$s_thisErrorMsg.'"';
 					break;
 			}
 		}
-		//if some custom validation options were found (date etc) then add formItBuilder custom validate snippet to the list
+		//if some custom validation options were found (date etc) then add JsonFormBuilder custom validate snippet to the list
 		if(count($a_formProps_custValidate)>0){
-			$GLOBALS['FormItBuilder_customValidation']=$a_formProps_custValidate;
+			$GLOBALS['JsonFormBuilder_customValidation']=$a_formProps_custValidate;
 			if(empty($this->_customValidators)===false){
 				$this->_customValidators.=',';
 			}
-			$this->_customValidators.='FormItBuilder_customValidation';
+			$this->_customValidators.='JsonFormBuilder_customValidation';
 		}
 		
 		//build inner form html
@@ -1305,27 +1305,27 @@ class FormItBuilder extends FormItBuilderCore{
 		.$nl;
 		foreach($this->_formElements as $o_el){
 			$s_elClass=get_class($o_el);
-			if($s_elClass=='FormItBuilder_elementFile'){
+			if($s_elClass=='JsonFormBuilder_elementFile'){
 				$b_attachmentIncluded=true;
 			}
-			if(is_a($o_el,'FormItBuilder_elementHidden')){
+			if(is_a($o_el,'JsonFormBuilder_elementHidden')){
 				$s_form.=$o_el->outputHTML();
-			}else if(is_a($o_el,'FormItBuilder_htmlBlock')){
+			}else if(is_a($o_el,'JsonFormBuilder_htmlBlock')){
 				$s_form.=$o_el->outputHTML();
 			}else{
 				$s_typeClass = substr($s_elClass,14,strlen($s_elClass)-14);
 				$forId=$o_el->getId();
 				if(
-					is_a($o_el,'FormItBuilder_elementRadioGroup')===true
-					|| is_a($o_el,'FormItBuilder_elementCheckboxGroup')===true
-					|| is_a($o_el,'FormItBuilder_elementDate')===true
+					is_a($o_el,'JsonFormBuilder_elementRadioGroup')===true
+					|| is_a($o_el,'JsonFormBuilder_elementCheckboxGroup')===true
+					|| is_a($o_el,'JsonFormBuilder_elementDate')===true
 				){
 					$forId=$o_el->getId().'_0';
 				}
 				$s_forStr = ' for="'.htmlspecialchars($forId).'"';
 				
-				if(is_a($o_el,'FormItBuilder_elementReCaptcha')===true){
-					$s_forStr = ''; // dont use for attrib for Recaptcha (as it is an external program outside control of formitbuilder
+				if(is_a($o_el,'JsonFormBuilder_elementReCaptcha')===true){
+					$s_forStr = ''; // dont use for attrib for Recaptcha (as it is an external program outside control of JsonFormBuilder
 					$s_recaptchaJS=$o_el->getJsonConfig();
 				}
 				
@@ -1391,13 +1391,13 @@ class FormItBuilder extends FormItBuilderCore{
 		
 		//if using database table then add call to final hook
 		$b_addFinalHooks=false;
-		$GLOBALS['FormItBuilder_hookCommands']=array('formObj'=>&$this,'commands'=>array());
+		$GLOBALS['JsonFormBuilder_hookCommands']=array('formObj'=>&$this,'commands'=>array());
 		if(empty($this->_databaseTableObjectName)===false){
-			$GLOBALS['FormItBuilder_hookCommands']['commands'][]=array('name'=>'dbEntry','value'=>array('tableObj'=>$this->_databaseTableObjectName,'mapping'=>$this->_databaseTableFieldMapping));
+			$GLOBALS['JsonFormBuilder_hookCommands']['commands'][]=array('name'=>'dbEntry','value'=>array('tableObj'=>$this->_databaseTableObjectName,'mapping'=>$this->_databaseTableFieldMapping));
 			$b_addFinalHooks=true;
 		}
 		if($b_addFinalHooks===true){
-			$this->_hooks[]='FormItBuilder_hooks';
+			$this->_hooks[]='JsonFormBuilder_hooks';
 		}
 		
 		
@@ -1554,25 +1554,19 @@ $this->jqueryValidateJSON(
 '.$s_js.'
 // ]]>
 </script>';
+            
 		}
 	}
-	/**
+    
+    /**
 	 * output()
 	 * 
 	 * Output the FormItBuilder source.
 	 * @return string
 	 */
 	public function output(){
-		return $this->getFormItBuilderOutput();
+		return $this->getJsonFormBuilderOutput();
 	}
-	/**
-	 * outputRaw()
-	 * 
-	 * FOR DEBUGGING ONLY - Gets the FormItBuilder output source and prints to screen. Following this a hard exit is called. This allows users to see the raw FormIt syntax to ensure the source is written as expected.
-	 */
-	public function outputRaw(){
-		echo $this->getFormItBuilderOutput();
-		exit();
-	}
+	
 }
 ?>

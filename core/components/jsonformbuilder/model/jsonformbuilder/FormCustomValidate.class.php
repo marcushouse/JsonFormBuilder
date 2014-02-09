@@ -1,37 +1,25 @@
 <?php
-/**
- * Core methods and properties that are extended by all FormItBuilder objects.
- * @package FormItBuilder
- */
 
-/**
- * Required Files
- */
-require_once dirname(__FILE__).'/FormItBuilderCore.class.php';
+require_once dirname(__FILE__).'/JsonFormBuilderCore.class.php';
 
-
-/**
- * This class holds validation methods that are custom to FormItBuilder and not built into FormIt/jQuery Validate. Validate methods are called via a snippet in a roundabout way using globals to get around limitations using FormIt
- * @package FormItBuilder
- */
-class FormItBuilder_customValidate extends FormItBuilderCore{
+class JsonformBuilder_customValidate extends JsonFormBuilderCore{
 	/**
 	 * validateElement($elID, $value, $options)
 	 * 
-	 * Validates an element in a variety of ways that are not covered by FormIT
+	 * Validates an element in a variety of ways.
 	 * @param string $elID Id of form element.
 	 * @param string $value String to validate
 	 * @param array $options Validation options passed as an associative array (must have a type element)
 	 * @return array Returns an associative array with information on the validity of the value such as returnStatus(boolean), errorMsg(string), value(mixed) and extraInfo(mixed)
 	 */
 	public static function validateElement($elID, $value, array $options){
-		if(isset($GLOBALS['FormItBuilder_customValidateProcessedIds'])===false){
-			$GLOBALS['FormItBuilder_customValidateProcessedIds']=array();
+		if(isset($GLOBALS['JsonFormBuilder_customValidateProcessedIds'])===false){
+			$GLOBALS['JsonFormBuilder_customValidateProcessedIds']=array();
 		}
-		if(in_array($elID, $GLOBALS['FormItBuilder_customValidateProcessedIds'])===true){
+		if(in_array($elID, $GLOBALS['JsonFormBuilder_customValidateProcessedIds'])===true){
 			return array('returnStatus'=>true,'errorMsg'=>NULL,'value'=>NULL,'extraInfo'=>NULL);
 		}else{			
-			$GLOBALS['FormItBuilder_customValidateProcessedIds'][]=$elID;
+			$GLOBALS['JsonFormBuilder_customValidateProcessedIds'][]=$elID;
 			$returnStatus=true; //allow pass by default
 			$errorMsgs=array();
 			$returnValue=$value;
@@ -136,7 +124,7 @@ class FormItBuilder_customValidate extends FormItBuilderCore{
 						}
 						break;
 					case 'date':
-						$a_formatInfo = FormItBuilder::is_valid_date($value, $option['fieldFormat']);
+						$a_formatInfo = JsonFormBuilder::is_valid_date($value, $option['fieldFormat']);
 						$returnStatus = $a_formatInfo['status'];
 						$returnValue = $a_formatInfo['value'];
 						$returnExtraInfo = $a_formatInfo;

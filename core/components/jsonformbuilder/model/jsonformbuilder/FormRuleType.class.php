@@ -1,16 +1,16 @@
 <?php
 /**
  * Contains RuleType constants.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
 
 /**
  * FormRuleType
  * 
  * A simple class to define strings as constants for rule types to make them more easily read.
- * @package FormItBuilder
+ * @package JsonFormBuilder
  */
-class FormRuleType extends FormItBuilderCore{
+class FormRuleType extends JsonFormBuilderCore{
 	const fieldMatch = 'fieldMath';
 	const required = 'required';
 	const email = 'email';
