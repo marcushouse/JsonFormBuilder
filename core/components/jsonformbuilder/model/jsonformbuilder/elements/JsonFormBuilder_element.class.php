@@ -41,6 +41,11 @@ abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
 	 * @ignore
 	 */
 	protected $_labelAfterElement;
+    
+    /**
+	 * @ignore
+	 */
+	public $errorMessages;
 
 	/**
 	 * output function called when generating the form element content.
@@ -64,6 +69,7 @@ abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
 		$this->_description = NULL; //must be set by setDescription
 		$this->_extraClasses = NULL;
 		$this->_labelAfterElement=false;
+        $this->errorMessages=array();
 	}
 	
 	/**

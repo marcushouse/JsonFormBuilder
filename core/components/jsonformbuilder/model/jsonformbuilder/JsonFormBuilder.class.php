@@ -983,8 +983,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		.$s_footHTML.$NL
 		.'</div>';
         
-        echo $s_emailContent; exit();
-        
  
         $this->modx->getService('mail', 'mail.modPHPMailer');
         $this->modx->mail->set(modMail::MAIL_BODY,$s_emailContent);
@@ -1132,6 +1130,11 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 					$a_fieldProps_errstringForm[$elId][] = 'vTextEmailInvalid=`'.$s_validationMessage.'`';
 					$a_fieldProps_jqValidate[$elName][] = 'email:true';
 					$a_fieldProps_errstringJq[$elName][] = 'email:"'.$s_validationMessage.'"';
+                    
+                    if (filter_var($s_postedValue, FILTER_VALIDATE_EMAIL)===false) {
+                        $a_invalidElements[] = $o_el;
+                        $o_el->errorMessages[] = $s_validationMessage;
+                    }
 					break;
 				case FormRuleType::fieldMatch:
 					$a_fieldProps[$elId][] = 'password_confirm=^'.$o_elFull[1]->getId().'^';
@@ -1230,6 +1233,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
                         //validation check
                         if(strlen($s_postedValue)<1){
                             $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
                         }
                         
 					}
@@ -1313,8 +1317,14 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 					
 					$s_element='<div class="elWrap">'.$nl.'    <span class="before"></span>'.$o_el->outputHTML().'<span class="after"></span>';
 					if($o_el->showLabel()===true){
-						$s_element.='<div class="errorContainer"><label class="formiterror" '.$s_forStr.'>[[+fi.error.'.htmlspecialchars($o_el->getId()).']]</label></div>';
-					}
+                        $s_element.='<div class="errorContainer">';
+                        if($b_posted){
+                            if(count($o_el->errorMessages)>0){
+                                $s_element.='<label class="error" '.$s_forStr.'>'.implode('<br />',$o_el->errorMessages).'</label>';
+                            }
+                        }
+                        $s_element.='</div>';
+                    }
 					$s_element.='</div>';
 					
 					if($o_el->getLabelAfterElement()===true){
