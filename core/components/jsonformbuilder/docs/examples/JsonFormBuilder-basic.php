@@ -23,11 +23,12 @@ $o_form->setHooks(array('spam','email','redirect'));
 $o_form->setRedirectDocument(3);
 $o_form->addRules($a_formRules);
 $o_form->setPostHookName($snippetName);
-$o_form->setEmailToAddress('[[+emailsender]]');
-$o_form->setEmailFromAddress('[[+email_address]]');
-$o_form->setEmailSubject('JsonFormBuilder Contact Form Submission - From: [[+name_full]]');
-$o_form->setEmailHeadHtml('<p>This is a response sent by [[+name_full]] using the contact us form:</p>');
-$o_form->setJqueryValidation(true);
+$o_form->setEmailToAddress($modx->getOption('emailsender'));
+$o_form->setEmailFromAddress($o_form->postVal('email_address'));
+$o_form->setEmailFromName($o_form->postVal('name_full'));
+$o_form->setEmailSubject('JsonFormBuilder Contact Form Submission - From: '.$o_form->postVal('name_full'));
+$o_form->setEmailHeadHtml('<p>This is a response sent by '.$o_form->postVal('name_full').' using the contact us form:</p>');
+//$o_form->setJqueryValidation(true);
   
 //ADD ELEMENTS TO THE FORM IN PREFERRED ORDER
 $o_form->addElements(

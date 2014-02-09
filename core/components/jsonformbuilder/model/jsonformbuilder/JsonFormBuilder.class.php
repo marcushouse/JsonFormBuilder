@@ -85,10 +85,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	/**
 	 * @ignore 
 	 */
-	private $_emailTpl;
-	/**
-	 * @ignore 
-	 */
 	private $_validate;
 	/**
 	 * @ignore 
@@ -138,10 +134,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	 * @ignore 
 	 */
 	private $_emailBCCName;
-	/**
-	 * @ignore 
-	 */
-	private $_autoResponderTpl;
 	/**
 	 * @ignore 
 	 */
@@ -215,10 +207,7 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		$this->_redirectParams=NULL;
 		$this->_submitVar=NULL;
 		$this->_jqueryValidation=false;
-		$this->_emailTpl='JsonFormBuilderEmailTpl';
-		$this->_autoResponderTpl='JsonFormBuilderAutoResponderEmailTpl';
 		$this->_autoResponderEmailContent='<p>Thank you for your submission. A copy of the information you sent is shown below.</p>{{tableContent}}';
-		
 		$this->_emailFontSize='13px';
 		$this->_emailFontFamily='Helvetica,Arial,sans-serif';
 		$this->_emailFootHtml='<p>You can use this link to reply: <a href="mailto:{{fromEmailAddress}}?subject=RE: {{subject}}">{{fromEmailAddress}}</a></p>';
@@ -345,13 +334,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	 */
 	public function getHooks() { return $this->_hooks; }
 	/**
-	 * getEmailTpl()
-	 * 
-	 * Returns the email template chunks used by the FormIt call. By default this is set to use JsonFormBuilderEmailTpl which is an installed chunk containing a single placeholder to allow JsonFormBuilder to dynamically generate and create the chunk content on the fly.
-	 * @return array
-	 */
-	public function getEmailTpl() { return $this->_emailTpl; }
-	/**
 	 * getValidate()
 	 * 
 	 * Returns the custom validation methods used (doesnt include the validation rules automatically set by rules etc).
@@ -428,13 +410,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	 * @return boolean
 	 */
 	public function getStore() { return $this->_store; }
-	/**
-	 * getAutoResponderTpl()
-	 * 
-	 * Returns the Auto Responder template chunk used.
-	 * @return string
-	 */
-	public function getAutoResponderTpl() { return $this->_autoResponderTpl; }
 	/**
 	 * getAutoResponderSubject()
 	 * 
@@ -654,13 +629,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	 */
 	public function setHooks($value){$this->_hooks = self::forceArray($value);}
 	/**
-	 * setEmailTpl($value)
-	 * 
-	 * Sets the email template chunk used by the FormIt call. By default this is set to use JsonFormBuilderEmailTpl which is an installed chunk containing a single placeholder to allow JsonFormBuilder to dynamically generate and create the chunk content on the fly.
-	 * @param string $value
-	 */
-	public function setEmailTpl($value){$this->_emailTpl = $value;}
-	/**
 	 * setValidate($value)
 	 * 
 	 * Sets the custom validation methods used (doesnt include the validation rules automatically set by rules etc).
@@ -701,13 +669,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 	 * @param boolean $value 
 	 */
 	public function setStore($value) { $this->_store = self::forceBool($value); }	
-	/**
-	 * setAutoResponderTpl($value)
-	 * 
-	 * Auto Responder - Tpl chunk for auto-response message.
-	 * @param string $value 
-	 */
-	public function setAutoResponderTpl($value) { $this->_autoResponderTpl = $value; }
 	/**
 	 * setAutoResponderSubject($value)
 	 * 
@@ -950,10 +911,10 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 							}
 							break;
 						case 'JsonFormBuilder_elementDate':
-							$s_val='[[+'.htmlspecialchars($o_el->getId()).'_0]] [[+'.htmlspecialchars($o_el->getId()).'_1]] [[+'.htmlspecialchars($o_el->getId()).'_2]]';
+							$s_val=$this->postVal($o_el->getId().'_0').' '.$this->postVal($o_el->getId().'_1').' '.$this->postVal($o_el->getId().'_2');
 							break;							
 						default:
-							$s_val='[[+'.htmlspecialchars($o_el->getId()).':nl2br]]';
+							$s_val=nl2br($this->postVal($o_el->getId()));
 							break;
 					}
 					
@@ -1006,20 +967,40 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		
 		return $s_ret;
 	}
-	/**
-	 * processCoreHook(&$hook,&$formObj)
-	 * 
-	 * Other hooks call this method which sets placeholder content for email and autoresponder template chunks.
-	 * @param hook $hook Reference to the formIt hook object.
-	 * @param JsonFormBuilder $formObj Reference to the JsonFormBuilder form object.
-	 * @return boolean 
-	 */
-	public function processCoreHook(&$hook,&$formObj){
-		$hook->setValue('JsonFormBuilderEmailTpl',$formObj->postHook());
-		//$this->modx->setPlaceholder('JsonFormBuilderAutoResponderEmailTpl','asfsafa');
-		$hook->setValue('JsonFormBuilderAutoResponderEmailTpl',$formObj->autoResponderEmailStr());
-		return true;
-	}
+    
+    function sendEmail(){
+        $NL="\r\n";
+		$s_style = 'font-size:'.$this->_emailFontSize.'; font-family:'.$this->_emailFontFamily.';';
+		
+		$s_footHTML	= str_replace(
+			array('{{fromEmailAddress}}','{{subject}}'),
+			array(htmlspecialchars($this->_emailFromAddress),htmlspecialchars($this->_emailSubject)),
+			$this->_emailFootHtml
+		);
+
+		$s_emailContent='<div style="'.$s_style.'">'.$NL.$this->_emailHeadHtml.$NL
+		.$this->getFormTableContent().$NL
+		.$s_footHTML.$NL
+		.'</div>';
+        
+        echo $s_emailContent; exit();
+        
+ 
+        $this->modx->getService('mail', 'mail.modPHPMailer');
+        $this->modx->mail->set(modMail::MAIL_BODY,$s_emailContent);
+        $this->modx->mail->set(modMail::MAIL_FROM,$this->_emailFromAddress);
+        if(empty($this->_emailFromName)===false){
+            $this->modx->mail->set(modMail::MAIL_FROM_NAME,$this->_emailFromName);
+        }
+        $this->modx->mail->set(modMail::MAIL_SUBJECT,$this->_emailSubject);
+        $this->modx->mail->address('to',$this->_emailToAddress);
+        $this->modx->mail->address('reply-to',$this->_emailFromAddress);
+        $this->modx->mail->setHTML(true);
+        if (!$this->modx->mail->send()) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the email: '.$this->modx->mail->mailer->ErrorInfo);
+        }
+        $this->modx->mail->reset(); 
+    }
 	/**
 	 * postHook() - SOON TO BE MADE PRIVATE - SHOULD CALL processCoreHook METHOD INSTEAD
 	 * 
@@ -1110,6 +1091,9 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		$a_formProps=array();
 		$a_formProps_custValidate=array();
 		$a_formPropsFormItErrorStrings=array();
+        
+        //Keep tally of all validation errors. If posted and 0, form will continue.
+        $a_invalidElements=array();
 
 		foreach($this->_rules as $rule){
 			$o_elFull = $rule->getElement();
@@ -1119,6 +1103,8 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 				$o_el = $o_elFull;
 			}
 			$elId = $o_el->getId();
+            //used to test simple single post values
+            $s_postedValue = $this->postVal($o_el->getId());
 			$elName = $o_el->getName();
 			if(isset($a_fieldProps[$elId])===false){
 				$a_fieldProps[$elId]=array();
@@ -1240,6 +1226,12 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 						$a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
 						$a_fieldProps_jqValidate[$elName][] = 'required:true';
 						$a_fieldProps_errstringJq[$elName][] = 'required:"'.$s_validationMessage.'"';
+                        
+                        //validation check
+                        if(strlen($s_postedValue)<1){
+                            $a_invalidElements[] = $o_el;
+                        }
+                        
 					}
 					break;
 				case FormRuleType::date:
@@ -1252,6 +1244,14 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 					break;
 			}
 		}
+        
+        //If form is posted and valid, no need to continue output, send email and redirect.
+        if($b_posted && count($a_invalidElements)===0){
+            $this->sendEmail();
+            $url = $this->modx->makeUrl($this->_redirectDocument);
+            $this->modx->sendRedirect($url);
+        }
+        
 		//if some custom validation options were found (date etc) then add JsonFormBuilder custom validate snippet to the list
 		if(count($a_formProps_custValidate)>0){
 			$GLOBALS['JsonFormBuilder_customValidation']=$a_formProps_custValidate;
@@ -1372,7 +1372,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		.(empty($s_recaptchaJS)===false?$nl.'&recaptchaJs=`'.$s_recaptchaJS.'`':'')
 		.(empty($this->_customValidators)===false?$nl.'&customValidators=`'.$this->_customValidators.'`':'')
 			
-		.(empty($this->_emailTpl)===false?$nl.'&emailTpl=`'.$this->_emailTpl.'`':'')
 		.(empty($this->_emailToAddress)===false?$nl.'&emailTo=`'.$this->_emailToAddress.'`':'')
 		.(empty($this->_emailToName)===false?$nl.'&emailToName=`'.$this->_emailToName.'`':'')
 		.(empty($this->_emailFromAddress)===false?$nl.'&emailFrom=`'.$this->_emailFromAddress.'`':'')
@@ -1384,7 +1383,6 @@ class JsonFormBuilder extends JsonFormBuilderCore{
 		.(empty($this->_emailBCCAddress)===false?$nl.'&emailBCC=`'.$this->_emailBCCAddress.'`':'')
 		.(empty($this->_emailBCCName)===false?$nl.'&emailBCCName=`'.$this->_emailBCCName.'`':'')
 		
-		.(empty($this->_autoResponderTpl)===false?$nl.'&fiarTpl=`'.$this->_autoResponderTpl.'`':'')
 		.(empty($this->_autoResponderSubject)===false?$nl.'&fiarSubject=`'.$this->_autoResponderSubject.'`':'')
 		.(empty($this->_autoResponderToAddressField)===false?$nl.'&fiarToField=`'.$this->_autoResponderToAddressField.'`':'')
 		.(empty($this->_autoResponderFromAddress)===false?$nl.'&fiarFrom=`'.$this->_autoResponderFromAddress.'`':'')
