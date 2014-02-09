@@ -1,0 +1,14 @@
+*ht.access
+
+/**/
+!/assets/
+/assets/**/
+!/assets/components/
+/assets/components/**/
+!/assets/components/jsonformbuilder/
+
+!/core/
+/core/**/
+!/core/components
+/core/components/**/
+!/core/components/jsonformbuilder/

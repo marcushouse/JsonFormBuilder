@@ -1,0 +1,3 @@
+Changelog for JsonFormBuilder
+JsonFormBuilder 0.2.1-beta
+====================================
