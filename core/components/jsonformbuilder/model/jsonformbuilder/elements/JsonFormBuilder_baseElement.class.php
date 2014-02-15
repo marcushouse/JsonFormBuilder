@@ -5,6 +5,7 @@ require_once dirname(__FILE__).'/JsonFormBuilder_elementText.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementButton.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementCheckbox.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementCheckboxGroup.class.php';
+require_once dirname(__FILE__).'/JsonFormBuilder_elementDate.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementFile.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementHidden.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementMatrix.class.php';
@@ -13,7 +14,6 @@ require_once dirname(__FILE__).'/JsonFormBuilder_elementRadioGroup.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementReCaptcha.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementSelect.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementTextArea.class.php';
-require_once dirname(__FILE__).'/JsonFormBuilder_htmlBlock.class.php';
 /**
  * A primitive form element used as a base to extend into a variety of elements
  * @package JsonFormBuilder

@@ -101,7 +101,7 @@ class JsonFormBuilderCore{
     
     public function postVal($field){
         //safe get value and allow the linebreak (for nl2br)
-        $val = str_replace('&#10;', "\n", trim(filter_input(INPUT_POST,$field, FILTER_SANITIZE_SPECIAL_CHARS)));
+        $val = str_replace(array('&#13;','&#10;'),array("\r","\n"), trim(filter_input(INPUT_POST,$field, FILTER_SANITIZE_SPECIAL_CHARS)));
         return $val;
     }
 	

@@ -2,15 +2,7 @@ $borderCol:#c8d3e3;
 $errorCol:#FF0000;
 
 /* JsonFormBuilder base rules */
-.form{
-    background-color:#e9edf3;
-    border-radius:5px;
-    border:1px solid $borderCol;
-    padding:10px;
-    color:#233156; 
-	overflow:auto;
-	margin:10px;
-	
+.form{	
 	th,td{
 		padding:3px;
 		border-bottom: 1px solid $borderCol;
@@ -94,14 +86,12 @@ $errorCol:#FF0000;
 	input[type="text"], textarea, select, input[type="password"]{
 		border:1px solid #a9bbd6;
 		padding:3px;
-		border-radius:3px;
 		color:#233156;
 	}
 	input[type="text"]:focus, textarea:focus, select:focus, input[type="password"]:focus{
 		background-color:#f4f7fb;
 		border-color:#4586e7;
 	}
-	textarea{font-size:90%;}
 	textarea.error, input[type="text"].error, input[type="password"].error{
 		background-color:#ffe8e8;
 		border:1px solid #c04242;
@@ -115,7 +105,6 @@ $errorCol:#FF0000;
 		border:1px solid #a9bbd6;
 		padding:2px;
 		min-width:110px;
-		border-radius:3px;
 		background-color:#b0cde8;
 		cursor:pointer;
         &:hover{
@@ -135,7 +124,7 @@ $errorCol:#FF0000;
 	.errorContainer{
 		display:block; /* for Non jQuery Validate form errors with multiple warnings */
 		label{
-			font-size:11px;
+			font-size:90%;
 			display:block;
 			color:$errorCol;
 			clear:both;
@@ -143,18 +132,6 @@ $errorCol:#FF0000;
 				display:block;
 			}
 		}
-	}
-
-	hr.formSpltter{
-		border-top:1px dashed $borderCol;
-		border-bottom:none;
-		height:1px;
-		margin:5px 0px 5px 0px;
-	}
-	h2{
-		font-size:18px;
-		font-weight:bold;
-		padding:2px 0px 5px 0px;
 	}
 
 	.process_errors_wrap{

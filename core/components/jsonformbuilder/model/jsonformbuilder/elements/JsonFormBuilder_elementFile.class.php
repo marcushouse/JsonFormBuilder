@@ -14,6 +14,6 @@ class JsonFormBuilder_elementFile extends JsonFormBuilder_elementText{
 	function __construct( $id, $label ) {
 		parent::__construct($id,$label);
 		$this->_fieldType='file';
-		$this->_showInEmail=false;
+		$this->_showInEmail=true;
 	}
 }
