@@ -1137,8 +1137,8 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $rowCount = 0;
         $s_ret = '<table cellpadding="5" cellspacing="0" style="' . $s_style . '">';
         foreach ($this->_formElements as $o_el) {
-            if (get_class($o_el) == 'JsonFormBuilder_htmlBlock') {
-                //do nothing
+            if (is_object($o_el)===false) {
+                //do nothing.. this is a simple text element for form html block etc.
             } else {
                 if ($o_el->showInEmail() === true) {
 
@@ -1199,6 +1199,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                     $s_val = 'None';
                                 }
                             }
+                            break;
+                        case 'JsonFormBuilder_elementCheckboxGroup':
+                            $s_val = implode(', ',$this->postVal($o_el->getId()));
                             break;
                         case 'JsonFormBuilder_elementDate':
                             $s_val = $this->postVal($o_el->getId() . '_0') . ' ' . $this->postVal($o_el->getId() . '_1') . ' ' . $this->postVal($o_el->getId() . '_2');
@@ -1454,22 +1457,26 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     break;
                 case FormRuleType::maximumLength:
                     $val = (int) $rule->getValue();
+                    $a_fieldProps_jqValidate[$elName][] = 'maxlength:' . $val;
+                    $a_fieldProps_errstringJq[$elName][] = 'maxlength:"' . $s_validationMessage . '"';
                     if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
                         $a_formProps_custValidate[$elId][] = array('type' => 'checkboxGroup', 'maxLength' => $val, 'errorMessage' => $s_validationMessage);
                         $a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
+                        //validation check
+                        $a_elementsSelected = $this->postVal($o_el->getId());
+                        if (is_array($a_elementsSelected)===false || count($a_elementsSelected) > $val) {
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
                     } else {
                         $a_fieldProps[$elId][] = 'maxLength=^' . $val . '^';
                         $a_fieldProps_errstringForm[$elId][] = 'vTextMaxLength=`' . $s_validationMessage . '`';
+                        //validation check
+                        if (strlen($s_postedValue) > $val) {
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
                     }
-                    $a_fieldProps_jqValidate[$elName][] = 'maxlength:' . $val;
-                    $a_fieldProps_errstringJq[$elName][] = 'maxlength:"' . $s_validationMessage . '"';
-
-                    //validation check
-                    if (strlen($s_postedValue) > $val) {
-                        $a_invalidElements[] = $o_el;
-                        $o_el->errorMessages[] = $s_validationMessage;
-                    }
-
                     break;
                 case FormRuleType::maximumValue:
                     $val = (int) $rule->getValue();
@@ -1487,24 +1494,26 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     break;
                 case FormRuleType::minimumLength:
                     $val = (int) $rule->getValue();
+                    $a_fieldProps_jqValidate[$elName][] = 'minlength:' . $val;
+                    $a_fieldProps_errstringJq[$elName][] = 'minlength:"' . $s_validationMessage . '"';
                     if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
                         $a_formProps_custValidate[$elId][] = array('type' => 'checkboxGroup', 'minLength' => $val, 'errorMessage' => $s_validationMessage);
                         $a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
+                        //validation check
+                        $a_elementsSelected = $this->postVal($o_el->getId());
+                        if (is_array($a_elementsSelected)===false || count($a_elementsSelected) < $val) {
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
                     } else {
                         $a_formProps_custValidate[$elId][] = array('type' => 'textfield', 'minLength' => $val, 'errorMessage' => $s_validationMessage);
                         $a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
+                        //validation check
+                        if (strlen($s_postedValue) < $val) {
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
                     }
-                    //Made own validation rule cause FormIt doesnt behave with required.
-                    //$a_fieldProps_errstringFormIt[$elId][] = 'vTextMinLength=`'.$s_validationMessage.'`';
-                    $a_fieldProps_jqValidate[$elName][] = 'minlength:' . $val;
-                    $a_fieldProps_errstringJq[$elName][] = 'minlength:"' . $s_validationMessage . '"';
-
-                    //validation check
-                    if (strlen($s_postedValue) < $val) {
-                        $a_invalidElements[] = $o_el;
-                        $o_el->errorMessages[] = $s_validationMessage;
-                    }
-
                     break;
                 case FormRuleType::minimumValue:
                     $val = (int) $rule->getValue();
@@ -1565,6 +1574,24 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                 break;
                         }
                         $a_fieldProps_jqValidateGroups[$elName] = implode(' ', $a_namesForGroup);
+                        
+                        //validation check
+                        $b_isMatrixValid = JsonFormBuilder::is_matrix_required_valid($o_el);
+                        if ($b_isMatrixValid===false) {
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
+                    } else if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
+                        $a_formProps_custValidate[$elId][] = array('type' => 'checkboxGroup', 'minLength' => 1, 'errorMessage' => $s_validationMessage);
+                        $a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
+
+                        //validation check
+                        $a_elementsSelected = $this->postVal($o_el->getId());
+                        if (is_array($a_elementsSelected)===false || count($a_elementsSelected)===0) {
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
+                        
                     } else if (is_a($o_el, 'JsonFormBuilder_elementFile')) {
                         //validation check
                         if(isset($_FILES[$o_el->getId()])===true && $_FILES[$o_el->getId()]['size']!=0){
@@ -1578,6 +1605,19 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         $a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
                         $a_fieldProps_jqValidate[$elName . '_0'][] = 'required:true,dateElementRequired:true';
                         $a_fieldProps_errstringJq[$elName . '_0'][] = 'required:"' . $s_validationMessage . '",dateElementRequired:"' . $s_validationMessage . '"';
+                        
+                        //validation check
+                        $elID = $o_el->getId();
+                        $postVal0 = $this->postVal($elID.'_0');
+                        $postVal1 = $this->postVal($elID.'_1');
+                        $postVal2 = $this->postVal($elID.'_2');
+                        if(empty($postVal0)===false && empty($postVal1)===false && empty($postVal2)===false){
+                            //all three date elements must be selected
+                        }else{
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
+                        
                     } else {
                         $a_formProps_custValidate[$elId][] = array('type' => 'textfield', 'required' => true, 'errorMessage' => $s_validationMessage);
                         $a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';

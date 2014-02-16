@@ -8,6 +8,7 @@ require_once $modx->getOption('core_path',null,MODX_CORE_PATH).'components/jsonf
 $o_fe_name          = new JsonFormBuilder_elementText('name_full','Full Name');
 $o_fe_age           = new JsonFormBuilder_elementText('age','Age');
 $o_fe_dob           = new JsonFormBuilder_elementText('date_of_birth','Date of Birth');
+$o_fe_attend        = new JsonFormBuilder_elementDate('date_to_attend','Select Date','dd/mm/yyyy',date('Y'),date('Y')+6);
 $o_fe_username      = new JsonFormBuilder_elementText('username','Username');
 $o_fe_userPass      = new JsonFormBuilder_elementPassword('user_pass','Password');
 $o_fe_userPass2     = new JsonFormBuilder_elementPassword('user_pass2','Confirm Password');
@@ -17,7 +18,30 @@ $o_fe_postcode      = new JsonFormBuilder_elementText('postcode','Post Code');
 $o_fe_company       = new JsonFormBuilder_elementText('company','Company Name');
 $o_fe_companyPhone  = new JsonFormBuilder_elementText('company_phone','Company Phone');
 $o_fe_email         = new JsonFormBuilder_elementText('email_address','Email Address');
+$o_fe_foodprefer    = new JsonFormBuilder_elementCheckboxGroup('food_most_like','Select your preferred two or three foods?',array(
+    array('title'=>'Cheese','checked'=>false),
+    array('title'=>'Grapes','checked'=>false),
+    array('title'=>'Salad','checked'=>false),
+    array('title'=>'Bread','checked'=>false),
+    array('title'=>'Chocolate','checked'=>true),
+ ));
 $o_fe_file          = new JsonFormBuilder_elementFile('resume', 'Resume');
+
+//Matrix elements
+$o_fe_checkMatrix          = new JsonFormBuilder_elementMatrix('checkMatrix','What foods do your children like?', 'check',
+    array('Child 1','Child 2','Child 3','Child 4'),
+    array('Fish','Beef','Chicken','Salad','Ice Cream')
+);
+ 
+$o_fe_radioMatrix          = new JsonFormBuilder_elementMatrix('radioMatrix','How do you feel about us?', 'radio',
+    array('Service Quality','Overall Hygiene','Responsiveness','Kindness and Helpfulness'),
+    array('Very Satisfied','Satisfied','Somewhat Satisfied','Not Satisfied')
+);
+ 
+$o_fe_textMatrix            = new JsonFormBuilder_elementMatrix('textMatrix','List your favorite websites', 'text',
+    array('Website #1','Website #2','Website #3','Website #4', 'Website #5'),
+    array('Site Name','URL','Speed','Design')
+);
  
 //Check Boxes
 $o_fe_checkTerms    = new JsonFormBuilder_elementCheckbox('agree_terms','I agree to the terms & conditions', 'Agree', 'Disagree', false);
@@ -68,7 +92,7 @@ $o_fe_buttReset     = new JsonFormBuilder_elementButton('reset','Reset Form','re
 $a_formRules=array();
 
 //Set required fields
-$a_formFields_required = array($o_fe_file, $o_fe_notes, $o_fe_name, $o_fe_age, $o_fe_dob, $o_fe_username, $o_fe_userPass, $o_fe_userPass2, $o_fe_email, $o_fe_postcode);
+$a_formFields_required = array($o_fe_foodprefer,$o_fe_textMatrix,$o_fe_radioMatrix,$o_fe_checkMatrix,$o_fe_attend,$o_fe_file, $o_fe_notes, $o_fe_name, $o_fe_age, $o_fe_dob, $o_fe_username, $o_fe_userPass, $o_fe_userPass2, $o_fe_email, $o_fe_postcode);
 foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
@@ -76,6 +100,9 @@ $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please pr
 $a_formRules[] = new FormRule(FormRuleType::numeric, $o_fe_postcode);
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_checkTerms, NULL, 'You must agree to the terms and conditions');
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_staff, NULL, 'Please select an option for staff performance');
+//additional rules for preferred foods
+$a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_foodprefer, 2);
+$a_formRules[] = new FormRule(FormRuleType::maximumLength, $o_fe_foodprefer, 3);
 //additional rules for postcode
 $a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_postcode, 4);
 $a_formRules[] = new FormRule(FormRuleType::maximumLength, $o_fe_postcode, 4);
@@ -114,11 +141,13 @@ $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
 $o_form->addElements(
     array(
         '<h2>Personal Information</h2>',
-        $o_fe_name, $o_fe_age,  $o_fe_dob, $o_fe_username,  $o_fe_userPass, $o_fe_userPass2, $o_fe_email,
+        $o_fe_name, $o_fe_age,  $o_fe_dob, $o_fe_attend, $o_fe_username,  $o_fe_userPass, $o_fe_userPass2, $o_fe_email,
         '<h2>Address</h2>',
         $o_fe_address,  $o_fe_city, $o_fe_usstates, $o_fe_postcode,
         '<h2>Company Information</h2>',
         $o_fe_company,  $o_fe_companyPhone, $o_fe_employees, $o_fe_staff, $o_fe_notes, $o_fe_file,
+        '<h2>Matrix/Group Elements</h2>',
+        $o_fe_foodprefer,$o_fe_checkMatrix,$o_fe_radioMatrix,$o_fe_textMatrix,
         '<div class="checkboxes">',
             $o_fe_checkNews, $o_fe_checkTerms,
         '</div>',

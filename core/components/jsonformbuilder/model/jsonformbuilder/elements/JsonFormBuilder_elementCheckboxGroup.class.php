@@ -128,7 +128,7 @@ class JsonFormBuilder_elementCheckboxGroup extends JsonFormBuilder_element{
 			// added [] to name
 			$s_ret.='<div class="checkboxEl"><input type="checkbox" id="'.htmlspecialchars($this->_id.'_'.$i).'" name="'.htmlspecialchars($this->_name).'" value="'.htmlspecialchars($value['title']).'"';
 			$selectedStr='';
-			if($this->postVal($this->_id)!==NULL){
+			if($this->postVal($this->_id)!==false){
 				if(in_array($value['title'],$this->postVal($this->_id))===true){
 					$selectedStr=' checked="checked"';
 				}
