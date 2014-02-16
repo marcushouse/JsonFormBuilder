@@ -1,8 +1,8 @@
 <?php
 /* Build Info */
 define('PKG_NAME','JsonFormBuilder');
-define('PKG_VERSION','0.1.5');
-define('PKG_RELEASE','beta');
+define('PKG_VERSION','1.0.1');
+define('PKG_RELEASE','pl');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
 
 /* config (might separate this at some point */

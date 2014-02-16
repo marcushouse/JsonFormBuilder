@@ -25,12 +25,13 @@ $o_fe_foodprefer    = new JsonFormBuilder_elementCheckboxGroup('food_most_like',
     array('title'=>'Bread','checked'=>false),
     array('title'=>'Chocolate','checked'=>true),
  ));
-$o_fe_file          = new JsonFormBuilder_elementFile('resume', 'Resume');
+$o_fe_resume          = new JsonFormBuilder_elementFile('resume', 'Resume');
+$o_fe_applcation          = new JsonFormBuilder_elementFile('application', 'Application');
 
 //Matrix elements
 $o_fe_checkMatrix          = new JsonFormBuilder_elementMatrix('checkMatrix','What foods do your children like?', 'check',
     array('Child 1','Child 2','Child 3','Child 4'),
-    array('Fish','Beef','Chicken','Salad','Ice Cream')
+    array('Fish','Beef','Chicken','Salad')
 );
  
 $o_fe_radioMatrix          = new JsonFormBuilder_elementMatrix('radioMatrix','How do you feel about us?', 'radio',
@@ -92,7 +93,7 @@ $o_fe_buttReset     = new JsonFormBuilder_elementButton('reset','Reset Form','re
 $a_formRules=array();
 
 //Set required fields
-$a_formFields_required = array($o_fe_foodprefer,$o_fe_textMatrix,$o_fe_radioMatrix,$o_fe_checkMatrix,$o_fe_attend,$o_fe_file, $o_fe_notes, $o_fe_name, $o_fe_age, $o_fe_dob, $o_fe_username, $o_fe_userPass, $o_fe_userPass2, $o_fe_email, $o_fe_postcode);
+$a_formFields_required = array($o_fe_foodprefer,$o_fe_textMatrix,$o_fe_radioMatrix,$o_fe_checkMatrix,$o_fe_attend,$o_fe_resume, $o_fe_notes, $o_fe_name, $o_fe_age, $o_fe_dob, $o_fe_username, $o_fe_userPass, $o_fe_userPass2, $o_fe_email, $o_fe_postcode);
 foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
@@ -137,20 +138,35 @@ $o_form->setEmailHeadHtml('<p>This is a response sent by '.$o_form->postVal('nam
 $o_form->setJqueryValidation(true);
 $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
   
-//add elements to form in preferred order
+//Set extra classes on your form elements (addts to the wrapper and the inner element
+$a_els = array($o_fe_name,$o_fe_age,$o_fe_dob,$o_fe_attend,$o_fe_username,$o_fe_email,$o_fe_userPass,$o_fe_userPass2,$o_fe_address,  $o_fe_city, $o_fe_usstates, $o_fe_postcode,$o_fe_staff, );
+foreach($a_els as $e){
+    $e->setExtraClasses(array('half'));
+}
+$a_els = array($o_fe_company,  $o_fe_companyPhone, $o_fe_employees);
+foreach($a_els as $e){
+    $e->setExtraClasses(array('third'));
+}
+//add elements to output along aith any HTML as a string element.
 $o_form->addElements(
     array(
         '<h2>Personal Information</h2>',
-        $o_fe_name, $o_fe_age,  $o_fe_dob, $o_fe_attend, $o_fe_username,  $o_fe_userPass, $o_fe_userPass2, $o_fe_email,
+        $o_fe_name,$o_fe_age,$o_fe_dob,$o_fe_attend,$o_fe_username,$o_fe_email,
+        '<h2>Password</h2>',
+        $o_fe_userPass,$o_fe_userPass2,
         '<h2>Address</h2>',
         $o_fe_address,  $o_fe_city, $o_fe_usstates, $o_fe_postcode,
         '<h2>Company Information</h2>',
-        $o_fe_company,  $o_fe_companyPhone, $o_fe_employees, $o_fe_staff, $o_fe_notes, $o_fe_file,
+        $o_fe_company,  $o_fe_companyPhone, $o_fe_employees,
+        '<h2>Performance</h2>',
+        $o_fe_staff, $o_fe_foodprefer,
         '<h2>Matrix/Group Elements</h2>',
-        $o_fe_foodprefer,$o_fe_checkMatrix,$o_fe_radioMatrix,$o_fe_textMatrix,
-        '<div class="checkboxes">',
-            $o_fe_checkNews, $o_fe_checkTerms,
-        '</div>',
+        $o_fe_checkMatrix,$o_fe_radioMatrix,$o_fe_textMatrix,
+        $o_fe_checkNews, $o_fe_checkTerms,
+        '<h2>Attach your Resume and Application</h2>',
+        $o_fe_resume,$o_fe_applcation,
+        '<h2>Additional</h2>',
+        $o_fe_notes,
         $o_fe_buttSubmit,   $o_fe_buttReset
     )
 );
