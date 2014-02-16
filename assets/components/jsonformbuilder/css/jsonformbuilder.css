@@ -1,25 +1,10 @@
 /* JsonFormBuilder base rules */
-.form th, .form td {
-  padding: 3px;
-  border-bottom: 1px solid #c8d3e3;
-  border-right: 1px solid #c8d3e3; }
-.form .matrix th {
-  background-color: #dfe5ee;
-  font-size: 90%; }
-.form .matrix th.columnHead {
-  text-align: center;
-  border-top: 1px solid #c8d3e3; }
-.form .matrix th.rowHead {
-  text-align: left;
-  border-left: 1px solid #c8d3e3; }
-.form .matrix th.spaceCell {
-  background-color: transparent; }
-.form .matrix .optionCell {
-  text-align: center; }
-  .form .matrix .optionCell input[type="text"] {
-    width: 8em; }
+.form h1, .form h2, .form h3, .form h4 {
+  clear: both; }
 .form .formSegWrap {
-  padding: 0px 5px 5px 0px; }
+  padding-top: 5px;
+  vertical-align: top;
+  /* example extra classes */ }
   .form .formSegWrap > label {
     display: block;
     font-weight: bold;
@@ -27,50 +12,83 @@
   .form .formSegWrap .mainLabel:after {
     content: ":"; }
   .form .formSegWrap .elWrap {
-    padding: 2px 0px 2px 0px; }
-.form .formSegWrap.elementCheckbox label.mainElLabel {
-  position: absolute;
-  margin-left: 30px; }
-.form .formSegWrap.elementCheckbox .elWrap {
-  padding-right: 10px; }
-.form .formSegWrap.elementCheckbox .mainLabel:after {
-  content: ""; }
-.form .formSegWrap.elementCheckboxGroup .checkboxWrap {
-  clear: both; }
-  .form .formSegWrap.elementCheckboxGroup .checkboxWrap label {
+    padding: 2px 10px 2px 0px; }
+    .form .formSegWrap .elWrap input[type="text"], .form .formSegWrap .elWrap textarea, .form .formSegWrap .elWrap select, .form .formSegWrap .elWrap input[type="password"] {
+      width: 100%;
+      border: 1px solid #a9bbd6;
+      padding: 3px;
+      color: #233156;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -o-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      box-sizing: border-box; }
+      .form .formSegWrap .elWrap input[type="text"]:focus, .form .formSegWrap .elWrap textarea:focus, .form .formSegWrap .elWrap select:focus, .form .formSegWrap .elWrap input[type="password"]:focus {
+        background-color: #f4f7fb;
+        border-color: #4586e7; }
+      .form .formSegWrap .elWrap input[type="text"].error, .form .formSegWrap .elWrap textarea.error, .form .formSegWrap .elWrap select.error, .form .formSegWrap .elWrap input[type="password"].error {
+        background-color: #ffe8e8;
+        border: 1px solid #c04242;
+        color: #c04242; }
+    .form .formSegWrap .elWrap input[type="radio"].error, .form .formSegWrap .elWrap input[type="checkbox"].error {
+      box-shadow: 0 0 3px red;
+      border: 1px solid red; }
+    .form .formSegWrap .elWrap input[type="submit"], .form .formSegWrap .elWrap input[type="button"], .form .formSegWrap .elWrap input[type="reset"] {
+      border: 1px solid #a9bbd6;
+      padding: 2px;
+      min-width: 110px;
+      background-color: #b0cde8;
+      cursor: pointer; }
+      .form .formSegWrap .elWrap input[type="submit"]:hover, .form .formSegWrap .elWrap input[type="button"]:hover, .form .formSegWrap .elWrap input[type="reset"]:hover {
+        background-color: #8ca2d9; }
+  .form .formSegWrap table.matrix {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%; }
+    .form .formSegWrap table.matrix th {
+      background-color: #dfe5ee;
+      font-size: 90%; }
+    .form .formSegWrap table.matrix th, .form .formSegWrap table.matrix td {
+      padding: 3px;
+      border-bottom: 1px solid #c8d3e3;
+      border-right: 1px solid #c8d3e3; }
+    .form .formSegWrap table.matrix th.columnHead {
+      text-align: center;
+      border-top: 1px solid #c8d3e3; }
+    .form .formSegWrap table.matrix th.rowHead {
+      text-align: left;
+      border-left: 1px solid #c8d3e3; }
+    .form .formSegWrap table.matrix th.spaceCell {
+      background-color: transparent; }
+    .form .formSegWrap table.matrix .optionCell {
+      text-align: center; }
+  .form .formSegWrap.elementCheckbox .mainElLabel {
     display: inline-block;
-    margin: 3px 0px 0px 5px; }
-.form .formSegWrap.elementCheckboxGroup .checkboxEl {
-  float: left; }
-  .form .formSegWrap.elementCheckboxGroup .checkboxEl input[type="checkbox"] {
-    margin-left: 0px; }
-.form .formSegWrap.required .mainElLabel:after {
-  content: " *";
-  color: red; }
-.form input[type="text"], .form textarea, .form input[type="password"] {
-  width: 210px; }
-.form input[type="text"], .form textarea, .form select, .form input[type="password"] {
-  border: 1px solid #a9bbd6;
-  padding: 3px;
-  color: #233156; }
-.form input[type="text"]:focus, .form textarea:focus, .form select:focus, .form input[type="password"]:focus {
-  background-color: #f4f7fb;
-  border-color: #4586e7; }
-.form textarea.error, .form input[type="text"].error, .form input[type="password"].error {
-  background-color: #ffe8e8;
-  border: 1px solid #c04242;
-  color: #c04242; }
-.form input[type="radio"].error, .form input[type="checkbox"].error {
-  box-shadow: 0 0 3px red;
-  border: 1px solid red; }
-.form input[type="submit"], .form input[type="button"], .form input[type="reset"] {
-  border: 1px solid #a9bbd6;
-  padding: 2px;
-  min-width: 110px;
-  background-color: #b0cde8;
-  cursor: pointer; }
-  .form input[type="submit"]:hover, .form input[type="button"]:hover, .form input[type="reset"]:hover {
-    background-color: #8ca2d9; }
+    margin-left: 5px;
+    vertical-align: middle; }
+  .form .formSegWrap.elementCheckbox .elWrap {
+    display: inline-block;
+    vertical-align: middle; }
+  .form .formSegWrap.elementCheckboxGroup .checkboxWrap .checkboxEl {
+    display: inline-block;
+    vertical-align: middle; }
+  .form .formSegWrap.elementCheckboxGroup .checkboxWrap > label {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle; }
+  .form .formSegWrap.required .mainElLabel:after {
+    content: " *";
+    color: red; }
+  .form .formSegWrap.elementDate select {
+    width: auto;
+    margin-right: 5px; }
+  .form .formSegWrap.half {
+    width: 50%;
+    float: left; }
+  .form .formSegWrap.third {
+    width: 33.3%;
+    float: left; }
 .form .formSegWrap_submit, .form .formSegWrap_reset {
   float: left;
   width: auto;

@@ -33,6 +33,7 @@ class JsonFormBuilder_elementCheckbox extends JsonFormBuilder_element{
 		$this->_value=$value;
 		$this->_checked=$checked;
 		$this->_uncheckedValue=$uncheckedValue;
+        $this->_labelAfterElement=true;
 	}
 	/**
 	 * outputHTML()

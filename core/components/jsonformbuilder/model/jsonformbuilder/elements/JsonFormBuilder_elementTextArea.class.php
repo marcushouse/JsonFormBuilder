@@ -41,7 +41,7 @@ class JsonFormBuilder_elementTextArea extends JsonFormBuilder_element{
 	 */
 	public function outputHTML(){
 		//hidden field with same name is so we get a post value regardless of tick status
-		if($this->postVal($this->_id)!==NULL){
+		if($this->postVal($this->_id)!==false){
 			$selectedStr=htmlspecialchars($this->postVal($this->_id));
 		}else{
 			$selectedStr=htmlspecialchars($this->_defaultVal);

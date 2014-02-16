@@ -50,7 +50,7 @@ class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 	 * @return string 
 	 */
 	public function outputHTML(){
-		if($this->postVal($this->_id)!==NULL){
+		if($this->postVal($this->_id)!==false){
 			$selectedVal=$this->postVal($this->_id);
 		}else{
 			$selectedVal=$this->_defaultVal;
@@ -58,7 +58,7 @@ class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 		$s_ret='<select id="'.htmlspecialchars($this->_id).'" name="'.htmlspecialchars($this->_id).'">'."\r\n";
 		foreach($this->_values as $key=>$value){
 			$selectedStr='';
-			if($this->postVal($this->_id)!==NULL){
+			if($this->postVal($this->_id)!==false){
 				if($this->postVal($this->_id)==$key){
 					$selectedStr=' selected="selected"';
 				}

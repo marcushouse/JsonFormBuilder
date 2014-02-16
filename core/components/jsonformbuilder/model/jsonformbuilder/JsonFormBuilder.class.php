@@ -1170,7 +1170,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                     $s_val.='<td style="text-align:center; border-right:1px solid ' . $colOutline . '; border-bottom:1px solid ' . $colOutline . ';">';
                                     switch ($type) {
                                         case 'text':
-                                            $s_val.=htmlspecialchars($_REQUEST[$elId . '_' . $r_cnt . '_' . $c_cnt]);
+                                            $s_val.=htmlspecialchars($this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt));
                                             break;
                                         case 'radio':
                                             $s_val.=($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? '&#10004;' : '-');
@@ -1207,7 +1207,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $s_val = $this->postVal($o_el->getId() . '_0') . ' ' . $this->postVal($o_el->getId() . '_1') . ' ' . $this->postVal($o_el->getId() . '_2');
                             break;
                         default:
-                            $s_val = nl2br($this->postVal($o_el->getId()));
+                            $s_val = htmlspecialchars(nl2br($this->postVal($o_el->getId())));
                             break;
                     }
 
@@ -1638,7 +1638,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $a_fieldProps[$elId][] = 'JsonFormBuilder_customValidation';
                     $a_fieldProps_jqValidate[$elName][] = 'dateFormat:\'' . $s_thisVal . '\'';
                     $a_fieldProps_errstringJq[$elName][] = 'dateFormat:"' . $s_thisErrorMsg . '"';
-                    
+                    //validation check
                     $a_formatInfo = JsonFormBuilder::is_valid_date($s_postedValue,$s_thisVal);
                     if ($a_formatInfo['status']===false) {
                         $a_invalidElements[] = $o_el;
@@ -1683,7 +1683,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 if (is_a($o_el, 'JsonFormBuilder_elementHidden')) {
                     $s_form.=$o_el->outputHTML();
                 } else {
-                    $s_typeClass = substr($s_elClass, 14, strlen($s_elClass) - 14);
+                    $s_typeClass = substr($s_elClass, 16, strlen($s_elClass) - 16);
                     $forId = $o_el->getId();
                     if (
                             is_a($o_el, 'JsonFormBuilder_elementRadioGroup') === true || is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup') === true || is_a($o_el, 'JsonFormBuilder_elementDate') === true

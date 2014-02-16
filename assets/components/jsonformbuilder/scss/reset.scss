@@ -25,11 +25,6 @@ a img, :link img, :visited img {
 	border: 0;
 }
 
-table {
-	border-collapse: collapse;
-	border-spacing: 0; 
-}
-
 ol, ul {
 	list-style: none;
 }
@@ -52,4 +47,19 @@ blockquote, q {
 body,input,select,textarea{
     font-family:Helvetica,Arial,sans-serif;
     font-size:12px;
-} 
+}
+body{
+    padding:10px;
+}
+h1{
+    font-size:300%;
+}
+h2{
+   font-size:200%; 
+}
+h3{
+   font-size:160%; 
+}
+h1,h2,h3{
+    padding:15px 0px 5px 0px;
+}
