@@ -1207,7 +1207,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $s_val = $this->postVal($o_el->getId() . '_0') . ' ' . $this->postVal($o_el->getId() . '_1') . ' ' . $this->postVal($o_el->getId() . '_2');
                             break;
                         default:
-                            $s_val = htmlspecialchars(nl2br($this->postVal($o_el->getId())));
+                            $s_val = nl2br(htmlspecialchars($this->postVal($o_el->getId())));
                             break;
                     }
 
