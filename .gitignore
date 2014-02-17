@@ -10,5 +10,9 @@
 !/core/
 /core/**/
 !/core/components
+!/core/packages
+/core/packages/*
+!/core/packages/json*.zip
+
 /core/components/**/
 !/core/components/jsonformbuilder/
