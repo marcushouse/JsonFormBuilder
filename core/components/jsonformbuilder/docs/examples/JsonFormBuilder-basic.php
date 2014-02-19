@@ -36,3 +36,5 @@ $o_form->addElements(
         $o_fe_buttSubmit
     )
 );
+
+$o_form->output();

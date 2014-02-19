@@ -176,3 +176,5 @@ $o_form->addElements(
         $o_fe_buttSubmit,   $o_fe_buttReset
     )
 );
+
+$o_form->output();
