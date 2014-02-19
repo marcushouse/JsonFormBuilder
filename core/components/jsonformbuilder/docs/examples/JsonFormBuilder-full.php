@@ -6,7 +6,7 @@ require_once $modx->getOption('core_path',null,MODX_CORE_PATH).'components/jsonf
 /*--------------------*/
 //Hidden field with a  little info in it to pass along. You could use anything you want here.
 $o_fe_userGroup          = new JsonFormBuilder_elementHidden('user_group','User Group',3);
-//Thenyou can force it to show in the email (by default hidden fields do not show in email).
+//Then you can force it to show in the email (by default hidden fields do not show in email).
 $o_fe_userGroup->showInEmail(true);
 
 //Text Fields
@@ -23,7 +23,7 @@ $o_fe_postcode      = new JsonFormBuilder_elementText('postcode','Post Code');
 $o_fe_company       = new JsonFormBuilder_elementText('company','Company Name');
 $o_fe_companyPhone  = new JsonFormBuilder_elementText('company_phone','Company Phone');
 $o_fe_email         = new JsonFormBuilder_elementText('email_address','Email Address');
-$o_fe_foodprefer    = new JsonFormBuilder_elementCheckboxGroup('food_most_like','Select your preferred two or three foods?',array(
+$o_fe_foodprefer    = new JsonFormBuilder_elementCheckboxGroup('food_most_like','Select your preferred two or three foods:',array(
     array('title'=>'Cheese','checked'=>false),
     array('title'=>'Grapes','checked'=>false),
     array('title'=>'Salad','checked'=>false),
@@ -72,7 +72,7 @@ $a_usstates = array(
     'CT'=>'Connecticut',
 );
 $o_fe_usstates      = new JsonFormBuilder_elementSelect('ussuate','Select a state',$a_usstates);
-//radio groups
+//Radio groups
 $a_performanceOptions = array(
     'opt1'=>'Poor',
     'opt2'=>'Needs Improvement',
@@ -106,16 +106,16 @@ $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please pr
 $a_formRules[] = new FormRule(FormRuleType::numeric, $o_fe_postcode);
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_checkTerms, NULL, 'You must agree to the terms and conditions');
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_staff, NULL, 'Please select an option for staff performance');
-//additional rules for preferred foods
+//Additional rules for preferred foods
 $a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_foodprefer, 2);
 $a_formRules[] = new FormRule(FormRuleType::maximumLength, $o_fe_foodprefer, 3);
-//additional rules for postcode
+//Additional rules for postcode
 $a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_postcode, 4);
 $a_formRules[] = new FormRule(FormRuleType::maximumLength, $o_fe_postcode, 4);
-//additional rules for username
+//Additional rules for username
 $a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_username, 6);
 $a_formRules[] = new FormRule(FormRuleType::maximumLength, $o_fe_username, 30);
-//additional rules for age field
+//Additional rules for age field
 $a_formRules[] = new FormRule(FormRuleType::numeric, $o_fe_age);
 $a_formRules[] = new FormRule(FormRuleType::minimumValue, $o_fe_age, 18);
 $a_formRules[] = new FormRule(FormRuleType::maximumValue, $o_fe_age, 100);
@@ -132,7 +132,7 @@ $o_form = new JsonFormBuilder($modx,'myContactForm');
 $o_form->setRedirectDocument(3);
 $o_form->addRules($a_formRules);
   
-//specify to anf from email addresses, also see replyTo, CC and BCC options
+//Specify to and from email addresses, also see replyTo, CC and BCC options.
 $o_form->setEmailToName('To Name');
 $o_form->setEmailToAddress($modx->getOption('emailsender'));
 $o_form->setEmailFromAddress($o_form->postVal('email_address'));
@@ -143,7 +143,7 @@ $o_form->setEmailHeadHtml('<p>This is a response sent by '.$o_form->postVal('nam
 $o_form->setJqueryValidation(true);
 $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
   
-//Set extra classes on your form elements (addts to the wrapper and the inner element
+//Set extra classes on your form elements (adds to the wrapper and the inner element).
 $a_els = array($o_fe_name,$o_fe_age,$o_fe_dob,$o_fe_attend,$o_fe_username,$o_fe_email,$o_fe_userPass,$o_fe_userPass2,$o_fe_address,  $o_fe_city, $o_fe_usstates, $o_fe_postcode,$o_fe_staff, );
 foreach($a_els as $e){
     $e->setExtraClasses(array('half'));
@@ -152,7 +152,7 @@ $a_els = array($o_fe_company,  $o_fe_companyPhone, $o_fe_employees);
 foreach($a_els as $e){
     $e->setExtraClasses(array('third'));
 }
-//add elements to output along aith any HTML as a string element.
+//Add elements to output along with any HTML as a string element.
 $o_form->addElements(
     array(
         $o_fe_userGroup, //hidden field

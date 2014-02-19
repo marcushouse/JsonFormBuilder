@@ -8,7 +8,7 @@
 <title>[[++site_name]] - [[*pagetitle]]</title>
 <base href="[[++site_url]]" />
 
-<!-- Inclue any preliminary CSS such as a reset (this reset included just for demonstration porposes -->
+<!-- Include any preliminary CSS such as a reset (this reset included just for demonstration purposes -->
 <link type="text/css" rel="stylesheet" href="assets/components/jsonformbuilder/css/reset.css" />
 <!-- Include/copy/modify the JsonFormBuilder CSS (SCSS version also packaged in assets/componenets/jsonformbuilder/scss/ folder -->
 <link type="text/css" rel="stylesheet" href="assets/components/jsonformbuilder/css/jsonformbuilder.css" />
@@ -23,7 +23,7 @@
 <script src="http://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
 <!-- Grab the latest jQueryValidate Plugin, or link directly from a Content Delivery Network -->
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js" type="text/javascript"></script>
-<!-- Set a placeholder in you template or content page that will receive any JavaScript from the form process. -->
+<!-- Set a placeholder in your template or content page that will receive any JavaScript from the form process. -->
 <script type="text/javascript">
 // <![CDATA[
 [[+JsonFormBuilder_myForm]]
