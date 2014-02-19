@@ -14,7 +14,7 @@ $a_formFields_required = array($o_fe_notes, $o_fe_name, $o_fe_email);
 foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
-//make email field require a valid email address
+//Make email field require a valid email address
 $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please provide a valid email address');
   
 //CREATE FORM AND SETUP
