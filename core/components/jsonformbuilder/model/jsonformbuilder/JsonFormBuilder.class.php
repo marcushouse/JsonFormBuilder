@@ -1376,6 +1376,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $s_submitVar = $this->_submitVar;
             $b_customSubmitVar = true;
         }
+        
+        //if security field has been filled, kill script with a false thankyou.
+        $secVar = $this->postVal('fke' . date('Y') . 'Sp' . date('m') . 'Blk');
+        if(isset($secVar)===true){
+            if(strlen($secVar)>0){
+                echo 'Thank you'; exit(); 
+            }
+        }
+        
         $s_recaptchaJS = '';
         $b_posted = false;
         $s_submittedVal = $this->postVal($s_submitVar);
@@ -1649,6 +1658,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             }
         }
 
+
         //if some custom validation options were found (date etc) then add JsonFormBuilder custom validate snippet to the list
         if (count($a_formProps_custValidate) > 0) {
             $GLOBALS['JsonFormBuilder_customValidation'] = $a_formProps_custValidate;
@@ -1663,7 +1673,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $s_form = '<div>' . $nl
                 . $nl . '<div class="process_errors_wrap"><div class="process_errors">[[!+fi.error_message:notempty=`[[!+fi.error_message]]`]]</div></div>'
                 . $nl . ($b_customSubmitVar === false ? '<input type="hidden" name="' . $s_submitVar . '" value="1" />' : '')
-                . $nl . '<input type="hidden" name="fke' . date('Y') . 'Sp' . date('m') . 'Blk:blank" value="" /><!-- additional crude spam block. If this field ends up with data it will fail to submit -->'
+                . $nl . '<input type="hidden" name="fke' . date('Y') . 'Sp' . date('m') . 'Blk" value="" /><!-- additional crude spam block. If this field ends up with data it will fail to submit -->'
                 . $nl;
 
         foreach ($this->_formElements as $o_el) {
@@ -1992,11 +2002,26 @@ hiddenFields.change(function(){
 ';
 
             //If form is posted and valid, no need to continue output, send email and redirect.
-            if ($b_posted && count($a_invalidElements) === 0) {
-                $this->sendEmail();
-                $url = $this->modx->makeUrl($this->_redirectDocument);
-                $this->modx->sendRedirect($url);
+            $s_timerVar = 'jsonFormBuilderTimerVar_' . $this->_id;
+            if($b_posted){
+                
+                if (count($a_invalidElements) === 0) {
+                    
+                    //If for submitten very quickly, assume robot.
+                    $minimumTimeSecs=5;
+                    $secsSinceFormOpen = time()-$_SESSION[$s_timerVar];
+                    if($secsSinceFormOpen<$minimumTimeSecs){ echo 'Thank you ('.$secsSinceFormOpen.')'; exit(); }
+                    
+                    //If form is posted and valid, no need to continue output, send email and redirect.
+                    $this->sendEmail();
+                    $url = $this->modx->makeUrl($this->_redirectDocument);
+                    $this->modx->sendRedirect($url);
+                }
+            }else{
+                //user has not yet posted, set session variable and track time it took to fill out form.
+                $_SESSION[$s_timerVar]=time();
             }
+           
             
             
             
