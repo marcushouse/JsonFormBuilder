@@ -1377,13 +1377,18 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $b_customSubmitVar = true;
         }
         
+        
         //if security field has been filled, kill script with a false thankyou.
-        $secVar = $this->postVal('fke' . date('Y') . 'Sp' . date('m') . 'Blk');
-        if(isset($secVar)===true){
-            if(strlen($secVar)>0){
-                echo 'Thank you'; exit(); 
-            }
+        $secVar = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk');
+        //This vields value is set with javascript. If the field does not equal the secredvalue
+        $secVar2 = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk2');
+        if(strlen($secVar)>0){
+            echo 'Thank you'; exit(); 
         }
+        if($secVar2!==false && $secVar2!='1962'){
+            echo 'Thank you'; exit(); 
+        }
+        
         
         $s_recaptchaJS = '';
         $b_posted = false;
@@ -1670,10 +1675,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
         //build inner form html
         $b_attachmentIncluded = false;
+        $fieldThatNeedsToBeFilled = $this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk2';
         $s_form = '<div>' . $nl
                 . $nl . '<div class="process_errors_wrap"><div class="process_errors">[[!+fi.error_message:notempty=`[[!+fi.error_message]]`]]</div></div>'
                 . $nl . ($b_customSubmitVar === false ? '<input type="hidden" name="' . $s_submitVar . '" value="1" />' : '')
-                . $nl . '<input type="hidden" name="fke' . date('Y') . 'Sp' . date('m') . 'Blk" value="" /><!-- additional crude spam block. If this field ends up with data it will fail to submit -->'
+                . $nl . '<input type="hidden" name="'.$this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk" value="" /><input type="hidden" name="'.$fieldThatNeedsToBeFilled. '" id="'.$fieldThatNeedsToBeFilled. '" value="" /><script type="text/javascript">var el = document.getElementById("'.$fieldThatNeedsToBeFilled.'"); el.value = "1962";</script>'
                 . $nl;
 
         foreach ($this->_formElements as $o_el) {
@@ -1792,9 +1798,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $s_form.=$nl . '</div>';
 
         //wrap form elements in form tags
-        $s_form = '<form action="[[~[[*id]]]]" method="' . htmlspecialchars($this->_method) . '"' . ($b_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
+        $s_form = '<form style="display:none;" action="/submit-to-neverland" method="' . htmlspecialchars($this->_method) . '"' . ($b_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
                 . $s_form . $nl
-                . '</form>';
+                . '</form><script type="text/javascript">var form = document.getElementById("'.$this->_id.'"); form.setAttribute("action","[[~[[*id]]]]"); form.style.display = "block";</script><noscript>Your browser does not support JavaScript! - You need JavaScript to view this form.</noscript> ';
 
         //add all formit validation rules together in one array for easy implode
         $a_formItCmds = array();
