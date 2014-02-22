@@ -1,6 +1,7 @@
 *ht.access
 
 /**/
+!/_build/
 !/assets/
 /assets/**/
 !/assets/components/
