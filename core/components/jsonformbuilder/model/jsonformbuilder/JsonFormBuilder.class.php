@@ -1042,9 +1042,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      * addElement(JsonFormBuilder_baseElement $o_formElement)
      * 
      * Adds a single element object to the main JsonFormBuilder object.
-     * @param JsonFormBuilder_baseElement $o_formElement 
+     * @param $o_formElement 
      */
-    public function addElement(JsonFormBuilder_baseElement $o_formElement) {
+    public function addElement($o_formElement) {
+        
         $this->_formElements[] = $o_formElement;
     }
 
@@ -1648,13 +1649,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             }
         }
 
-        //If form is posted and valid, no need to continue output, send email and redirect.
-        if ($b_posted && count($a_invalidElements) === 0) {
-            $this->sendEmail();
-            $url = $this->modx->makeUrl($this->_redirectDocument);
-            $this->modx->sendRedirect($url);
-        }
-
         //if some custom validation options were found (date etc) then add JsonFormBuilder custom validate snippet to the list
         if (count($a_formProps_custValidate) > 0) {
             $GLOBALS['JsonFormBuilder_customValidation'] = $a_formProps_custValidate;
@@ -1671,14 +1665,64 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 . $nl . ($b_customSubmitVar === false ? '<input type="hidden" name="' . $s_submitVar . '" value="1" />' : '')
                 . $nl . '<input type="hidden" name="fke' . date('Y') . 'Sp' . date('m') . 'Blk:blank" value="" /><!-- additional crude spam block. If this field ends up with data it will fail to submit -->'
                 . $nl;
+
         foreach ($this->_formElements as $o_el) {
             if(is_object($o_el)===false){
                 $s_form.=$o_el; //plain text or html
             }else{
                 $s_elClass = get_class($o_el);
-
+                $s_postedValue = $this->postVal($o_el->getId());
+                
                 if ($s_elClass == 'JsonFormBuilder_elementFile') {
                     $b_attachmentIncluded = true;
+                    $id = $o_el->getId();
+                    
+                    $a_allowedExtenstions = $o_el->getAllowedExtensions();
+                    $i_maxSize = $o_el->getMaxFilesize();
+                    if($a_allowedExtenstions){
+                        $s_extInvalidMessage = 'Only '.strtoupper(implode(', ',$a_allowedExtenstions)).' files allowed.';
+                        $a_fieldProps_jqValidate[$id][] = 'fileExtValid:'.json_encode($a_allowedExtenstions);
+                        $a_fieldProps_errstringJq[$id][] = 'fileExtValid:"' . $s_extInvalidMessage . '"';
+                    }
+                    if($i_maxSize){
+                        $mbOrkb = 'mb';
+                        $size = round($i_maxSize/1024/1024,2);
+                        if($size<1){
+                            $size = round($i_maxSize/1024);
+                            $mbOrkb = 'kb';
+                        }
+                        $s_sizeInvalidMessage = 'File exceeds size limit ('.$size.$mbOrkb.').';
+                        $a_fieldProps_jqValidate[$id][] = 'fileSizeValid:'.$i_maxSize;
+                        $a_fieldProps_errstringJq[$id][] = 'fileSizeValid:"' . $s_sizeInvalidMessage . '"';
+                    }
+                    
+                    //validation
+                    if(isset($_FILES[$id]['size'])===true && $_FILES[$id]['size']>0){
+                        
+                        if($o_el->isAllowedFilename($_FILES[$id]['name'])===false){
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_extInvalidMessage;
+                        }
+                        
+                        if($o_el->isAllowedSize($_FILES[$id]['size'])===false){
+                            $a_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_sizeInvalidMessage;
+                        }
+                    }
+                    
+                    //See if the file 
+                    /*
+                    $a_fieldProps[$elId][] = 'isNumber';
+                    $a_fieldProps_errstringForm[$elId][] = 'vTextIsNumber=`' . $s_validationMessage . '`';
+                    $a_fieldProps_jqValidate[$elName][] = 'digits:true';
+                    $a_fieldProps_errstringJq[$elName][] = 'digits:"' . $s_validationMessage . '"';
+                    //validation check
+                    if (ctype_digit($s_postedValue) === false) {
+                        $a_invalidElements[] = $o_el;
+                        $o_el->errorMessages[] = $s_validationMessage;
+                    }
+                     
+                     */
                 }
                 if (is_a($o_el, 'JsonFormBuilder_elementHidden')) {
                     $s_form.=$o_el->outputHTML();
@@ -1817,7 +1861,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
         if ($this->_jqueryValidation === true) {
             $s_js = '	
-$().ready(function() {
+jQuery().ready(function() {
 
 jQuery.validator.addMethod("dateFormat", function(value, element, format) {
 	var b_retStatus=false;
@@ -1865,7 +1909,7 @@ jQuery.validator.addMethod("dateFormat", function(value, element, format) {
 
 				if (testDateDay==day && testDateMonth==month && testDate.getFullYear()==year) {
 					b_retStatus = true;
-					$(element).val(newStr);
+					jQuery(element).val(newStr);
 				}
 			}
 		}
@@ -1873,18 +1917,38 @@ jQuery.validator.addMethod("dateFormat", function(value, element, format) {
 	return this.optional(element) || b_retStatus;
 }, "Please enter a valid date.");
 
-jQuery.validator.addMethod("dateElementRequired", function(value, element, format) {
-	var el=element;
+jQuery.validator.addMethod("dateElementRequired", function(value, element) {
 	b_retStatus=true;
 	var elBaseId=element.id.substr(0,element.id.length-2);
-	if($("#"+elBaseId+"_0").val()=="" || $("#"+elBaseId+"_1").val()=="" || $("#"+elBaseId+"_2").val()==""){
+	if(jQuery("#"+elBaseId+"_0").val()=="" || jQuery("#"+elBaseId+"_1").val()=="" || jQuery("#"+elBaseId+"_2").val()==""){
 		b_retStatus=false;
 	}
 	return this.optional(element) || b_retStatus;
 }, "Date element is required.");
 
+jQuery.validator.addMethod("fileExtValid", function(value, element, a_ext) {
+    var b_retStatus=true;
+    if(value!==""){
+        b_retStatus=false;
+        var a_valSplit = value.split(".");
+        var ext = a_valSplit[a_valSplit.length-1];
+        var i; for(i=0;i<a_ext.length;i++){ if(a_ext[i]==ext){ b_retStatus=true; break; } }
+    }
+	return this.optional(element) || b_retStatus;
+}, "File type not allowed.");
+
+jQuery.validator.addMethod("fileSizeValid", function(value, element, size) {
+    var b_retStatus=true;
+    if(element.files.length>0){
+        if(element.files[0].size>size){
+            b_retStatus=false;
+        }
+    }
+	return this.optional(element) || b_retStatus;
+}, "File too large.");
+
 //Main validate call
-var thisFormEl=$("#' . $this->_id . '");
+var thisFormEl=jQuery("#' . $this->_id . '");
 thisFormEl.validate({errorPlacement:function(error, element) {
 	var labelEl = element.parents(".formSegWrap").find(".errorContainer");
 	error.appendTo( labelEl );
@@ -1893,18 +1957,32 @@ thisFormEl.validate({errorPlacement:function(error, element) {
 	var formSegWrapEl = element.parents(".formSegWrap");
 	formSegWrapEl.children(".mainElLabel").removeClass("mainLabelError");
 },highlight: function(el, errorClass, validClass) {
-	var element= $(el);
+	var element= jQuery(el);
 	element.addClass(errorClass).removeClass(validClass);
 	element.parents(".formSegWrap").children(".mainElLabel").addClass("mainLabelError");
 },invalidHandler: function(form, validator){
 	//make nice little animation to scroll to the first invalid element instead of an instant jump
-	var jumpEl = $("#"+validator.errorList[0].element.id).parents(".formSegWrap");
-	$("html,body").animate({scrollTop: jumpEl.offset().top});
+	var jumpEl = jQuery("#"+validator.errorList[0].element.id).parents(".formSegWrap");
+	jQuery("html,body").animate({scrollTop: jumpEl.offset().top});
 },ignore:":hidden",' .
-                    $this->jqueryValidateJSON(
-                            $a_fieldProps_jqValidate, $a_fieldProps_errstringJq, $a_fieldProps_jqValidateGroups
-                    ) . '});
-	
+$this->jqueryValidateJSON(
+        $a_fieldProps_jqValidate, $a_fieldProps_errstringJq, $a_fieldProps_jqValidateGroups
+) . '});
+
+var hiddenFields = thisFormEl.find(".formSegWrap.elementFile input");
+hiddenFields.each(function(){
+    var elId = $(this).attr("id");
+    var fileEl = $("#"+elId);
+    var removeButt = $("#"+elId+"_remove");
+    removeButt.click(function(){
+        fileEl.val(""); $(this).hide();
+    });
+});
+hiddenFields.change(function(){
+    var elId = $(this).attr("id");
+    var removeButt = $("#"+elId+"_remove");
+    removeButt.show();
+});	
 ' .
 //Force validation on load if already posted
                     ($b_posted === true ? 'thisFormEl.valid();' : '')
@@ -1913,6 +1991,15 @@ thisFormEl.validate({errorPlacement:function(error, element) {
 });
 ';
 
+            //If form is posted and valid, no need to continue output, send email and redirect.
+            if ($b_posted && count($a_invalidElements) === 0) {
+                $this->sendEmail();
+                $url = $this->modx->makeUrl($this->_redirectDocument);
+                $this->modx->sendRedirect($url);
+            }
+            
+            
+            
             if (empty($this->_placeholderJavascript) === false) {
                 $this->modx->setPlaceholder($this->_placeholderJavascript, $s_js);
                 return $s_form;

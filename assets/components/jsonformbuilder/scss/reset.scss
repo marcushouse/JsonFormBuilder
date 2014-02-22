@@ -44,7 +44,7 @@ blockquote, q {
 }
 
 /* Set some global basic rules such as font and font size etc */
-body,input,select,textarea{
+*,body {
     font-family:Helvetica,Arial,sans-serif;
     font-size:12px;
 }

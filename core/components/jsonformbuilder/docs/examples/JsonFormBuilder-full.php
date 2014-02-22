@@ -10,7 +10,7 @@ $o_fe_userGroup          = new JsonFormBuilder_elementHidden('user_group','User 
 $o_fe_userGroup->showInEmail(true);
 
 //Text Fields
-$o_fe_name          = new JsonFormBuilder_elementText('name_full','Full Name','saf');
+$o_fe_name          = new JsonFormBuilder_elementText('name_full','Full Name','Your Name Here');
 $o_fe_age           = new JsonFormBuilder_elementText('age','Age');
 $o_fe_dob           = new JsonFormBuilder_elementText('date_of_birth','Date of Birth');
 $o_fe_attend        = new JsonFormBuilder_elementDate('date_to_attend','Select Date','dd/mm/yyyy',date('Y'),date('Y')+6);
@@ -30,8 +30,10 @@ $o_fe_foodprefer    = new JsonFormBuilder_elementCheckboxGroup('food_most_like',
     array('title'=>'Bread','checked'=>false),
     array('title'=>'Chocolate','checked'=>true),
  ));
-$o_fe_resume          = new JsonFormBuilder_elementFile('resume', 'Resume');
-$o_fe_applcation          = new JsonFormBuilder_elementFile('application', 'Application');
+$maxFileSizeBytes = 1024*200; //200kb
+$o_fe_resume          = new JsonFormBuilder_elementFile('resume', 'Resume (PDF, DOC or DOCX)',$maxFileSizeBytes, array('pdf','doc','docx'));
+$o_fe_applcation      = new JsonFormBuilder_elementFile('application', 'Application');
+
 
 //Matrix elements
 $o_fe_checkMatrix          = new JsonFormBuilder_elementMatrix('checkMatrix','What foods do your children like?', 'check',
@@ -98,7 +100,7 @@ $o_fe_buttReset     = new JsonFormBuilder_elementButton('reset','Reset Form','re
 $a_formRules=array();
 
 //Set required fields
-$a_formFields_required = array($o_fe_foodprefer,$o_fe_textMatrix,$o_fe_radioMatrix,$o_fe_checkMatrix,$o_fe_attend,$o_fe_resume, $o_fe_notes, $o_fe_name, $o_fe_age, $o_fe_dob, $o_fe_username, $o_fe_userPass, $o_fe_userPass2, $o_fe_email, $o_fe_postcode);
+$a_formFields_required = array($o_fe_resume,$o_fe_foodprefer,$o_fe_textMatrix,$o_fe_radioMatrix,$o_fe_checkMatrix,$o_fe_attend,$o_fe_resume, $o_fe_notes, $o_fe_name, $o_fe_age, $o_fe_dob, $o_fe_username, $o_fe_userPass, $o_fe_userPass2, $o_fe_email, $o_fe_postcode);
 foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
@@ -177,4 +179,6 @@ $o_form->addElements(
     )
 );
 
-$o_form->output();
+//The form HTML will now be available via
+//$o_form->output();
+//This can be returned in a snippet or passed to any other script to handle in any way.

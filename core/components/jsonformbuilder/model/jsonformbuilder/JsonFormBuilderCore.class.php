@@ -91,9 +91,9 @@ class JsonFormBuilderCore {
      * @param JsonFormBuilder_baseElement $element Element object
      * @ignore
      */
-    public static function verifyFormElement(JsonFormBuilder_baseElement $element) {
+    public static function verifyFormElement(JsonFormBuilder_baseElement $element,$addedError=NULL) {
         if (is_a($element, 'JsonFormBuilder_baseElement') === false) {
-            self::throwError('Element "' . $element . '" is not a JsonFormBuilder_baseElement');
+            self::throwError('Element "' . $element . '" is not a valid JsonFormBuilder element. '.$addedError);
         }
     }
 
@@ -151,7 +151,6 @@ class JsonFormBuilderCore {
                 $rows = $gridInfo[0];
                 $columns = $gridInfo[1];
                 for ($a = 0; $a < $rows; $a++) {
-                    //echo $elID . '_' . $a.' '.self::postVal($elID . '_' . $a).',';
                     if (self::postVal($elID . '_' . $a) !== NULL) {
                         if (self::postVal($elID . '_' . $a) == '') {
                             $invalCount++;

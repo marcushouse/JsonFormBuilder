@@ -61,7 +61,11 @@ class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
 						$s_cellHTML=$el->outputHTML();
 						break;
 					case 'radio':
-                        $s_postVal = $this->postVal($this->_id.'_'.$r_cnt);
+                        if($this->postVal($this->_id.'_'.$r_cnt)===false){
+                            $s_postVal=-1;
+                        }else{
+                            $s_postVal = $this->postVal($this->_id.'_'.$r_cnt);
+                        }
 						$s_cellHTML='<input '.($s_postVal!=='' && $s_postVal==$c_cnt?'checked="checked" ':'').'type="radio" id="'.htmlspecialchars($this->_id.'_'.$r_cnt.'_'.$c_cnt).'" name="'.htmlspecialchars($this->_id.'_'.$r_cnt).'" value="'.htmlspecialchars($c_cnt).'" />';
 						break;
 					case 'check':

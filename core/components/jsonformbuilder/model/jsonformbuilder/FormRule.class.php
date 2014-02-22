@@ -67,11 +67,12 @@ class FormRule extends JsonFormBuilderCore{
 	 */
 	function __construct($type, $element, $value=NULL, $validationMessage=NULL ) {
 		//verify we have a single form element or an array of them
+        $addedError = 'Was passed as a "'.$type.'" FormRule.';
 		if(is_array($element)===false){
-			JsonFormBuilder::verifyFormElement($element);
+			JsonFormBuilder::verifyFormElement($element,$addedError);
 		}else{
 			foreach($element as $el){
-				JsonFormBuilder::verifyFormElement($el);
+				JsonFormBuilder::verifyFormElement($el,$addedError);
 			}
 		}
 		//main switch

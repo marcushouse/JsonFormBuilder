@@ -5,6 +5,7 @@ require_once $modx->getOption('core_path',null,MODX_CORE_PATH).'components/jsonf
 $o_fe_name      = new JsonFormBuilder_elementText('name_full','Your Name');
 $o_fe_email     = new JsonFormBuilder_elementText('email_address','Email Address');
 $o_fe_notes     = new JsonFormBuilder_elementTextArea('comments','Comments',5,30);
+
 $o_fe_buttSubmit    = new JsonFormBuilder_elementButton('submit','Submit Form','submit');
   
 //SET VALIDATION RULES
@@ -32,9 +33,10 @@ $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
 //ADD ELEMENTS TO THE FORM IN PREFERRED ORDER
 $o_form->addElements(
     array(
-        $o_fe_name,$o_fe_email,$o_fe_notes,
-        $o_fe_buttSubmit
+        $o_fe_name,$o_fe_email,$o_fe_notes,$o_fe_file,$o_fe_file2,$o_fe_buttSubmit
     )
 );
 
-$o_form->output();
+//The form HTML will now be available via
+//$o_form->output();
+//This can be returned in a snippet or passed to any other script to handle in any way.
