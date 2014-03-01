@@ -6,15 +6,28 @@ $o_fe_name      = new JsonFormBuilder_elementText('name_full','Your Name');
 $o_fe_email     = new JsonFormBuilder_elementText('email_address','Email Address');
 $o_fe_notes     = new JsonFormBuilder_elementTextArea('comments','Comments',5,30);
 
+$a_opts = array(
+    ''=>'Please select...',
+    'Yes'=>'Yes',
+    'No'=>'No',
+);
+$o_fe_land      = new JsonFormBuilder_elementSelect('haveland','Do you have land to build on?',$a_opts);
+$o_fe_landlocation     = new JsonFormBuilder_elementText('land_location','Location of Land');
+
 $o_fe_buttSubmit    = new JsonFormBuilder_elementButton('submit','Submit Form','submit');
   
 //SET VALIDATION RULES
 $a_formRules=array();
 //Set required fields
-$a_formFields_required = array($o_fe_notes, $o_fe_name, $o_fe_email);
+$a_formFields_required = array($o_fe_land,$o_fe_notes, $o_fe_name, $o_fe_email);
 foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
+
+//Conditional rule example
+$a_formRules[] = new FormRule(FormRuleType::required,$o_fe_landlocation,NULL,'As you have land to build on, please specify location.',array($o_fe_land,'Yes'));
+
+        
 //Make email field require a valid email address
 $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please provide a valid email address');
   
@@ -33,7 +46,7 @@ $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
 //ADD ELEMENTS TO THE FORM IN PREFERRED ORDER
 $o_form->addElements(
     array(
-        $o_fe_name,$o_fe_email,$o_fe_notes,$o_fe_file,$o_fe_file2,$o_fe_buttSubmit
+        $o_fe_name,$o_fe_email,$o_fe_notes,$o_fe_land,$o_fe_landlocation,$o_fe_buttSubmit
     )
 );
 

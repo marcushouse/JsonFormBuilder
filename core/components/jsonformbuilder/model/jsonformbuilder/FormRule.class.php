@@ -18,6 +18,9 @@ class FormRule extends JsonFormBuilderCore{
 	 * @ignore
 	 */
 	private $_type;
+    private $_condition;
+    public function getCondition() { return $this->_condition; }
+    public function setCondition($value) { $this->_condition = $value; }
 	/**
 	 * @ignore
 	 */
@@ -65,7 +68,7 @@ class FormRule extends JsonFormBuilderCore{
 	 * @param mixed $value Some elements may set a value (e.g. a maximum width of 5 would use the value 5).
 	 * @param string $validationMessage A validation message to be used if the rule fails validation.
 	 */
-	function __construct($type, $element, $value=NULL, $validationMessage=NULL ) {
+	function __construct($type, $element, $value=NULL, $validationMessage=NULL, $condition=NULL ) {
 		//verify we have a single form element or an array of them
         $addedError = 'Was passed as a "'.$type.'" FormRule.';
 		if(is_array($element)===false){
@@ -75,6 +78,9 @@ class FormRule extends JsonFormBuilderCore{
 				JsonFormBuilder::verifyFormElement($el,$addedError);
 			}
 		}
+        if($condition!==NULL){
+            $this->setCondition($condition);
+        }
 		//main switch
 		switch($type){
 			
