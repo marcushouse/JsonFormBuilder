@@ -1213,8 +1213,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $s_val = nl2br(htmlspecialchars($this->postVal($o_el->getId())));
                             break;
                     }
-
-                    $s_ret.='<tr valign="top" bgcolor="' . $bgCol . '"><td><b>' . htmlspecialchars($o_el->getLabel()) . ':</b></td><td>' . $s_val . '</td></tr>';
+                    if(empty($s_val)===false){
+                        $s_ret.='<tr valign="top" bgcolor="' . $bgCol . '"><td><b>' . htmlspecialchars($o_el->getLabel()) . ':</b></td><td>' . $s_val . '</td></tr>';
+                    }
                     $rowCount++;
                 }
             }
@@ -1408,12 +1409,29 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $a_fieldProps_jqValidate = array();
         $a_fieldProps_jqValidateGroups = array();
         $a_fieldProps_errstringJq = array();
+        $a_footJavascript = array('var a; var e; var v; var b_s; var w;');
 
         //Keep tally of all validation errors. If posted and 0, form will continue.
         $a_invalidElements = array();
 
         foreach ($this->_rules as $rule) {
             $o_elFull = $rule->getElement();
+            //verify this element is actually in the form
+            $b_found=false;
+            foreach ($this->_formElements as $o_el){
+                if($o_elFull===$o_el){
+                    $b_found=true;
+                    break;
+                }
+            }
+            if($b_found===false){
+                if(is_array($o_elFull)===true){
+                    //fieldMatch takes an array of elements... probably should be validated at some point. Should be rare.
+                }else{
+                    JsonFormBuilder::throwError('Rule "'.$rule->getType().'" for element "'.$o_elFull->getId().'" specified, but element is not in form.');
+                }
+            }
+                
             if (is_array($o_elFull) === true) {
                 $o_el = $o_elFull[0];
             } else {
@@ -1528,8 +1546,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 case FormRuleType::required:
                     $jqRequiredVal='true';
                     $ruleCondition = $rule->getCondition();
+                    
+                    $b_validateRequiredPost=true;
                     if(!empty($ruleCondition)){
-                      $jqRequiredVal='{depends:function(element){var v=jQuery("#'.$ruleCondition[0]->getId().'").val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';  
+                        $this_elID = $ruleCondition[0]->getId();
+                        $jqRequiredVal='{depends:function(element){var v=jQuery("#'.$this_elID.'").val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';  
+                        $b_validateRequiredPost=false;
+                        if($this->postVal($this_elID)==$ruleCondition[1]){
+                            $b_validateRequiredPost=true;
+                        }
                     }
                     if (is_a($o_el, 'JsonFormBuilder_elementMatrix')) {
                         $s_type = $o_el->getType();
@@ -1566,14 +1591,14 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         
                         //validation check
                         $b_isMatrixValid = JsonFormBuilder::is_matrix_required_valid($o_el);
-                        if ($b_isMatrixValid===false) {
+                        if ($b_validateRequiredPost && $b_isMatrixValid===false) {
                             $a_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                     } else if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
                         //validation check
                         $a_elementsSelected = $this->postVal($o_el->getId());
-                        if (is_array($a_elementsSelected)===false || count($a_elementsSelected)===0) {
+                        if ($b_validateRequiredPost && (is_array($a_elementsSelected)===false || count($a_elementsSelected)===0)) {
                             $a_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
@@ -1583,8 +1608,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         if(isset($_FILES[$o_el->getId()])===true && $_FILES[$o_el->getId()]['size']!=0){
                             //file is uploaded
                         }else{
-                            $a_invalidElements[] = $o_el;
-                            $o_el->errorMessages[] = $s_validationMessage;
+                            if($b_validateRequiredPost){
+                                $a_invalidElements[] = $o_el;
+                                $o_el->errorMessages[] = $s_validationMessage;
+                            }
                         }
                     } else if (is_a($o_el, 'JsonFormBuilder_elementDate')) {
                         $a_fieldProps_jqValidate[$elName . '_0'][] = 'required:'.$jqRequiredVal.',dateElementRequired:true';
@@ -1598,8 +1625,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         if(empty($postVal0)===false && empty($postVal1)===false && empty($postVal2)===false){
                             //all three date elements must be selected
                         }else{
-                            $a_invalidElements[] = $o_el;
-                            $o_el->errorMessages[] = $s_validationMessage;
+                            if($b_validateRequiredPost){
+                                $a_invalidElements[] = $o_el;
+                                $o_el->errorMessages[] = $s_validationMessage;
+                            }
                         }
                         
                     } else {
@@ -1607,7 +1636,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         $a_fieldProps_errstringJq[$elName][] = 'required:"' . $s_validationMessage . '"';
 
                         //validation check
-                        if (strlen($s_postedValue) < 1) {
+                        if ($b_validateRequiredPost && strlen($s_postedValue) < 1) {
                             $a_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
@@ -1620,9 +1649,29 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $a_fieldProps_errstringJq[$elName][] = 'dateFormat:"' . $s_thisErrorMsg . '"';
                     //validation check
                     $a_formatInfo = JsonFormBuilder::is_valid_date($s_postedValue,$s_thisVal);
-                    if ($a_formatInfo['status']===false) {
+                    if ($b_validateRequiredPost && $a_formatInfo['status']===false) {
                         $a_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_thisErrorMsg;
+                    }
+                    break;
+                case FormRuleType::conditionShow:
+                    $jqRequiredVal='true';
+                    $ruleCondition = $rule->getCondition();
+                    
+                    $b_validateRequiredPost=true;
+                    if(!empty($ruleCondition)){
+                        $this_elID = $ruleCondition[0]->getId();
+                        $a_footJavascript[]=''
+                            . 'b_v=false;'
+                            . 'a=jQuery("#'.$this_elID.'");'
+                            . 'v=a.val();'
+                            . 'if(v=="'.rawurlencode($ruleCondition[1]).'"){ b_v=true; }'
+                            . 'e=jQuery("#'.$o_elFull->getId().'");'
+                            . 'w=e.parents(".formSegWrap");'
+                            . 'if(b_v){w.show();}else{ w.hide(); }'
+                            . 'a.change(function(){ var e=jQuery("#'.$o_elFull->getId().'"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"){ w.show(); }else{ w.hide(); } });'
+                            . '';
+//                        /$jqRequiredVal='{depends:function(element){var v=jQuery("#'.$this_elID.'").val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';  
                     }
                     break;
             }
@@ -1919,49 +1968,49 @@ hiddenFields.change(function(){
     var removeButt = $("#"+elId+"_remove");
     removeButt.show();
 });	
-' .
+' .implode("\r\n",$a_footJavascript).
 //Force validation on load if already posted
                     ($b_posted === true ? 'thisFormEl.valid();' : '')
                     . '
 	
 });
 ';
+        }
 
-            //If form is posted and valid, no need to continue output, send email and redirect.
-            $s_timerVar = 'jsonFormBuilderTimerVar_' . $this->_id;
-            if($b_posted){
-                
-                if (count($a_invalidElements) === 0) {
-                    
-                    //If for submitten very quickly, assume robot.
-                    $minimumTimeSecs=5;
-                    $secsSinceFormOpen = time()-$_SESSION[$s_timerVar];
-                    if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
-                    
-                    //If form is posted and valid, no need to continue output, send email and redirect.
-                    $this->sendEmail();
-                    $url = $this->modx->makeUrl($this->_redirectDocument);
-                    $this->modx->sendRedirect($url);
-                }
-            }else{
-                //user has not yet posted, set session variable and track time it took to fill out form.
-                $_SESSION[$s_timerVar]=time();
+        //If form is posted and valid, no need to continue output, send email and redirect.
+        $s_timerVar = 'jsonFormBuilderTimerVar_' . $this->_id;
+        if($b_posted){
+
+            if (count($a_invalidElements) === 0) {
+
+                //If for submitten very quickly, assume robot.
+                $minimumTimeSecs=5;
+                $secsSinceFormOpen = time()-$_SESSION[$s_timerVar];
+                if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
+
+                //If form is posted and valid, no need to continue output, send email and redirect.
+                $this->sendEmail();
+                $url = $this->modx->makeUrl($this->_redirectDocument);
+                $this->modx->sendRedirect($url);
             }
-           
-            
-            
-            
-            if (empty($this->_placeholderJavascript) === false) {
-                $this->modx->setPlaceholder($this->_placeholderJavascript, $s_js);
-                return $s_form;
-            } else {
-                return $s_form .
-                '<script type="text/javascript">
-                // <![CDATA[
-                ' . $s_js . '
-                // ]]>
-                </script>';
-            }
+        }else{
+            //user has not yet posted, set session variable and track time it took to fill out form.
+            $_SESSION[$s_timerVar]=time();
+        }
+
+
+
+
+        if (empty($this->_placeholderJavascript) === false) {
+            $this->modx->setPlaceholder($this->_placeholderJavascript, $s_js);
+            return $s_form;
+        } else {
+            return $s_form .
+            '<script type="text/javascript">
+            // <![CDATA[
+            ' . $s_js . '
+            // ]]>
+            </script>';
         }
     }
 

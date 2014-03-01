@@ -11,7 +11,7 @@
  * @package JsonFormBuilder
  */
 class FormRuleType extends JsonFormBuilderCore{
-	const fieldMatch = 'fieldMath';
+	const fieldMatch = 'fieldMatch';
 	const required = 'required';
 	const email = 'email';
 	const numeric = 'numeric';
@@ -19,8 +19,7 @@ class FormRuleType extends JsonFormBuilderCore{
 	const maximumLength = 'maximumLength';
 	const minimumValue = 'minimumValue';
 	const maximumValue = 'maximumValue';
+    const conditionShow = 'conditionShow';
 	const file = 'file';
 	const date = 'date';
 }
-
-?>

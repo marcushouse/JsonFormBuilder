@@ -109,7 +109,15 @@ class FormRule extends JsonFormBuilderCore{
 				if($validationMessage===NULL){
 					$this->_validationMessage = $element->getLabel().' is required'; 
 				}
-				$element->isRequired(true);
+                
+                $ruleCondition = $this->getCondition();
+                if(!empty($ruleCondition)){
+                    if($this->postVal($ruleCondition[0]->getId())==$ruleCondition[1]){
+                        $element->isRequired(true);
+                    }
+                }else{
+                    $element->isRequired(true);
+                }
 				break;
 				
 			//value driven number type validators
@@ -169,7 +177,10 @@ class FormRule extends JsonFormBuilderCore{
 				if($validationMessage===NULL){
 					 $this->_validationMessage = $element->getLabel().' must be a valid file.';
 				}
-				break;			
+				break;
+            case FormRuleType::conditionShow:
+				//is only used by jQuery
+				break;
 			default:
 				JsonFormBuilder::throwError('Type "'.$type.'" not valid. Recommend using FormRule constant');
 				break;
