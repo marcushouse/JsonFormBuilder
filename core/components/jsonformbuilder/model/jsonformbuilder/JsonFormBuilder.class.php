@@ -243,6 +243,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      * @param string $id Id of the form
      */
     function __construct(&$modx, $id) {
+        if(is_a($modx,'modX')===false){
+            JsonFormBuilder::throwError('Failed to create JsonFormBuilder form. Reference to $modx not valid.');
+        }
         $this->modx = &$modx;
 
         $this->_method = 'post';
@@ -1280,13 +1283,21 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
         $this->modx->getService('mail', 'mail.modPHPMailer');
         $this->modx->mail->set(modMail::MAIL_BODY, $s_emailContent);
-        $this->modx->mail->set(modMail::MAIL_FROM, $this->_emailFromAddress);
+        $this->modx->mail->set(modMail::MAIL_FROM, self::forceEmail($this->_emailFromAddress));
         if (empty($this->_emailFromName) === false) {
             $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->_emailFromName);
         }
         $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->_emailSubject);
-        $this->modx->mail->address('to', $this->_emailToAddress);
-        $this->modx->mail->address('reply-to', $this->_emailFromAddress);
+        
+        //Set to address/addresses
+        if(is_array($this->_emailToAddress)===true){
+            foreach($this->_emailToAddress as $add){
+                $this->modx->mail->address('to', self::forceEmail($add));
+            }
+        }else{
+            $this->modx->mail->address('to', self::forceEmail($this->_emailToAddress));
+        }
+        $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress));
         
         /* handle file fields */
         foreach ($this->_formElements as $o_el) {
@@ -1755,6 +1766,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     }
 
                     $b_required = $o_el->isRequired();
+                    
+                    $s_errorContainer = '<div class="errorContainer">';
+                    if ($b_posted) {
+                        if (count($o_el->errorMessages) > 0) {
+                            $s_errorContainer.='<label class="error" ' . $s_forStr . '>' . implode('<br />', $o_el->errorMessages) . '</label>';
+                        }
+                    }
+                    $s_errorContainer.='</div>';
+                    
                     $s_form.='<div title="' . $o_el->getLabel() . '" class="formSegWrap formSegWrap_' . htmlspecialchars($o_el->getId()) . ' ' . $s_typeClass . ($b_required === true ? ' required' : '') . $s_extraClasses . '">';
                     $s_labelHTML = '';
                     if ($o_el->showLabel() === true) {
@@ -1763,17 +1783,14 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $s_desc = '<span class="description">' . $s_desc . '</span>';
                         }
                         $s_labelHTML = '<label class="mainElLabel"' . $s_forStr . '><span class="before"></span><span class="mainLabel">' . $o_el->getLabel() . '</span>' . $s_desc . '<span class="after"></span></label>';
+                        if ($o_el->getLabelAfterElement()===true){
+                            $s_labelHTML.=$s_errorContainer;
+                        }
                     }
 
                     $s_element = '<div class="elWrap">' . $nl . '    <span class="before"></span>' . $o_el->outputHTML() . '<span class="after"></span>';
-                    if ($o_el->showLabel() === true) {
-                        $s_element.='<div class="errorContainer">';
-                        if ($b_posted) {
-                            if (count($o_el->errorMessages) > 0) {
-                                $s_element.='<label class="error" ' . $s_forStr . '>' . implode('<br />', $o_el->errorMessages) . '</label>';
-                            }
-                        }
-                        $s_element.='</div>';
+                    if ($o_el->getLabelAfterElement()===false && $o_el->showLabel() === true) {
+                        $s_element.=$s_errorContainer;
                     }
                     $s_element.='</div>';
 
@@ -1984,7 +2001,7 @@ hiddenFields.change(function(){
             if (count($a_invalidElements) === 0) {
 
                 //If for submitten very quickly, assume robot.
-                $minimumTimeSecs=5;
+                $minimumTimeSecs=3; //was set to 5, but kept tripping it myself when testing basic form. 3 seems to be better.
                 $secsSinceFormOpen = time()-$_SESSION[$s_timerVar];
                 if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
 

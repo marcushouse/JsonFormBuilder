@@ -76,6 +76,15 @@ class JsonFormBuilderCore {
             self::throwError('Value "' . $value . '" must be type (array)');
         }
     }
+    
+    public static function forceEmail($value){
+        if(filter_var($value, FILTER_VALIDATE_EMAIL ) !== false) {
+            return $value;
+        } else {
+            self::throwError('Value "' . $value . '" must be an email address.');
+        }
+        
+    }
 
     /**
      * Throws an error (probably should be logged to modx instead of an Exception, but makes for easier debugging).

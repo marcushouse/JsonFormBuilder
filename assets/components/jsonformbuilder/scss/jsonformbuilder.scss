@@ -98,7 +98,7 @@ $errorCol:#FF0000;
             .elWrap{
                 display: inline-block;
                 vertical-align: middle;
-            }           
+            }
         }
         &.elementCheckboxGroup{
             .checkboxWrap{
@@ -149,6 +149,7 @@ $errorCol:#FF0000;
             display:block;
             color:$errorCol;
             clear:both;
+            padding: 3px 0;
             span{
                 display:block;
             }

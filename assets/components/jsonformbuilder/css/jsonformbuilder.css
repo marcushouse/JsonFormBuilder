@@ -103,7 +103,8 @@
     font-size: 90%;
     display: block;
     color: red;
-    clear: both; }
+    clear: both;
+    padding: 3px 0; }
     .form .errorContainer label span {
       display: block; }
 .form .process_errors_wrap {
