@@ -178,7 +178,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * @ignore 
      */
-    private $_autoResponderToAddressField;
+    private $_autoResponderToAddress;
 
     /**
      * @ignore 
@@ -189,11 +189,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      * @ignore 
      */
     private $_autoResponderFromName;
-
-    /**
-     * @ignore 
-     */
-    private $_autoResponderHtml;
 
     /**
      * @ignore 
@@ -213,17 +208,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * @ignore 
      */
-    private $_autoResponderCCName;
-
-    /**
-     * @ignore 
-     */
     private $_autoResponderBCC;
-
-    /**
-     * @ignore 
-     */
-    private $_autoResponderBCCName;
 
     /**
      * @ignore 
@@ -251,7 +236,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $this->_method = 'post';
         $this->_id = $id;
         $this->_store = true;
-        $this->_autoResponderHtml = true;
         $this->_formElements = array();
         $this->_rules = array();
         $this->_redirectDocument = $this->modx->resource->get('id');
@@ -552,13 +536,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * getAutoResponderToAddressField()
+     * getAutoResponderToAddress()
      * 
-     * Auto Responder - Returns the Auto Responder TO email address FIELD used in the email.
+     * Auto Responder - Returns the Auto Responder TO email address used in the email.
      * @return string
      */
-    public function getAutoResponderToAddressField() {
-        return $this->_autoResponderToAddressField;
+    public function getAutoResponderToAddress() {
+        return $this->_autoResponderToAddress;
     }
 
     /**
@@ -582,16 +566,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * getAutoResponderHtml()
-     * 
-     * Auto Responder - Returns the Auto Responder HTML setting used in the email.
-     * @return boolean
-     */
-    public function getAutoResponderHtml() {
-        return $this->_autoResponderHtml;
-    }
-
-    /**
      * getAutoResponderReplyTo()
      * 
      * Auto Responder - Returns the Auto Responder REPLY-TO email address used in the email.
@@ -612,16 +586,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * getAutoResponderCCName()
-     * 
-     * Auto Responder - Returns the Auto Responder CC email name used in the email.
-     * @return string
-     */
-    public function getAutoResponderCCName() {
-        return $this->_autoResponderCCName;
-    }
-
-    /**
      * getAutoResponderBCC()
      * 
      * Auto Responder - Returns the Auto Responder BCC email address used in the email.
@@ -629,16 +593,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function getAutoResponderBCC() {
         return $this->_autoResponderBCC;
-    }
-
-    /**
-     * getAutoResponderBCCName()
-     * 
-     * Auto Responder - Returns the Auto Responder BCC email name used in the email.
-     * @return string
-     */
-    public function getAutoResponderBCCName() {
-        return $this->_autoResponderBCCName;
     }
 
     /**
@@ -932,13 +886,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * setAutoResponderToAddressField($value)
+     * setAutoResponderToAddress($value)
      * 
-     * Auto Responder - The name of the form field to use as the submitters email. Defaults to "email".
+     * Auto Responder - The to address to use to send the email.
      * @param string $value 
      */
-    public function setAutoResponderToAddressField($value) {
-        $this->_autoResponderToAddressField = $value;
+    public function setAutoResponderToAddress($value) {
+        $this->_autoResponderToAddress = $value;
     }
 
     /**
@@ -959,16 +913,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function setAutoResponderFromName($value) {
         $this->_autoResponderFromName = $value;
-    }
-
-    /**
-     * setAutoResponderHtml($value)
-     * 
-     * Auto Responder - Optional. Whether or not the email should be in HTML-format. Defaults to true.
-     * @param boolean $value 
-     */
-    public function setAutoResponderHtml($value) {
-        $this->_autoResponderHtml = self::forceBool($value);
     }
 
     /**
@@ -1002,16 +946,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * setAutoResponderCCName($value)
-     * 
-     * Auto Responder - Optional. A comma-separated list of names to pair with the fiarCC values.
-     * @param string $value 
-     */
-    public function setAutoResponderCCName($value) {
-        $this->_autoResponderCCName = $value;
-    }
-
-    /**
      * setAutoResponderBCC($value)
      * 
      * Auto Responder - Optional. A comma-separated list of emails to send via bcc.
@@ -1019,16 +953,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function setAutoResponderBCC($value) {
         $this->_autoResponderBCC = $value;
-    }
-
-    /**
-     * setAutoResponderBCCName($value)
-     * 
-     * Auto Responder - Optional. A comma-separated list of names to pair with the fiarBCC values.
-     * @param string $value 
-     */
-    public function setAutoResponderBCCName($value) {
-        $this->_autoResponderBCCName = $value;
     }
 
     /**
@@ -1267,7 +1191,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         return $s_ret;
     }
 
-    function sendEmail() {
+    function sendEmails() {
+        
+        $this->modx->getService('mail', 'mail.modPHPMailer');
+        
         $NL = "\r\n";
         $s_style = 'font-size:' . $this->_emailFontSize . '; font-family:' . $this->_emailFontFamily . ';';
 
@@ -1280,40 +1207,84 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 . $s_footHTML . $NL
                 . '</div>';
 
-
-        $this->modx->getService('mail', 'mail.modPHPMailer');
-        $this->modx->mail->set(modMail::MAIL_BODY, $s_emailContent);
-        $this->modx->mail->set(modMail::MAIL_FROM, self::forceEmail($this->_emailFromAddress));
-        if (empty($this->_emailFromName) === false) {
-            $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->_emailFromName);
-        }
-        $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->_emailSubject);
-        
-        //Set to address/addresses
-        if(is_array($this->_emailToAddress)===true){
-            foreach($this->_emailToAddress as $add){
-                $this->modx->mail->address('to', self::forceEmail($add));
+        if(!empty($this->_emailToAddress)){
+            $this->modx->mail->set(modMail::MAIL_BODY, $s_emailContent);
+            $this->modx->mail->set(modMail::MAIL_FROM, self::forceEmail($this->_emailFromAddress,' Issue with emailFromAddress.'));
+            if (empty($this->_emailFromName) === false) {
+                $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->_emailFromName);
             }
-        }else{
-            $this->modx->mail->address('to', self::forceEmail($this->_emailToAddress));
+            $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->_emailSubject);
+            //Set to address/addresses
+            if(is_array($this->_emailToAddress)===true){
+                foreach($this->_emailToAddress as $add){
+                    $this->modx->mail->address('to', self::forceEmail($add,' Issue with emailToAddress (ARRAY).'));
+                }
+            }else{
+                $this->modx->mail->address('to', self::forceEmail($this->_emailToAddress,' Issue with emailToAddress.'));
+            }
+            $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress,' Issue with replyToAddress.'));
+            /* handle file fields */
+            foreach ($this->_formElements as $o_el) {
+                if (get_class($o_el) == 'JsonFormBuilder_elementFile') {
+                    if(isset($_FILES[$o_el->getId()])===true){
+                        $file = $_FILES[$o_el->getId()];
+                        $this->modx->mail->mailer->AddAttachment($file['tmp_name'],$file['name'],'base64',!empty($file['type']) ? $file['type'] : 'application/octet-stream');
+                    }
+                }
+            }  
+            $this->modx->mail->setHTML(true);
+            if (!$this->modx->mail->send()) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the email: ' . $this->modx->mail->mailer->ErrorInfo);
+            }
+            $this->modx->mail->reset();
         }
-        $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress));
         
-        /* handle file fields */
-        foreach ($this->_formElements as $o_el) {
-            if (get_class($o_el) == 'JsonFormBuilder_elementFile') {
-                if(isset($_FILES[$o_el->getId()])===true){
-                    $file = $_FILES[$o_el->getId()];
-                    $this->modx->mail->mailer->AddAttachment($file['tmp_name'],$file['name'],'base64',!empty($file['type']) ? $file['type'] : 'application/octet-stream');
+        
+        //Handle auto responders if needed.
+        if(!empty($this->_autoResponderToAddress)){
+            $this->modx->mail->set(modMail::MAIL_BODY, $this->autoResponderEmailStr());
+            $this->modx->mail->set(modMail::MAIL_FROM, self::forceEmail($this->_autoResponderFromAddress,' Issue with autoresponderFromAddress.'));
+            if(empty($this->_autoResponderFromName) === false) {
+                $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->_autoResponderFromName);
+            }
+            $this->modx->mail->set(modMail::MAIL_SUBJECT, $this->_autoResponderSubject);
+            //Set to address/addresses
+            if(is_array($this->_autoResponderToAddress)===true){
+                foreach($this->_autoResponderToAddress as $add){
+                    $this->modx->mail->address('to', self::forceEmail($add,' Issue with autoResponderToAddress (ARRAY).'));
+                }
+            }else{
+                $this->modx->mail->address('to', self::forceEmail($this->_autoResponderToAddress,' Issue with autoResponderToAddress.'));
+            }
+            //CC
+            if(!empty($this->_autoResponderCC)){
+                if(is_array($this->_autoResponderCC)===true){
+                    foreach($this->_autoResponderCC as $add){
+                        $this->modx->mail->address('cc', self::forceEmail($add,' Issue with autoResponderCC (ARRAY).'));
+                    }
+                }else{
+                    $this->modx->mail->address('cc', self::forceEmail($this->_autoResponderCC,' Issue with autoResponderCC.'));
                 }
             }
+            //BCC
+            if(!empty($this->_autoResponderBCC)){
+                if(is_array($this->_autoResponderBCC)===true){
+                    foreach($this->_autoResponderBCC as $add){
+                        $this->modx->mail->address('bcc', self::forceEmail($add,' Issue with autoResponderBCC (ARRAY).'));
+                    }
+                }else{
+                    $this->modx->mail->address('bcc', self::forceEmail($this->_autoResponderBCC,' Issue with autoResponderBCC (ARRAY).'));
+                }        
+            }
+
+            $this->modx->mail->address('reply-to', self::forceEmail($this->_autoResponderFromAddress,' Issue with autoResponderFromAddress.'));
+            $this->modx->mail->setHTML(true);
+            if (!$this->modx->mail->send()) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the auto repsonder email: ' . $this->modx->mail->mailer->ErrorInfo);
+            }
+            $this->modx->mail->reset();
         }
-                
-        $this->modx->mail->setHTML(true);
-        if (!$this->modx->mail->send()) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the email: ' . $this->modx->mail->mailer->ErrorInfo);
-        }
-        $this->modx->mail->reset();
+        
     }
 
     /**
@@ -2006,7 +1977,7 @@ hiddenFields.change(function(){
                 if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
 
                 //If form is posted and valid, no need to continue output, send email and redirect.
-                $this->sendEmail();
+                $this->sendEmails();
                 $url = $this->modx->makeUrl($this->_redirectDocument);
                 $this->modx->sendRedirect($url);
             }

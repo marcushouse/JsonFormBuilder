@@ -77,11 +77,11 @@ class JsonFormBuilderCore {
         }
     }
     
-    public static function forceEmail($value){
+    public static function forceEmail($value,$addedError=''){
         if(filter_var($value, FILTER_VALIDATE_EMAIL ) !== false) {
             return $value;
         } else {
-            self::throwError('Value "' . $value . '" must be an email address.');
+            self::throwError('Value "' . $value . '" must be an email address.'.$addedError);
         }
         
     }

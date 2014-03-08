@@ -5,6 +5,7 @@ require_once $modx->getOption('core_path',null,MODX_CORE_PATH).'components/jsonf
 $o_fe_name      = new JsonFormBuilder_elementText('name_full','Your Name');
 $o_fe_email     = new JsonFormBuilder_elementText('email_address','Email Address');
 $o_fe_notes     = new JsonFormBuilder_elementTextArea('comments','Comments',5,30);
+
 $o_fe_buttSubmit    = new JsonFormBuilder_elementButton('submit','Submit Form','submit');
   
 //SET VALIDATION RULES
@@ -14,6 +15,7 @@ $a_formFields_required = array($o_fe_notes, $o_fe_name, $o_fe_email);
 foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
+
         
 //Make email field require a valid email address
 $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please provide a valid email address');
@@ -23,18 +25,29 @@ $o_form = new JsonFormBuilder($modx,'contactForm');
 $o_form->setRedirectDocument(3);
 $o_form->addRules($a_formRules);
 
-//SETUP EMAIL
-//Note, this is not required, you may want to not send an email and record the data to a database.
-$o_form->setEmailToAddress($modx->getOption('emailsender'));
-$o_form->setEmailFromAddress($o_form->postVal('email_address'));
-$o_form->setEmailFromName($o_form->postVal('name_full'));
-$o_form->setEmailSubject('JsonFormBuilder Contact Form Submission - From: '.$o_form->postVal('name_full'));
-$o_form->setEmailHeadHtml('<p>This is a response sent by '.$o_form->postVal('name_full').' using the contact us form:</p>');
+//////////////////
+//AUTO RESPONDER//
+//////////////////
+//Set email addresses and format
+$o_form->setAutoResponderToAddress($o_form->postVal('email_address')); //this must be the field ID for your return email, NOT the email address itself
+//You can also use an array of email addresses to send to multiple TO addresses.
+//$o_form->setAutoResponderToAddress(array('email@address1.com','email@address2.com'));
+$o_form->setAutoResponderToAddress(array('webmaster@walkerdesigns.com.au','marcus@datawebnet.com.au'));
+$o_form->setAutoResponderFromAddress('from@mybusiness.address');
+$o_form->setAutoResponderFromName('Business Title');
+$o_form->setAutoResponderReplyTo('reply@mybusiness.address');
+//Set the email subject and content
+$o_form->setAutoResponderSubject('Business Name - Thanks for contacting us!');
+$o_form->setAutoResponderEmailContent('<p>Thank you for contacting us. We will get back to you as soon as possible. Your submitted information is listed below.</p>{{tableContent}}<p>Thanks again!</p>');
+//In most cases these probably will not be used, but you can also send the responder to a CC and BCC address.
+//$o_form->setAutoResponderCC('cc@address.com.au');
+//$o_form->setAutoResponderBCC('bcc@address.com.au');
 
-//Set jQuery validation on and to be output
+
+
 $o_form->setJqueryValidation(true);
-//You can specify that the javascript is sent into a placeholder for those that have jquery scripts just before body close. If jquery scripts are in the head, no need for this.
 $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
+
   
 //ADD ELEMENTS TO THE FORM IN PREFERRED ORDER
 $o_form->addElements(
