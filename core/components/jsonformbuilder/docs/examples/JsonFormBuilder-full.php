@@ -137,6 +137,11 @@ $o_form->addRules($a_formRules);
 //Specify to and from email addresses, also see replyTo, CC and BCC options.
 $o_form->setEmailToName('To Name');
 $o_form->setEmailToAddress($modx->getOption('emailsender'));
+//You can set CC or BCC options
+//$o_form->setEmailCCAddress('email@address1.com');
+//$o_form->setEmailBCCAddress('email@address2.com');
+//or you can use an array of addresses like so.
+//$o_form->setEmailToAddress(array('email@address1.com','email@address2.com'));
 $o_form->setEmailFromAddress($o_form->postVal('email_address'));
 $o_form->setEmailFromName($o_form->postVal('name_full'));
   

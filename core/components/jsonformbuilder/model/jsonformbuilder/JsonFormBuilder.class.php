@@ -158,17 +158,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * @ignore 
      */
-    private $_emailCCName;
-
-    /**
-     * @ignore 
-     */
     private $_emailBCCAddress;
-
-    /**
-     * @ignore 
-     */
-    private $_emailBCCName;
 
     /**
      * @ignore 
@@ -475,16 +465,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * getEmailCCName()
-     * 
-     * Returns the CC email name used when sending email.
-     * @return string 
-     */
-    public function getEmailCCName() {
-        return $this->_emailCCName;
-    }
-
-    /**
      * getEmailBCCAddress()
      * 
      * Returns the BCC email address used when sending email.
@@ -492,16 +472,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function getEmailBCCAddress() {
         return $this->_emailBCCAddress;
-    }
-
-    /**
-     * getEmailBCCName()
-     * 
-     * Returns the BCC email name used when sending email.
-     * @return string 
-     */
-    public function getEmailBCCName() {
-        return $this->_emailBCCName;
     }
 
     /**
@@ -736,16 +706,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * setEmailCCName($value)
-     * 
-     * Sets the FROM email name used when sending email.
-     * @param string $value
-     */
-    public function setEmailCCName($value) {
-        $this->_emailCCName = $value;
-    }
-
-    /**
      * setEmailBCCAddress($value)
      * 
      * Sets the BCC email address used when sending email.
@@ -753,16 +713,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function setEmailBCCAddress($value) {
         $this->_emailBCCAddress = $value;
-    }
-
-    /**
-     * setEmailBCCName($value)
-     * 
-     * Sets the BCC email name used when sending email.
-     * @param string $value
-     */
-    public function setEmailBCCName($value) {
-        $this->_emailBCCName = $value;
     }
 
     /**
@@ -1222,6 +1172,27 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             }else{
                 $this->modx->mail->address('to', self::forceEmail($this->_emailToAddress,' Issue with emailToAddress.'));
             }
+            //Set cc address/addresses
+            if(!empty($this->_emailCCAddress)){
+                if(is_array($this->_emailCCAddress)===true){
+                    foreach($this->_emailCCAddress as $add){
+                        $this->modx->mail->address('cc', self::forceEmail($add,' Issue with emailCCAddress (ARRAY).'));
+                    }
+                }else{
+                    $this->modx->mail->address('cc', self::forceEmail($this->_emailCCAddress,' Issue with emailCCAddress.'));
+                }
+            }
+            //Set bcc address/addresses
+            if(!empty($this->_emailBCCAddress)){
+                if(is_array($this->_emailBCCAddress)===true){
+                    foreach($this->_emailBCCAddress as $add){
+                        $this->modx->mail->address('cc', self::forceEmail($add,' Issue with emailBCCAddress (ARRAY).'));
+                    }
+                }else{
+                    $this->modx->mail->address('cc', self::forceEmail($this->_emailBCCAddress,' Issue with emailBCCAddress.'));
+                }
+            }
+            //reply address
             $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress,' Issue with replyToAddress.'));
             /* handle file fields */
             foreach ($this->_formElements as $o_el) {
