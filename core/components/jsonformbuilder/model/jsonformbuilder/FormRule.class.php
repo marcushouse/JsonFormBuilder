@@ -21,6 +21,15 @@ class FormRule extends JsonFormBuilderCore{
     private $_condition;
     public function getCondition() { return $this->_condition; }
     public function setCondition($value) { $this->_condition = $value; }
+    private $_customRuleName;
+    public function getCustomRuleName() { return $this->_customRuleName; }
+    public function setCustomRuleName($value) { $this->_customRuleName = $value; }
+    private $_customRuleParam;
+    public function getCustomRuleParam() { return $this->_customRuleParam; }
+    public function setCustomRuleParam($value) { $this->_customRuleParam = $value; }
+    private $_customRuleValidateFunction;
+    public function getCustomRuleValidateFunction() { return $this->_customRuleValidateFunction; }
+    public function setCustomRuleValidateFunction($value) { $this->_customRuleValidateFunction = $value; }
 	/**
 	 * @ignore
 	 */
@@ -181,6 +190,11 @@ class FormRule extends JsonFormBuilderCore{
             case FormRuleType::conditionShow:
 				//is only used by jQuery
 				break;
+            case FormRuleType::custom:
+				if($validationMessage===NULL){
+					 $this->_validationMessage = $element->getLabel().' is not valid.';
+				}
+				break;
 			default:
 				JsonFormBuilder::throwError('Type "'.$type.'" not valid. Recommend using FormRule constant');
 				break;
@@ -194,5 +208,3 @@ class FormRule extends JsonFormBuilderCore{
 		$this->_value = $value;
 	}
 }
-
-?>

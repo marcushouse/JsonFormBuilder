@@ -23,6 +23,22 @@
 <script src="http://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
 <!-- Grab the latest jQueryValidate Plugin, or link directly from a Content Delivery Network -->
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js" type="text/javascript"></script>
+
+<!-- Add a library of your own custom validation methods if you want to create your own (can be created inline like this, or as an external JS file). -->
+<script type="text/javascript">
+// <![CDATA[
+jQuery().ready(function() {
+    //Make a custom validation method for jQuery Validate (Could be included as an additional JS file
+    jQuery.validator.addMethod("customPhoneNum", function(phone_number, element, val) {
+        phone_number = phone_number.replace(/\s+/g, "");
+        var matchStr = '^\\(?(\\d{'+val[0]+'})\\)?[- ]?(\\d{'+val[1]+'})[- ]?(\\d{'+val[2]+'})$';
+        //alert(matchStr);
+        return this.optional(element) || phone_number.match(matchStr);
+    }, "Phone number invalid");
+});
+// ]]>
+</script>
+
 <!-- Set a placeholder in your template or content page that will receive any JavaScript from the form process. -->
 <script type="text/javascript">
 // <![CDATA[

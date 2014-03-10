@@ -20,6 +20,7 @@ class FormRuleType extends JsonFormBuilderCore{
 	const minimumValue = 'minimumValue';
 	const maximumValue = 'maximumValue';
     const conditionShow = 'conditionShow';
+    const custom = 'custom';
 	const file = 'file';
 	const date = 'date';
 }

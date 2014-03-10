@@ -1607,6 +1607,35 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         $o_el->errorMessages[] = $s_thisErrorMsg;
                     }
                     break;
+                case FormRuleType::custom:
+                    $custRuleName = $rule->getCustomRuleName();
+                    if(empty($custRuleName)){
+                        JsonFormBuilder::throwError('CustomRuleName for custom rule not set (Element "'.htmlspecialchars($elName).'" '.self::fieldMatch.'").');
+                    }else{
+                        $custval = 'true';
+                        $custRuleParam = $rule->getCustomRuleParam();
+                        if(!empty($custRuleParam)){
+                            $custval = json_encode($custRuleParam);
+                        }
+                        
+                        $a_fieldProps_jqValidate[$elName][] = $custRuleName.':'.$custval;
+                        $a_fieldProps_errstringJq[$elName][] = $custRuleName.':"' . $s_validationMessage . '"';
+                        //validation check
+                        $func = $rule->getCustomRuleValidateFunction();
+                        if(!empty($func)){
+                            //validate server side
+                            if(!empty($custRuleParam)){
+                                $valid = $func($s_postedValue,$custRuleParam);
+                            }else{
+                                $valid = $func($s_postedValue);
+                            }
+                            if($valid!==true){
+                                $a_invalidElements[] = $o_el;
+                                $o_el->errorMessages[] = $s_validationMessage;
+                            }
+                        }
+                    }
+                    break;
                 case FormRuleType::conditionShow:
                     $jqRequiredVal='true';
                     $ruleCondition = $rule->getCondition();
