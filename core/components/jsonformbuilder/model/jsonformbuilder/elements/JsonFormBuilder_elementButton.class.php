@@ -8,6 +8,8 @@ class JsonFormBuilder_elementButton extends JsonFormBuilder_element{
 	 * @ignore
 	 */
 	protected $_type;
+    public function getType() { return $this->_type; }
+    public function setType($value) { $this->_type = $value; }
 	/**
 	 * @ignore
 	 */
@@ -30,11 +32,13 @@ class JsonFormBuilder_elementButton extends JsonFormBuilder_element{
 		parent::__construct($id,$buttonLabel);
 		$this->_showLabel = false;
 		$this->_showInEmail = false;
+        /*
 		if($type=='button' || $type=='image' || $type=='reset' || $type=='submit'){
 			//ok -- valid type
 		}else{
 			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Button "'.htmlspecialchars($type).'" must be of type "button", "reset", "image" or "submit"');
 		}
+        */
 		$this->_type = $type;
 	}
 	/**

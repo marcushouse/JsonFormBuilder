@@ -26,6 +26,7 @@ $sources = array(
     'root' => $root,
     'build' => $root . '_build/',
     'docs' => $root.'core/components/'.PKG_NAME_LOWER.'/docs/',
+    'elements' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/',
     'source_assets' => $root.'assets/components/'.PKG_NAME_LOWER,
     'source_core' => $root.'core/components/'.PKG_NAME_LOWER,
 );
@@ -49,6 +50,22 @@ $builder->registerNamespace(PKG_NAME_LOWER,false,true,'{core_path}components/'.P
 $category= $modx->newObject('modCategory');
 $category->set('id',1);
 $category->set('category',PKG_NAME);
+
+
+/* add snippets */
+$modx->log(modX::LOG_LEVEL_INFO,'Packaging in snippets...');
+$snippets = array();
+
+$snippets[1]= $modx->newObject('modSnippet');
+$snippets[1]->fromArray(array(
+    'id' => 1,
+    'name' => 'JsonFormBuilder-fromJSON',
+    'description' => 'Shorthand method of creating a simple form with JSON syntax.',
+    'snippet' => trim(file_get_contents($sources['elements'].'snippets/snippet.fromjson.php')),
+),'',true,true);
+
+$category->addMany($snippets);
+
 
 /* create category vehicle */
 $attr = array(
@@ -81,7 +98,6 @@ unset($vehicle,$menu);
 /* now pack in the license file, readme and setup options */
 $modx->log(modX::LOG_LEVEL_INFO,'Adding package attributes and setup options...');
 $builder->setPackageAttributes(array(
-    'package_name' => 'safasFS',
     'license' => file_get_contents($sources['docs'] . 'license.txt'),
     'readme' => file_get_contents($sources['docs'] . 'readme.txt'),
     'changelog' => file_get_contents($sources['docs'] . 'changelog.txt'),

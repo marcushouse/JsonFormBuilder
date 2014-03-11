@@ -33,6 +33,10 @@ class JsonFormBuilder_elementText extends JsonFormBuilder_element{
 	 * @ignore
 	 */
 	protected $_defaultVal;
+    public function getDefaultVal() { return $this->_defaultVal; }
+    public function setDefaultVal($value) {
+		$this->_defaultVal=trim($value);
+	}
 
 	/**
 	 * JsonFormBuilder_elementText

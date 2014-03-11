@@ -1,0 +1,19 @@
+{
+    
+    "id": "TestContactForm",
+    "redirectDocument": "3",
+    "emailToAddress": "marcus@datawebnet.com.au",
+    "emailFromAddress": "from@nowhere.com",
+    "emailFromName": "Test User",
+    "emailSubject": "JsonFormBuilder Contact Form Submission",
+    "emailHeadHtml": "<p>This is a response from the contact us form:</p>",
+    
+    "elements": [
+        "<h2>Sub Heading</h2>",
+        {"element": "text", "id": "name_full", "label": "Your Name", "defaultVal": "Test 1 2 3"},
+        "<h2>Sub Heading</h2>",
+        {"element": "text", "id": "name_full2", "label": "Your Name2", "defaultVal": "Test 1 2 3 4"},
+        {"element": "button", "id": "submit", "label": "Submit", "type": "Submit"}
+    ]
+    
+}

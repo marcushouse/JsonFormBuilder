@@ -62,7 +62,7 @@ $o_form->setEmailFromName('No One');
 $o_form->setEmailSubject('JsonFormBuilder Custom Validate Test');
 
 //Set jQuery validation on and to be output
-//$o_form->setJqueryValidation(true);
+$o_form->setJqueryValidation(true);
 //You can specify that the javascript is sent into a placeholder for those that have jquery scripts just before body close. If jquery scripts are in the head, no need for this.
 $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
   
