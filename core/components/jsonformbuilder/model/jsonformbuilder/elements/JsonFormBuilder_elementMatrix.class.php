@@ -6,13 +6,9 @@ class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
 	
 	function __construct($id, $label, $type, $rowLabels, $columnLabels ){
 		parent::__construct($id,$label);
-		$this->a_columns = self::forceArray($columnLabels);
-		$this->a_rows  = self::forceArray($rowLabels);
-		if($type!='select'&&$type!='text'&&$type!='radio'&&$type!='check'){
-			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Not a valid type, must be "select", "text", "radio" or "check".');
-		}else{
-			$this->s_type = $type;
-		}
+        if($columnLabels){ $this->setColumns($columnLabels); }
+        if($rowLabels){ $this->setRows($rowLabels); }
+        if($type){ $this->setType($type); }
 	}
 	
 	/**
@@ -22,6 +18,13 @@ class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
 	 * @return string
 	 */
 	public function getType() { return $this->s_type; }
+    public function setType($type) {
+        if($type!='select'&&$type!='text'&&$type!='radio'&&$type!='check'){
+			JsonFormBuilder::throwError('[Element: '.$this->_id.'] Not a valid type, must be "select", "text", "radio" or "check".');
+		}else{
+			$this->s_type = $type;
+		}
+    }
 	/**
 	 * getRows()
 	 * 
@@ -29,6 +32,7 @@ class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
 	 * @return array 
 	 */
 	public function getRows() { return $this->a_rows; }
+    public function setRows($value) { $this->a_rows = self::forceArray($value); }
 	/**
 	 * getColumns()
 	 * 
@@ -36,6 +40,7 @@ class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
 	 * @return array 
 	 */
 	public function getColumns() { return $this->a_columns; }
+    public function setColumns($value) { $this->a_columns = self::forceArray($value); }
 	
 	/**
 	 * outputHTML()

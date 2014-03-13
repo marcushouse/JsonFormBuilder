@@ -8,14 +8,20 @@ class JsonFormBuilder_elementTextArea extends JsonFormBuilder_element{
 	 * @ignore 
 	 */
 	private $_defaultVal;
+    public function getDefaultVal() { return $this->_defaultVal; }
+    public function setDefaultVal($value) { $this->_defaultVal = $value;  }
 	/**
 	 * @ignore 
 	 */
 	private $_rows;
+    public function getRows() { return $this->_rows; }
+    public function setRows($value) { $this->_rows = JsonFormBuilderCore::forceNumber($value); }
 	/**
 	 * @ignore 
 	 */
-	private $_cols;
+	private $_columns;
+    public function getColumns() { return $this->_columns; }
+    public function setColumns($value) { $this->_columns = JsonFormBuilderCore::forceNumber($value);  }
 
 	/**
 	 * JsonFormBuilder_elementTextArea
@@ -29,9 +35,9 @@ class JsonFormBuilder_elementTextArea extends JsonFormBuilder_element{
 	 */
 	function __construct($id, $label, $rows, $cols, $defaultValue=NULL) {
 		parent::__construct($id,$label);
-		$this->_defaultVal = $defaultValue;
-		$this->_rows = JsonFormBuilderCore::forceNumber($rows);
-		$this->_cols = JsonFormBuilderCore::forceNumber($cols);
+		$this->setDefaultVal($defaultValue);
+        if(!empty($rows)){ $this->setRows($rows); }
+        if(!empty($cols)){ $this->setColumns($cols); }
 	}
 	/**
 	 * outputHTML()
@@ -50,7 +56,7 @@ class JsonFormBuilder_elementTextArea extends JsonFormBuilder_element{
 			$a_classes[]='required'; // for jquery validate (or for custom CSSing :) )
 		}
 		
-		$s_ret='<textarea id="'.htmlspecialchars($this->_id).'" rows="'.htmlspecialchars($this->_rows).'" cols="'.htmlspecialchars($this->_cols).'" name="'.htmlspecialchars($this->_id).'"';
+		$s_ret='<textarea id="'.htmlspecialchars($this->_id).'" rows="'.htmlspecialchars($this->_rows).'" cols="'.htmlspecialchars($this->_columns).'" name="'.htmlspecialchars($this->_id).'"';
 		//add classes last
 		if(count($a_classes)>0){
 			$s_ret.=' class="'.implode(' ',$a_classes).'"';

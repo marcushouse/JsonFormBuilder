@@ -9,6 +9,8 @@ class JsonFormBuilder_elementCheckboxGroup extends JsonFormBuilder_element{
 	 * @ignore 
 	 */
 	private $_values;
+    public function getValues() { return $this->_values; }
+    public function setValues($value) { $this->_values = $value; }
 	/**
 	 * @ignore 
 	 */
@@ -21,10 +23,12 @@ class JsonFormBuilder_elementCheckboxGroup extends JsonFormBuilder_element{
 	 * @ignore 
 	 */
 	private $_maxLength;
+    public function getMaxLength() { return $this->_maxLength; }
 	/**
 	 * @ignore 
 	 */
 	private $_minLength;
+    public function getMinLength() { return $this->_minLength; }
 	
 	
 	/**

@@ -9,14 +9,20 @@ class JsonFormBuilder_elementCheckbox extends JsonFormBuilder_element{
 	 * @ignore 
 	 */
 	private $_value;
+    public function getValue() { return $this->_value; }
+    public function setValue($value) { $this->_value=$value; }
 	/**
 	 * @ignore 
 	 */
 	private $_uncheckedValue;
+    public function getUncheckedValue() { return $this->_uncheckedValue; }
+    public function setUncheckedValue($value) { $this->_uncheckedValue=$value; }
 	/**
 	 * @ignore 
 	 */
 	private $_checked;
+    public function getChecked() { return $this->_checked; }
+    public function setChecked($value) { $this->_checked=$value; }
 	/**
 	 * JsonFormBuilder_elementCheckbox
 	 * 
@@ -30,9 +36,9 @@ class JsonFormBuilder_elementCheckbox extends JsonFormBuilder_element{
 	 */
 	function __construct( $id, $label, $value='Checked', $uncheckedValue='Unchecked', $checked=false) {
 		parent::__construct($id,$label);
-		$this->_value=$value;
-		$this->_checked=$checked;
-		$this->_uncheckedValue=$uncheckedValue;
+		$this->setValue($value);
+		$this->setChecked($checked);
+		$this->setUncheckedValue($uncheckedValue);
         $this->_labelAfterElement=true;
 	}
 	/**
@@ -46,7 +52,7 @@ class JsonFormBuilder_elementCheckbox extends JsonFormBuilder_element{
 		if($this->_required===true){
 			$a_uncheckedVal=''; // we do this because FormIt will not validate it as empty if unchecked value has a value.
 		}
-		if($this->postVal($this->_id)!==NULL){
+		if($this->postVal($this->_id)!==false){
 			if($this->postVal($this->_id)==$this->_value){
 				$selectedStr=' checked="checked"';
 			}

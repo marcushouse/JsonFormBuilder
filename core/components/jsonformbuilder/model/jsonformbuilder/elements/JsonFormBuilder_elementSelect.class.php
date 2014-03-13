@@ -8,10 +8,14 @@ class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 	 * @ignore 
 	 */
 	private $_values;
+    public function getValues() { return $this->_values; }
+    public function setValues($value) { $this->_values = $value; }
 	/**
 	 * @ignore 
 	 */
 	private $_defaultVal;
+    public function getDefaultVal() { return $this->_defaultVal; }
+    public function setDefaultVal($value) { $this->_defaultVal = $value;  }
 	
 	/**
 	 * JsonFormBuilder_elementSelect
@@ -39,8 +43,8 @@ class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 	 */
 	function __construct($id, $label, array $values, $defaultValue=null) {
 		parent::__construct($id,$label);
-		$this->_values = $values;
-		$this->_defaultVal = $defaultValue;
+		$this->setValues($values);
+		$this->setDefaultVal($defaultValue);
 	}
 	
 	/**

@@ -30,6 +30,12 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
         }
         $this->setJsonData($chunk->getContent());
     }
+    
+    function setJsonDataFromFile($filePath){
+        $s_jsonContent = file_get_contents(MODX_BASE_PATH.$filePath);
+        $this->setJsonData($s_jsonContent);
+    }
+    
     function getJsonVal($arr,$key,$required=false){
         if(isset($arr[$key]) && $arr[$key]!=''){
             return $arr[$key];
