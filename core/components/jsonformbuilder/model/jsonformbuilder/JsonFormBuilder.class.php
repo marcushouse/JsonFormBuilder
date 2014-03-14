@@ -212,12 +212,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     private $_submitVar;
     
-    private $_isPosted;
-    private function setIsPosted($value) {
-        $this->_isPosted = self::forceBool($value);
+    private $_isSubmitted;
+    private function setIsSubmitted($value) {
+        $this->_isSubmitted = self::forceBool($value);
     }
-    public function getIsPosted() {
-        return $this->_isPosted;
+    public function getIsSubmitted() {
+        return $this->_isSubmitted;
+    }
+    public function isSubmitted() {
+        return $this->_isSubmitted;
     }
     
     private $_invalidElements=array();
@@ -1363,7 +1366,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             echo 'Form was unable to submit (CODE: '.$code.').'; exit();
         }
     }
-    private function validate(){
+    public function validate(){
         //prepare can be called multiple times for simplicity, but should only run once.
         if($this->b_validated===true){
             return;
@@ -1382,10 +1385,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $this->spamDetectExit(2);
         }
         
-        $this->setIsPosted(false);
+        $this->setIsSubmitted(false);
         $s_submittedVal = $this->postVal('submitVar_' . $this->_id);
         if (empty($s_submittedVal) === false) {
-            $this->setIsPosted(true);
+            $this->setIsSubmitted(true);
         }
 
         //process and add form rules
@@ -1798,7 +1801,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $b_required = $o_el->isRequired();
                     
                     $s_errorContainer = '<div class="errorContainer">';
-                    if ($this->getIsPosted()) {
+                    if ($this->getIsSubmitted()) {
                         if (count($o_el->errorMessages) > 0) {
                             $s_errorContainer.='<label class="error" ' . $s_forStr . '>' . implode('<br />', $o_el->errorMessages) . '</label>';
                         }
@@ -1969,7 +1972,7 @@ hiddenFields.change(function(){
 });	
 ' .implode("\r\n",$this->_footJavascript).
 //Force validation on load if already posted
-($this->getIsPosted()? 'thisFormEl.valid();' : '')
+($this->getIsSubmitted()? 'thisFormEl.valid();' : '')
 . '
 });
 ';
@@ -1989,7 +1992,7 @@ hiddenFields.change(function(){
 
         //If form is posted and valid, no need to continue output, send email and redirect.
         $s_timerVar = 'jsonFormBuilderTimerVar_' . $this->_id;
-        if($this->getIsPosted()){
+        if($this->getIsSubmitted()){
             if (count($this->_invalidElements) === 0) {
 
                 //If for submitten very quickly, assume robot.
