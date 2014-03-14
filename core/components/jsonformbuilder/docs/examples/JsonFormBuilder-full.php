@@ -53,7 +53,7 @@ $o_fe_textMatrix            = new JsonFormBuilder_elementMatrix('textMatrix','Li
  
 //Check Boxes
 $o_fe_checkTerms    = new JsonFormBuilder_elementCheckbox('agree_terms','I agree to the terms & conditions', 'Agree', 'Disagree', false);
-$o_fe_checkNews     = new JsonFormBuilder_elementCheckbox('agree_newsletter','Sign me up for some spam', 'Wants Spam', 'Does <strong>NOT</strong> want spam', false);
+$o_fe_checkNews     = new JsonFormBuilder_elementCheckbox('agree_newsletter','Sign me up for some spam', 'Wants Spam', 'Does <strong>NOT</strong> want spam', true);
 //Dropdown selects
 $a_employees=array(
     '10'=>'Less than 10',
@@ -175,11 +175,11 @@ $o_form->addElements(
         $o_fe_staff, $o_fe_foodprefer,
         '<h2>Matrix/Group Elements</h2>',
         $o_fe_checkMatrix,$o_fe_radioMatrix,$o_fe_textMatrix,
-        $o_fe_checkNews, $o_fe_checkTerms,
         '<h2>Attach your Resume and Application</h2>',
         $o_fe_resume,$o_fe_applcation,
         '<h2>Additional</h2>',
         $o_fe_notes,
+        $o_fe_checkNews, $o_fe_checkTerms,
         $o_fe_buttSubmit,   $o_fe_buttReset
     )
 );

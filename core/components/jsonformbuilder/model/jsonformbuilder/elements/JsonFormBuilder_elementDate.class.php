@@ -86,7 +86,7 @@ class JsonFormBuilder_elementDate extends JsonFormBuilder_element{
 	 * Gets the year end.
 	 * @return int 
 	 */
-	public function getYearEnd($value){return $this->_yearEnd;}
+	public function getYearEnd(){return $this->_yearEnd;}
 	
 	/**
 	 * getDateFormat()
@@ -104,7 +104,7 @@ class JsonFormBuilder_elementDate extends JsonFormBuilder_element{
 	 */
 	public function outputHTML(){
 		//day options
-		$a_days=array(''=>'');
+		$a_days=array(''=>' --- ');
 		for($a=1;$a<32;$a++){
 			$ordinalSuffix = date('S',strtotime('2000-01-'.$a));
 			$a_days[$a.$ordinalSuffix]=$a.$ordinalSuffix;
@@ -112,7 +112,7 @@ class JsonFormBuilder_elementDate extends JsonFormBuilder_element{
 		//month options
 		$s_monthStr=',January,February,March,April,May,June,July,August,September,October,November,December';
 		$a_temp=explode(',',$s_monthStr);
-		$a_months=array(''=>'');
+		$a_months=array(''=>' --- ');
 		foreach($a_temp as $opt){
 			$a_months[$opt]=$opt;
 		}
@@ -124,14 +124,14 @@ class JsonFormBuilder_elementDate extends JsonFormBuilder_element{
 		for($a=$this->_yearStart;$a<$this->_yearEnd+1;$a++){
 			$a_years[' '.$a]=$a; //blank space here to be a number instead of an index
 		}
-		$a_years['']='';
-		$a_years=array_reverse($a_years);
+		$a_years['']=' --- ';
+		$a_yearsRev=array_reverse($a_years);
 		$cnt=0;
 		foreach($this->_dateFormat as $datePart){
 			$default = NULL;
 			if($datePart=='day'){ $selectArray=$a_days;	$default=$this->_defaultVal0; }
 			if($datePart=='month'){ $selectArray=$a_months; $default=$this->_defaultVal1; }
-			if($datePart=='year'){ $selectArray=$a_years; $default=$this->_defaultVal2; }
+			if($datePart=='year'){ $selectArray=$a_yearsRev; $default=$this->_defaultVal2; }
 			$drop = new JsonFormBuilder_elementSelect($this->_id.'_'.$cnt, '', $selectArray, $default);
 			$s_ret.='<span class="elementDate_'.$cnt.'">'.$drop->outputHTML().'</span>';
 			$cnt++;

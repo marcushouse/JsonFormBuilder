@@ -78,6 +78,11 @@ class FormRule extends JsonFormBuilderCore{
 	 * @param string $validationMessage A validation message to be used if the rule fails validation.
 	 */
 	function __construct($type, $element, $value=NULL, $validationMessage=NULL, $condition=NULL ) {
+        //force null if empty (so that false will end up with the same results.
+        if(empty($value)){ $value=NULL; }
+        if(empty($validationMessage)){ $validationMessage=NULL; }
+        if(empty($condition)){ $condition=NULL; }
+        
 		//verify we have a single form element or an array of them
         $addedError = 'Was passed as a "'.$type.'" FormRule.';
 		if(is_array($element)===false){

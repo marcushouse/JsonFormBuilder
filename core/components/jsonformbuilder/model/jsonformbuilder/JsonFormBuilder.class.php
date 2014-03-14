@@ -1750,7 +1750,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         if ($b_addFinalHooks === true) {
             $this->_hooks[] = 'JsonFormBuilder_hooks';
         }
-        
+
         $this->_fieldProps_jqValidate=$a_fieldProps_jqValidate;
         $this->_fieldProps_jqValidateGroups=$a_fieldProps_jqValidateGroups;
         $this->_fieldProps_errstringJq=$a_fieldProps_errstringJq;

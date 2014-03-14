@@ -47,6 +47,9 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
         return false;
     }
     function output(){
+        $a_formRules=array();
+        $a_formElements=array();
+        
         $this->o_form = new JsonFormBuilder($this->modx,$this->getJsonVal($this->a_json,'id',true));
         
         $a_ignore = array('id','elements');
@@ -58,18 +61,15 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
             $this->o_form->$methodName($val);
         }
         
-        $o_fe_name      = new JsonFormBuilder_elementText('name_full','Your Name');
-        $o_fe_buttSubmit    = new JsonFormBuilder_elementButton('submit','Submit Form','submit');
-        $this->o_form->setJqueryValidation(true);
-        
         $a_elements = $this->getJsonVal($this->a_json,'elements',true);
         foreach($a_elements as $element){
             if(is_array($element)===false && empty($element)===false){
-                $this->o_form->addElement($element);
+                $a_formElements[]=$element;
             }else{
                 $elementMethod = 'JsonFormBuilder_element'.ucfirst($this->getJsonVal($element,'element',true));
-                $o_el =  new $elementMethod();
-                $a_ignore = array('element');
+                //required to set id and label in constructors.. all elements have id and label
+                $o_el =  new $elementMethod($element['id'],$element['label']);
+                $a_ignore = array('element','rules','id','label');
                 foreach($element as $key=>$val){
                     if(in_array($key,$a_ignore)){
                         continue;
@@ -77,11 +77,26 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
                     $methodName = 'set'.ucfirst($key);
                     $o_el->$methodName($val);
                 }
-                $this->o_form->addElement($o_el);
+                //add rules if needed
+                $a_rules = $this->getJsonVal($element,'rules');
+                if($a_rules){
+                    foreach($a_rules as $rule){
+                        if(is_array($rule)){
+                            //rule in assoc array
+                            $a_formRules[] = new FormRule($rule['type'],$o_el,$rule['value'],$rule['validationMessage']);
+                        }else{
+                            //simple rule
+                            $a_formRules[] = new FormRule($rule,$o_el);
+                        }
+                    }
+                }
+                $a_formElements[]=$o_el;
             }
-            
         }
-        
+        if(empty($a_formRules)===false){
+            $this->o_form->addRules($a_formRules);
+        }
+        $this->o_form->addElements($a_formElements);
         return $this->o_form->output();
     }
 

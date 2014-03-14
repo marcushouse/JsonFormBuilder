@@ -1,5 +1,4 @@
 {
-    
     "id": "TestContactForm",
     "redirectDocument": "3",
     "emailToAddress": "marcus@datawebnet.com.au",
@@ -7,30 +6,79 @@
     "emailFromName": "Test User",
     "emailSubject": "JsonFormBuilder Contact Form Submission",
     "emailHeadHtml": "<p>This is a response from the contact us form:</p>",
-    
+    "jqueryValidation":true,
+    "placeholderJavascript":"JsonFormBuilder_myForm",
+
+
     "elements": [
-        {"element":"text", "id":"name_full", "label":"Full Name", "defaultVal":"Your Name Here"},
-        {"element":"text", "id":"age", "label":"Age"},
-        {"element":"date", "id":"date_of_birth", "label":"Date of Birth", "dateFormat":"yyyy/mm/dd", "yearStart":2000, "yearEnd":2010},
-        {"element":"text", "id":"username", "label":"Username"},
-        {"element":"password", "id":"user_pass", "label":"Password"},
-        {"element":"password", "id":"user_pass2", "label":"Confirm Password"},
-        {"element":"text", "id":"address", "label":"Address"},
-        {"element":"text", "id":"city", "label":"City"},
-        {"element":"text", "id":"state", "label":"State"},
-        {"element":"text", "id":"postcode", "label":"Post Code"},
-        {"element":"text", "id":"company", "label":"Post Code"},
-        {"element":"text", "id":"company_phone", "label":"Post Code"},
-        {"element":"text", "id":"email_address", "label":"Email Address"},
-        {"element":"checkboxGroup", "id":"food_most_like", "label":"Select your preferred two or three foods", "values":[
+        {"element":"hidden", "id":"user_group", "label":"User Group", "defaultVal":3},
+
+        "<h2>Personal Information</h2>",
+        
+        {"element":"text", "id":"name_full", "label":"Full Name", "defaultVal":"Your Name Here", "extraClasses":["half"],"rules":[{"type":"required"}] },
+        {"element":"text", "id":"age", "label":"Age", "extraClasses":["half"],"rules":[
+            {"type":"required"},
+            {"type":"numeric"},
+            {"type":"minimumValue","value":18},
+            {"type":"maximumValue","value":100}
+        ]},
+
+
+        {"element":"text", "id":"date_of_birth", "label":"Date of Birth", "extraClasses":["half"]},
+        {"element":"date", "id":"date_to_attend", "label":"Select Date", "dateFormat":"yyyy/mm/dd", "yearStart":2000, "yearEnd":2010, "extraClasses":["half"]},
+        {"element":"text", "id":"username", "label":"Username", "extraClasses":["half"]},
+        {"element":"text", "id":"email_address", "label":"Email Address", "extraClasses":["half"], "rules":["required","email"] },
+        
+        "<h2>Password</h2>",
+        
+        {"element":"password", "id":"user_pass", "label":"Password", "extraClasses":["half"]},
+        {"element":"password", "id":"user_pass2", "label":"Confirm Password", "extraClasses":["half"]},
+        
+        "<h2>Address</h2>",
+        
+        {"element":"text", "id":"address", "label":"Address", "extraClasses":["half"]},
+        {"element":"text", "id":"city", "label":"City/Suburb", "extraClasses":["half"]},
+        {"element":"select", "id":"ussuate", "label":"Select a state", "extraClasses":["half"] ,"values":{
+            "":"Please select...",
+            "AL":"Alabama",
+            "AK":"Alaska",
+            "AZ":"Arizona",
+            "AR":"Arkansas",
+            "CA":"California",
+            "CO":"Colorado",  
+            "CT":"Connecticut"
+        }},
+        {"element":"text", "id":"postcode", "label":"Post Code", "extraClasses":["half"]},
+        
+        "<h2>Company Information</h2>",
+        
+        {"element":"text", "id":"company", "label":"Company Name", "extraClasses":["third"]},
+        {"element":"text", "id":"company_phone", "label":"Company Phone", "extraClasses":["third"]},
+        {"element":"select", "id":"employees", "label":"Number of Employees", "defaultVal":"11 to 20", "extraClasses":["third"], "values":{
+            "10":"Less than 10",
+            "11 to 20":"11 to 20",
+            "50":"21 to 50",
+            "100":"51 to 100",
+            "100+":"More than 10"
+        }},
+    
+        "<h2>Performance</h2>",
+        {"element":"radioGroup", "id":"staff_performance", "label":"How would you rate staff performance?", "extraClasses":["half"], "defaultVal":"opt4", "values":{
+            "opt1":"Poor",
+            "opt2":"Needs Improvement",
+            "opt3":"Average",
+            "opt4":"Good",
+            "opt5":"Excellent"
+        }},
+        {"element":"checkboxGroup", "id":"food_most_like", "label":"Select your preferred two or three foods", "extraClasses":["half"], "values":[
             {"title":"Cheese","checked":false},
             {"title":"Grapes","checked":false},
             {"title":"Salad","checked":false},
             {"title":"Bread","checked":false},
             {"title":"Chocolate","checked":true}
         ]},
-        {"element":"file", "id":"resume", "label":"Resume (PDF, DOC or DOCX)","maxFilesize":204800,"allowedExtensions":["pdf","doc","docx"]},
-        {"element":"file", "id":"application", "label":"Application"},
+    
+        "<h2>Matrix/Group Elements</h2>",
         {"element":"matrix", "id":"checkMatrix", "label":"What foods do your children like?", "type":"check",
             "rows":     ["Child 1","Child 2","Child 3","Child 4"],
             "columns":  ["Fish","Beef","Chicken","Salad"]
@@ -43,34 +91,17 @@
             "rows":     ["Website #1","Website #2","Website #3","Website #4", "Website #5"],
             "columns":  ["Site Name","URL","Speed","Design"]
         },
-        {"element":"select", "id":"employees", "label":"Number of Employees", "defaultVal":"11 to 20", "values":{
-            "10":"Less than 10",
-            "11 to 20":"11 to 20",
-            "50":"21 to 50",
-            "100":"51 to 100",
-            "100+":"More than 10"
-        }},
-        {"element":"select", "id":"ussuate", "label":"Select a state","values":{
-            "":"Please select...",
-            "AL":"Alabama",
-            "AK":"Alaska",
-            "AZ":"Arizona",
-            "AR":"Arkansas",
-            "CA":"California",
-            "CO":"Colorado",  
-            "CT":"Connecticut"
-        }},
-        {"element":"radioGroup", "id":"staff_performance", "label":"How would you rate staff performance?", "defaultVal":"opt4", "values":{
-            "opt1":"Poor",
-            "opt2":"Needs Improvement",
-            "opt3":"Average",
-            "opt4":"Good",
-            "opt5":"Excellent"
-        }},
-        {"element":"checkbox", "id":"agree_terms", "label":"I agree to the terms & conditions","value":"Agree","uncheckedValue":"Disagree","checked":false},
-        {"element":"checkbox", "id":"agree_newsletter", "label":"Sign me up for some spam","value":"Wants Spam","uncheckedValue":"Does <strong>NOT</strong> want spam","checked":true},
+        
+        "<h2>Attach your Resume and Application</h2>",
+        
+        {"element":"file", "id":"resume", "label":"Resume (PDF, DOC or DOCX)","maxFilesize":204800,"allowedExtensions":["pdf","doc","docx"]},
+        {"element":"file", "id":"application", "label":"Application"},
+        
+        "<h2>Additional</h2>",
+        
         {"element":"textArea", "id":"notes", "label":"Additional Comments", "rows":5,"columns":30, "defaultVal":"Here is an example of default multiline text.\n\n--- JsonFormBuilder ---"},
+        {"element":"checkbox", "id":"agree_newsletter", "label":"Sign me up for some spam","value":"Wants Spam","uncheckedValue":"Does <strong>NOT</strong> want spam","checked":true},
+        {"element":"checkbox", "id":"agree_terms", "label":"I agree to the terms & conditions","value":"Agree","uncheckedValue":"Disagree","checked":false},
         {"element":"button", "id":"submit", "label":"Submit", "type":"Submit"}
     ]
-    
 }
