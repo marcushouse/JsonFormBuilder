@@ -15,6 +15,8 @@ require_once dirname(__FILE__) . '/JsonFormBuilderCore.class.php';
  */
 class JsonFormBuilder extends JsonFormBuilderCore {
 
+    private $b_validated=false;
+    private $_attachmentIncluded=false;
     /**
      * @ignore 
      */
@@ -209,6 +211,36 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      * @ignore 
      */
     private $_submitVar;
+    
+    private $_isPosted;
+    private function setIsPosted($value) {
+        $this->_isPosted = self::forceBool($value);
+    }
+    public function getIsPosted() {
+        return $this->_isPosted;
+    }
+    
+    private $_invalidElements=array();
+    public function getInvalidElements() {
+        return $this->_invalidElements;
+    }
+    /**
+    * @ignore 
+    */
+    private $_spamProtection;
+    public function setSpamProtection($value) {
+        $this->_spamProtection = $value;
+    }
+    public function getSpamProtection() {
+        return $this->_spamProtection;
+    }
+    
+    private $_fieldProps_jqValidate=array();
+    private $_fieldProps_jqValidateGroups=array();
+    private $_fieldProps_errstringJq=array();
+    private $_footJavascript=array();
+
+    
 
     /**
      * JsonFormBuilder
@@ -228,7 +260,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $this->_store = true;
         $this->_formElements = array();
         $this->_rules = array();
-        $this->_redirectDocument = $this->modx->resource->get('id');
+        $this->setSpamProtection(true);
+        //should have the option to not redirect at all, removing default of current page.
+        //$this->_redirectDocument = $this->modx->resource->get('id');
         $this->_redirectParams = NULL;
         $this->_submitVar = NULL;
         $this->_jqueryValidation = false;
@@ -923,7 +957,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function addElement($o_formElement) {
         if(empty($o_formElement)){
-            JsonFormBuilder::throwError('Tried to add empty or NULL element to form "'.$this->getId().'". Number of elements already added="'.count($this->_formElements).'"');
+            $msg = 'Tried to add empty or NULL element to form "'.$this->getId().'". Number of elements already added="'.count($this->_formElements).'"';
+            if(count($this->_formElements)>0){
+                if($this->_formElements[count($this->_formElements)-1]){
+                    $msg .= ' - last element id = "'.$this->_formElements[count($this->_formElements)-1]->getId().'"';
+                }
+                JsonFormBuilder::throwError($msg);
+            }
         }
         $this->_formElements[] = $o_formElement;
     }
@@ -1319,24 +1359,17 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
     
     private function spamDetectExit($code){
-        echo 'Form was unable to submit (CODE: '.$code.').'; exit();
-    }
-
-    /**
-     * getJsonFormBuilderOutput()
-     * 
-     * Constructs the JsonFormBuilder source. This is the main processing function.
-     * @return string
-     * @ignore 
-     */
-    private function getJsonFormBuilderOutput() {
-        $s_submitVar = 'submitVar_' . $this->_id;
-        $b_customSubmitVar = false;
-        if (empty($this->_submitVar) === false) {
-            $s_submitVar = $this->_submitVar;
-            $b_customSubmitVar = true;
+        if($this->getSpamProtection()){
+            echo 'Form was unable to submit (CODE: '.$code.').'; exit();
         }
-        
+    }
+    private function validate(){
+        //prepare can be called multiple times for simplicity, but should only run once.
+        if($this->b_validated===true){
+            return;
+        }else{
+            $this->b_validated=true;
+        }       
         
         //if security field has been filled, kill script with a false thankyou.
         $secVar = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk');
@@ -1349,24 +1382,19 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $this->spamDetectExit(2);
         }
         
-        
-        $s_recaptchaJS = '';
-        $b_posted = false;
-        $s_submittedVal = $this->postVal($s_submitVar);
+        $this->setIsPosted(false);
+        $s_submittedVal = $this->postVal('submitVar_' . $this->_id);
         if (empty($s_submittedVal) === false) {
-            $b_posted = true;
+            $this->setIsPosted(true);
         }
-        $nl = "\r\n";
 
         //process and add form rules
         $a_fieldProps_jqValidate = array();
         $a_fieldProps_jqValidateGroups = array();
         $a_fieldProps_errstringJq = array();
-        $a_footJavascript = array('var a; var e; var v; var b_s; var w;');
+        $a_footJavascript = array();
 
         //Keep tally of all validation errors. If posted and 0, form will continue.
-        $a_invalidElements = array();
-
         foreach ($this->_rules as $rule) {
             $o_elFull = $rule->getElement();
             //verify this element is actually in the form
@@ -1408,7 +1436,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $a_fieldProps_errstringJq[$elName][] = 'email:"' . $s_validationMessage . '"';
 
                     if (filter_var($s_postedValue, FILTER_VALIDATE_EMAIL) === false) {
-                        $a_invalidElements[] = $o_el;
+                        $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_validationMessage;
                     }
                     break;
@@ -1420,7 +1448,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $val1 = $this->postVal($o_elFull[0]->getId());
                     $val2 = $this->postVal($o_elFull[1]->getId());
                     if ($val1!==$val2) {
-                        $a_invalidElements[] = $o_el;
+                        $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_validationMessage;
                     }
                     
@@ -1433,13 +1461,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         //validation check
                         $a_elementsSelected = $this->postVal($o_el->getId());
                         if (is_array($a_elementsSelected)===false || count($a_elementsSelected) > $val) {
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                     } else {
                         //validation check
                         if (strlen($s_postedValue) > $val) {
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                     }
@@ -1451,7 +1479,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
                     //validation check
                     if ((int) $s_postedValue > $val) {
-                        $a_invalidElements[] = $o_el;
+                        $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_validationMessage;
                     }
 
@@ -1464,13 +1492,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         //validation check
                         $a_elementsSelected = $this->postVal($o_el->getId());
                         if (is_array($a_elementsSelected)===false || count($a_elementsSelected) < $val) {
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                     } else {
                         //validation check
                         if (strlen($s_postedValue) < $val) {
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                     }
@@ -1483,7 +1511,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
                     //validation check
                     if ((int) $s_postedValue < $val) {
-                        $a_invalidElements[] = $o_el;
+                        $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_validationMessage;
                     }
                     break;
@@ -1492,7 +1520,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $a_fieldProps_errstringJq[$elName][] = 'digits:"' . $s_validationMessage . '"';
                     //validation check
                     if (ctype_digit($s_postedValue) === false) {
-                        $a_invalidElements[] = $o_el;
+                        $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_validationMessage;
                     }
                     break;
@@ -1545,14 +1573,14 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         //validation check
                         $b_isMatrixValid = JsonFormBuilder::is_matrix_required_valid($o_el);
                         if ($b_validateRequiredPost && $b_isMatrixValid===false) {
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                     } else if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
                         //validation check
                         $a_elementsSelected = $this->postVal($o_el->getId());
                         if ($b_validateRequiredPost && (is_array($a_elementsSelected)===false || count($a_elementsSelected)===0)) {
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                         
@@ -1562,7 +1590,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             //file is uploaded
                         }else{
                             if($b_validateRequiredPost){
-                                $a_invalidElements[] = $o_el;
+                                $this->_invalidElements[] = $o_el;
                                 $o_el->errorMessages[] = $s_validationMessage;
                             }
                         }
@@ -1579,7 +1607,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             //all three date elements must be selected
                         }else{
                             if($b_validateRequiredPost){
-                                $a_invalidElements[] = $o_el;
+                                $this->_invalidElements[] = $o_el;
                                 $o_el->errorMessages[] = $s_validationMessage;
                             }
                         }
@@ -1590,7 +1618,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
                         //validation check
                         if ($b_validateRequiredPost && strlen($s_postedValue) < 1) {
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
                     }
@@ -1603,7 +1631,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     //validation check
                     $a_formatInfo = JsonFormBuilder::is_valid_date($s_postedValue,$s_thisVal);
                     if ($b_validateRequiredPost && $a_formatInfo['status']===false) {
-                        $a_invalidElements[] = $o_el;
+                        $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_thisErrorMsg;
                     }
                     break;
@@ -1630,7 +1658,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                 $valid = $func($s_postedValue);
                             }
                             if($valid!==true){
-                                $a_invalidElements[] = $o_el;
+                                $this->_invalidElements[] = $o_el;
                                 $o_el->errorMessages[] = $s_validationMessage;
                             }
                         }
@@ -1643,6 +1671,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $b_validateRequiredPost=true;
                     if(!empty($ruleCondition)){
                         $this_elID = $ruleCondition[0]->getId();
+                        if(count($a_footJavascript)==0){
+                            $a_footJavascript[]='var a; var e; var v; var b_s; var w;';
+                        }
                         $a_footJavascript[]=''
                             . 'b_v=false;'
                             . 'a=jQuery("#'.$this_elID.'");'
@@ -1653,30 +1684,19 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             . 'if(b_v){w.show();}else{ w.hide(); }'
                             . 'a.change(function(){ var e=jQuery("#'.$o_elFull->getId().'"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"){ w.show(); }else{ w.hide(); } });'
                             . '';
-//                        /$jqRequiredVal='{depends:function(element){var v=jQuery("#'.$this_elID.'").val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';  
                     }
                     break;
             }
         }
-
-        //build inner form html
-        $b_attachmentIncluded = false;
-        $fieldThatNeedsToBeFilled = $this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk2';
-        $s_form = '<div>' . $nl
-                . $nl . '<div class="process_errors_wrap"><div class="process_errors">[[!+fi.error_message:notempty=`[[!+fi.error_message]]`]]</div></div>'
-                . $nl . ($b_customSubmitVar === false ? '<input type="hidden" name="' . $s_submitVar . '" value="1" />' : '')
-                . $nl . '<input type="hidden" name="'.$this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk" value="" /><input type="hidden" name="'.$fieldThatNeedsToBeFilled. '" id="'.$fieldThatNeedsToBeFilled. '" value="" /><script type="text/javascript">var el = document.getElementById("'.$fieldThatNeedsToBeFilled.'"); el.value = "1962";</script>'
-                . $nl;
-
+        //validate on elements themselves
         foreach ($this->_formElements as $o_el) {
             if(is_object($o_el)===false){
-                $s_form.=$o_el; //plain text or html
+                //
             }else{
                 $s_elClass = get_class($o_el);
                 $s_postedValue = $this->postVal($o_el->getId());
-                
                 if ($s_elClass == 'JsonFormBuilder_elementFile') {
-                    $b_attachmentIncluded = true;
+                    $this->_attachmentIncluded = true;
                     $id = $o_el->getId();
                     
                     $a_allowedExtenstions = $o_el->getAllowedExtensions();
@@ -1702,17 +1722,56 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     if(isset($_FILES[$id]['size'])===true && $_FILES[$id]['size']>0){
                         
                         if($o_el->isAllowedFilename($_FILES[$id]['name'])===false){
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_extInvalidMessage;
                         }
                         
                         if($o_el->isAllowedSize($_FILES[$id]['size'])===false){
-                            $a_invalidElements[] = $o_el;
+                            $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_sizeInvalidMessage;
                         }
                     }
-                    
                 }
+            }
+        }
+                
+
+
+        //if using database table then add call to final hook
+        $b_addFinalHooks = false;
+        $GLOBALS['JsonFormBuilder_hookCommands'] = array('formObj' => &$this, 'commands' => array());
+        if (empty($this->_databaseTableObjectName) === false) {
+            $GLOBALS['JsonFormBuilder_hookCommands']['commands'][] = array('name' => 'dbEntry', 'value' => array('tableObj' => $this->_databaseTableObjectName, 'mapping' => $this->_databaseTableFieldMapping));
+            $b_addFinalHooks = true;
+        }
+        if ($b_addFinalHooks === true) {
+            $this->_hooks[] = 'JsonFormBuilder_hooks';
+        }
+        
+        $this->_fieldProps_jqValidate=$a_fieldProps_jqValidate;
+        $this->_fieldProps_jqValidateGroups=$a_fieldProps_jqValidateGroups;
+        $this->_fieldProps_errstringJq=$a_fieldProps_errstringJq;
+        $this->_footJavascript=$a_footJavascript;
+    }
+    
+    private function buildForm(){
+        //build inner form html
+        
+        $nl = "\r\n";
+        $s_recaptchaJS = '';
+        $fieldThatNeedsToBeFilled = $this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk2';
+        
+        $s_form = '<div>' . $nl
+                . $nl . '<div class="process_errors_wrap"><div class="process_errors">[[!+fi.error_message:notempty=`[[!+fi.error_message]]`]]</div></div>'
+                . $nl . '<input type="hidden" name="submitVar_'.$this->_id.'" value="1" />'
+                . $nl . '<input type="hidden" name="'.$this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk" value="" /><input type="hidden" name="'.$fieldThatNeedsToBeFilled. '" id="'.$fieldThatNeedsToBeFilled. '" value="" /><script type="text/javascript">var el = document.getElementById("'.$fieldThatNeedsToBeFilled.'"); el.value = "1962";</script>'
+                . $nl;
+
+        foreach ($this->_formElements as $o_el) {
+            if(is_object($o_el)===false){
+                $s_form.=$o_el; //plain text or html
+            }else{
+                $s_elClass = get_class($o_el);               
                 if (is_a($o_el, 'JsonFormBuilder_elementHidden')) {
                     $s_form.=$o_el->outputHTML();
                 } else {
@@ -1739,7 +1798,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $b_required = $o_el->isRequired();
                     
                     $s_errorContainer = '<div class="errorContainer">';
-                    if ($b_posted) {
+                    if ($this->getIsPosted()) {
                         if (count($o_el->errorMessages) > 0) {
                             $s_errorContainer.='<label class="error" ' . $s_forStr . '>' . implode('<br />', $o_el->errorMessages) . '</label>';
                         }
@@ -1777,64 +1836,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $s_form.=$nl . '</div>';
 
         //wrap form elements in form tags
-        $s_form = '<form style="display:none;" action="/" method="' . htmlspecialchars($this->_method) . '"' . ($b_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
+        $s_form = '<form style="display:none;" action="/" method="' . htmlspecialchars($this->_method) . '"' . ($this->_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
                 . $s_form . $nl
                 . '</form><script type="text/javascript">var form = document.getElementById("'.$this->_id.'"); form.setAttribute("action","[[~[[*id]]]]"); form.style.display = "block";</script><noscript>Your browser does not support JavaScript! - You need JavaScript to view this form.</noscript> ';
-
-
-        //if using database table then add call to final hook
-        $b_addFinalHooks = false;
-        $GLOBALS['JsonFormBuilder_hookCommands'] = array('formObj' => &$this, 'commands' => array());
-        if (empty($this->_databaseTableObjectName) === false) {
-            $GLOBALS['JsonFormBuilder_hookCommands']['commands'][] = array('name' => 'dbEntry', 'value' => array('tableObj' => $this->_databaseTableObjectName, 'mapping' => $this->_databaseTableFieldMapping));
-            $b_addFinalHooks = true;
-        }
-        if ($b_addFinalHooks === true) {
-            $this->_hooks[] = 'JsonFormBuilder_hooks';
-        }
-
-        /*
-          $s_formItCmd='[[!FormIt?'
-          .$nl.'&hooks=`'.$this->_postHookName.(count($this->_hooks)>0?','.implode(',',$this->_hooks):'').'`'
-
-          .(empty($s_recaptchaJS)===false?$nl.'&recaptchaJs=`'.$s_recaptchaJS.'`':'')
-          .(empty($this->_customValidators)===false?$nl.'&customValidators=`'.$this->_customValidators.'`':'')
-
-          .(empty($this->_emailToAddress)===false?$nl.'&emailTo=`'.$this->_emailToAddress.'`':'')
-          .(empty($this->_emailToName)===false?$nl.'&emailToName=`'.$this->_emailToName.'`':'')
-          .(empty($this->_emailFromAddress)===false?$nl.'&emailFrom=`'.$this->_emailFromAddress.'`':'')
-          .(empty($this->_emailFromName)===false?$nl.'&emailFromName=`'.$this->_emailFromName.'`':'')
-          .(empty($this->_emailReplyToAddress)===false?$nl.'&emailReplyTo=`'.$this->_emailReplyToAddress.'`':'')
-          .(empty($this->_emailReplyToName)===false?$nl.'&emailReplyToName=`'.$this->_emailReplyToName.'`':'')
-          .(empty($this->_emailCCAddress)===false?$nl.'&emailCC=`'.$this->_emailCCAddress.'`':'')
-          .(empty($this->_emailCCName)===false?$nl.'&emailCCName=`'.$this->_emailCCName.'`':'')
-          .(empty($this->_emailBCCAddress)===false?$nl.'&emailBCC=`'.$this->_emailBCCAddress.'`':'')
-          .(empty($this->_emailBCCName)===false?$nl.'&emailBCCName=`'.$this->_emailBCCName.'`':'')
-
-          .(empty($this->_autoResponderSubject)===false?$nl.'&fiarSubject=`'.$this->_autoResponderSubject.'`':'')
-          .(empty($this->_autoResponderToAddressField)===false?$nl.'&fiarToField=`'.$this->_autoResponderToAddressField.'`':'')
-          .(empty($this->_autoResponderFromAddress)===false?$nl.'&fiarFrom=`'.$this->_autoResponderFromAddress.'`':'')
-          .(empty($this->_autoResponderFromName)===false?$nl.'&fiarFromName=`'.$this->_autoResponderFromName.'`':'')
-          .(empty($this->_autoResponderReplyTo)===false?$nl.'&fiarReplyTo=`'.$this->_autoResponderReplyTo.'`':'')
-          .(empty($this->_autoResponderReplyToName)===false?$nl.'&fiarReplyToName=`'.$this->_autoResponderReplyToName.'`':'')
-          .(empty($this->_autoResponderCC)===false?$nl.'&fiarCC=`'.$this->_autoResponderCC.'`':'')
-          .(empty($this->_autoResponderCCName)===false?$nl.'&fiarCCName=`'.$this->_autoResponderCCName.'`':'')
-          .(empty($this->_autoResponderBCC)===false?$nl.'&fiarBCC=`'.$this->_autoResponderBCC.'`':'')
-          .(empty($this->_autoResponderBCCName)===false?$nl.'&fiarBCCName=`'.$this->_autoResponderBCCName.'`':'')
-          .$nl.'&fiarHtml=`'.($this->_autoResponderHtml===false?'0':'1').'`'
-
-          .$nl.'&emailSubject=`'.$this->_emailSubject.'`'
-          .$nl.'&emailUseFieldForSubject=`1`'
-          .$nl.'&redirectTo=`'.$this->_redirectDocument.'`'
-          .(empty($this->_redirectParams)===false?$nl.'&redirectParams=`'.$this->_redirectParams.'`':'')
-          .$nl.'&store=`'.($this->_store===true?'1':'0').'`'
-          .$nl.'&submitVar=`'.$s_submitVar.'`'
-          .$nl.implode($nl,$a_formItErrorMessage)
-          .$nl.'&validate=`'.(isset($this->_validate)?$this->_validate.',':'').implode(','.$nl.' ',$a_formItCmds).','.$nl.'`]]'.$nl;
-         */
-
+        return $s_form;
+    }
+    
+    private function buildFormJavascript(){
+        $s_js='';
         if ($this->_jqueryValidation === true) {
-            $s_js = '	
+            $s_js .= '	
 jQuery().ready(function() {
 
 jQuery.validator.addMethod("dateFormat", function(value, element, format) {
@@ -1939,7 +1950,7 @@ thisFormEl.validate({errorPlacement:function(error, element) {
 	jQuery("html,body").animate({scrollTop: jumpEl.offset().top});
 },ignore:":hidden",' .
 $this->jqueryValidateJSON(
-        $a_fieldProps_jqValidate, $a_fieldProps_errstringJq, $a_fieldProps_jqValidateGroups
+        $this->_fieldProps_jqValidate, $this->_fieldProps_errstringJq, $this->_fieldProps_jqValidateGroups
 ) . '});
 
 var hiddenFields = thisFormEl.find(".formSegWrap.elementFile input");
@@ -1956,39 +1967,50 @@ hiddenFields.change(function(){
     var removeButt = $("#"+elId+"_remove");
     removeButt.show();
 });	
-' .implode("\r\n",$a_footJavascript).
+' .implode("\r\n",$this->_footJavascript).
 //Force validation on load if already posted
-                    ($b_posted === true ? 'thisFormEl.valid();' : '')
-                    . '
-	
+($this->getIsPosted()? 'thisFormEl.valid();' : '')
+. '
 });
 ';
         }
+        return $s_js;
+    }
+    /**
+     * getJsonFormBuilderOutput()
+     * 
+     * Constructs the JsonFormBuilder source. This is the main processing function.
+     * @return string
+     * @ignore 
+     */
+    private function getJsonFormBuilderOutput() {
+        //prepare if not already done
+        $this->validate();
 
         //If form is posted and valid, no need to continue output, send email and redirect.
         $s_timerVar = 'jsonFormBuilderTimerVar_' . $this->_id;
-        if($b_posted){
-
-            if (count($a_invalidElements) === 0) {
+        if($this->getIsPosted()){
+            if (count($this->_invalidElements) === 0) {
 
                 //If for submitten very quickly, assume robot.
-                $minimumTimeSecs=3; //was set to 5, but kept tripping it myself when testing basic form. 3 seems to be better.
+                $minimumTimeSecs=2; //was set to 5, but kept tripping it myself when testing basic form. 2 seems to be better.
                 $secsSinceFormOpen = time()-$_SESSION[$s_timerVar];
                 if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
 
                 //If form is posted and valid, no need to continue output, send email and redirect.
                 $this->sendEmails();
-                $url = $this->modx->makeUrl($this->_redirectDocument);
-                $this->modx->sendRedirect($url);
+                if($this->_redirectDocument){
+                    $url = $this->modx->makeUrl($this->_redirectDocument);
+                    $this->modx->sendRedirect($url);
+                    
+                }
             }
         }else{
             //user has not yet posted, set session variable and track time it took to fill out form.
             $_SESSION[$s_timerVar]=time();
         }
-
-
-
-
+        $s_js = $this->buildFormJavascript();
+        $s_form = $this->buildForm();
         if (empty($this->_placeholderJavascript) === false) {
             $this->modx->setPlaceholder($this->_placeholderJavascript, $s_js);
             return $s_form;
@@ -2000,6 +2022,7 @@ hiddenFields.change(function(){
             // ]]>
             </script>';
         }
+        
     }
 
     /**

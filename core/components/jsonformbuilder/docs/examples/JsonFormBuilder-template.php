@@ -32,7 +32,6 @@ jQuery().ready(function() {
     jQuery.validator.addMethod("customPhoneNum", function(phone_number, element, val) {
         phone_number = phone_number.replace(/\s+/g, "");
         var matchStr = '^\\(?(\\d{'+val[0]+'})\\)?[- ]?(\\d{'+val[1]+'})[- ]?(\\d{'+val[2]+'})$';
-        //alert(matchStr);
         return this.optional(element) || phone_number.match(matchStr);
     }, "Phone number invalid");
 });
