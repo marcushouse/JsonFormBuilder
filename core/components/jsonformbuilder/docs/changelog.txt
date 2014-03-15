@@ -1,2 +1,37 @@
 Changelog for JsonFormBuilder
-====================================
+=========================================
+
+JsonFormBuilder 1.0.18-pl - 10th Mar 2014
+=========================================
+- Form rules and conditions for JSON formats.
+- Add example for manually handling form submission and checking validation.
+- Restructure of validate/form build / js build.
+
+JsonFormBuilder 1.0.17-pl - 10th Mar 2014
+=========================================
+- Basic JSON form example - In process of building JSON form processing.
+- More JSON functions, specify now inline, add a file path or as a chunk.
+
+JsonFormBuilder 1.0.15-pl - 10th Mar 2014
+=========================================
+- Custom rules implemented.
+- Add ability to specify CC and BCC with string email address or array of addresses. Add examples to doc forms.
+- Added Auto Responders and extra debug info for email addresses.
+- Validate modx object. Throw error if email addresses are not valid when sending (cant be before send as some email addresses may be dynamic after submit).
+- Add conditions example.
+
+JsonFormBuilder 1.0.14-pl - 1st Mar 2014
+=========================================
+- Added conditionShow rule type.
+- Added extra debugging errors for rules on elements that do not exist in form.
+- Finished off conditional required.
+- Clean up, add ability to specify conditional rule (really for required only). Still need to add PHP validation.
+- Add in primitive spam protection (hidden field and minimum submit time).
+
+JsonFormBuilder 1.0.12-pl - 22nd Feb 2014
+=========================================
+- Added file upload validation for file extensions and file size.
+- Added ability to add validation directly on form elements without a FormRule (for more simple validation methods like mentioned above).
+- Added extra debug info in errors for empty elements being passed into FormRules.
+- Bug fixes with Matrix.
+- Fixed up some typos (Thanks Chris).
