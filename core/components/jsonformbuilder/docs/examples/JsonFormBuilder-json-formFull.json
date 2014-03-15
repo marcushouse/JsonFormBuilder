@@ -15,24 +15,32 @@
 
         "<h2>Personal Information</h2>",
         
-        {"element":"text", "id":"name_full", "label":"Full Name", "defaultVal":"Your Name Here", "extraClasses":["half"],"rules":[{"type":"required"}] },
+        {"element":"text", "id":"name_full", "label":"Full Name", "defaultVal":"Your Name Here", "extraClasses":["half"],"rules":["required"] },
         {"element":"text", "id":"age", "label":"Age", "extraClasses":["half"],"rules":[
             {"type":"required"},
             {"type":"numeric"},
             {"type":"minimumValue","value":18},
             {"type":"maximumValue","value":100}
         ]},
-
-
-        {"element":"text", "id":"date_of_birth", "label":"Date of Birth", "extraClasses":["half"]},
-        {"element":"date", "id":"date_to_attend", "label":"Select Date", "dateFormat":"yyyy/mm/dd", "yearStart":2000, "yearEnd":2010, "extraClasses":["half"]},
-        {"element":"text", "id":"username", "label":"Username", "extraClasses":["half"]},
+        {"element":"text", "id":"date_of_birth", "label":"Date of Birth", "extraClasses":["half"], "rules":[
+            "required",
+            {"type":"date","value":"dd/mm/yyyy"}
+        ]},
+        {"element":"date", "id":"date_to_attend", "label":"Select Date", "dateFormat":"yyyy/mm/dd", "yearStart":2000, "yearEnd":2010, "rules":["required"], "extraClasses":["half"]},
+        {"element":"text", "id":"username", "label":"Username", "extraClasses":["half"], "rules":[
+            "required",
+            {"type":"minimumLength","value":6},
+            {"type":"maximumLength","value":30}
+        ]},
         {"element":"text", "id":"email_address", "label":"Email Address", "extraClasses":["half"], "rules":["required","email"] },
         
         "<h2>Password</h2>",
         
-        {"element":"password", "id":"user_pass", "label":"Password", "extraClasses":["half"]},
-        {"element":"password", "id":"user_pass2", "label":"Confirm Password", "extraClasses":["half"]},
+        {"element":"password", "id":"user_pass", "label":"Password", "rules":["required",{"type":"minimumLength","value":8}], "extraClasses":["half"]},
+        {"element":"password", "id":"user_pass2", "label":"Confirm Password", "extraClasses":["half"],"rules":[
+            "required",
+            {"type":"fieldMatch","value":"user_pass", "validationMessage":"Passwords do not match"}
+        ]},
         
         "<h2>Address</h2>",
         
@@ -48,7 +56,11 @@
             "CO":"Colorado",  
             "CT":"Connecticut"
         }},
-        {"element":"text", "id":"postcode", "label":"Post Code", "extraClasses":["half"]},
+        {"element":"text", "id":"postcode", "label":"Post Code", "extraClasses":["half"], "rules":[
+            "required","numeric",
+            {"type":"minimumLength","value":4},
+            {"type":"maximumLength","value":4}
+        ]},
         
         "<h2>Company Information</h2>",
         
@@ -63,14 +75,16 @@
         }},
     
         "<h2>Performance</h2>",
-        {"element":"radioGroup", "id":"staff_performance", "label":"How would you rate staff performance?", "extraClasses":["half"], "defaultVal":"opt4", "values":{
+        {"element":"radioGroup", "id":"staff_performance", "label":"How would you rate staff performance?", "extraClasses":["half"], "values":{
             "opt1":"Poor",
             "opt2":"Needs Improvement",
             "opt3":"Average",
             "opt4":"Good",
             "opt5":"Excellent"
-        }},
-        {"element":"checkboxGroup", "id":"food_most_like", "label":"Select your preferred two or three foods", "extraClasses":["half"], "values":[
+        },"rules":[
+            {"type":"required","validationMessage":"Please select an option for staff performance"}
+        ]},
+        {"element":"checkboxGroup", "id":"food_most_like", "label":"Select your preferred two or three foods", "rules":["required"], "extraClasses":["half"], "values":[
             {"title":"Cheese","checked":false},
             {"title":"Grapes","checked":false},
             {"title":"Salad","checked":false},
@@ -79,29 +93,31 @@
         ]},
     
         "<h2>Matrix/Group Elements</h2>",
-        {"element":"matrix", "id":"checkMatrix", "label":"What foods do your children like?", "type":"check",
+        {"element":"matrix", "id":"checkMatrix", "label":"What foods do your children like?", "type":"check", "rules":["required"],
             "rows":     ["Child 1","Child 2","Child 3","Child 4"],
             "columns":  ["Fish","Beef","Chicken","Salad"]
         },
-        {"element":"matrix", "id":"radioMatrix", "label":"How do you feel about us?", "type":"radio",
+        {"element":"matrix", "id":"radioMatrix", "label":"How do you feel about us?", "type":"radio", "rules":["required"],
             "rows":     ["Service Quality","Overall Hygiene","Responsiveness","Kindness and Helpfulness"],
             "columns":  ["Very Satisfied","Satisfied","Somewhat Satisfied","Not Satisfied"]
         },
-        {"element":"matrix", "id":"textMatrix", "label":"List your favorite websites", "type":"text",
+        {"element":"matrix", "id":"textMatrix", "label":"List your favorite websites", "type":"text", "rules":["required"],
             "rows":     ["Website #1","Website #2","Website #3","Website #4", "Website #5"],
             "columns":  ["Site Name","URL","Speed","Design"]
         },
         
         "<h2>Attach your Resume and Application</h2>",
         
-        {"element":"file", "id":"resume", "label":"Resume (PDF, DOC or DOCX)","maxFilesize":204800,"allowedExtensions":["pdf","doc","docx"]},
+        {"element":"file", "id":"resume", "label":"Resume (PDF, DOC or DOCX)", "rules":["required"],"maxFilesize":204800,"allowedExtensions":["pdf","doc","docx"]},
         {"element":"file", "id":"application", "label":"Application"},
         
         "<h2>Additional</h2>",
         
         {"element":"textArea", "id":"notes", "label":"Additional Comments", "rows":5,"columns":30, "defaultVal":"Here is an example of default multiline text.\n\n--- JsonFormBuilder ---"},
         {"element":"checkbox", "id":"agree_newsletter", "label":"Sign me up for some spam","value":"Wants Spam","uncheckedValue":"Does <strong>NOT</strong> want spam","checked":true},
-        {"element":"checkbox", "id":"agree_terms", "label":"I agree to the terms & conditions","value":"Agree","uncheckedValue":"Disagree","checked":false},
-        {"element":"button", "id":"submit", "label":"Submit", "type":"Submit"}
+        {"element":"checkbox", "id":"agree_terms", "label":"I agree to the terms & conditions", "value":"Agree", "uncheckedValue":"Disagree", "checked":false, "rules":[
+            {"type":"required","validationMessage":"You must agree to the terms and conditions"}
+        ]},
+        {"element":"button", "id":"submit", "label":"Submit From", "type":"Submit"}
     ]
 }

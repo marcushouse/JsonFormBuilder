@@ -47,9 +47,8 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
         return false;
     }
     function output(){
-        $a_formRules=array();
-        $a_formElements=array();
-        
+        $a_formElsToAdd=array();
+        $a_formRulesToAdd=array();
         $this->o_form = new JsonFormBuilder($this->modx,$this->getJsonVal($this->a_json,'id',true));
         
         $a_ignore = array('id','elements');
@@ -64,7 +63,7 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
         $a_elements = $this->getJsonVal($this->a_json,'elements',true);
         foreach($a_elements as $element){
             if(is_array($element)===false && empty($element)===false){
-                $a_formElements[]=$element;
+                $a_formElsToAdd[] = $element;
             }else{
                 $elementMethod = 'JsonFormBuilder_element'.ucfirst($this->getJsonVal($element,'element',true));
                 //required to set id and label in constructors.. all elements have id and label
@@ -77,26 +76,35 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
                     $methodName = 'set'.ucfirst($key);
                     $o_el->$methodName($val);
                 }
+                $a_formElsToAdd[] = $o_el;
                 //add rules if needed
                 $a_rules = $this->getJsonVal($element,'rules');
                 if($a_rules){
                     foreach($a_rules as $rule){
                         if(is_array($rule)){
                             //rule in assoc array
-                            $a_formRules[] = new FormRule($rule['type'],$o_el,$rule['value'],$rule['validationMessage']);
+                            $r = new FormRule($rule['type'],$o_el,$rule['value']);
                         }else{
                             //simple rule
-                            $a_formRules[] = new FormRule($rule,$o_el);
+                            $r = new FormRule($rule,$o_el);
                         }
+                        $a_ruleignore = array('type');
+                        foreach($rule as $key=>$val){
+                            if(in_array($key,$a_ruleignore)){
+                                continue;
+                            }
+                            $methodName = 'set'.ucfirst($key);
+                            $r->$methodName($val);
+                        }
+                        $r->refresh(); // just in case
+                        $a_formRulesToAdd[]=$r;
                     }
                 }
-                $a_formElements[]=$o_el;
+                
             }
         }
-        if(empty($a_formRules)===false){
-            $this->o_form->addRules($a_formRules);
-        }
-        $this->o_form->addElements($a_formElements);
+        $this->o_form->addRules($a_formRulesToAdd);
+        $this->o_form->addElements($a_formElsToAdd);
         return $this->o_form->output();
     }
 

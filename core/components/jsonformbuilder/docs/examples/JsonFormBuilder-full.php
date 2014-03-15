@@ -105,13 +105,14 @@ foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
 $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please provide a valid email address');
-$a_formRules[] = new FormRule(FormRuleType::numeric, $o_fe_postcode);
+
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_checkTerms, NULL, 'You must agree to the terms and conditions');
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_staff, NULL, 'Please select an option for staff performance');
 //Additional rules for preferred foods
 $a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_foodprefer, 2);
 $a_formRules[] = new FormRule(FormRuleType::maximumLength, $o_fe_foodprefer, 3);
 //Additional rules for postcode
+$a_formRules[] = new FormRule(FormRuleType::numeric, $o_fe_postcode);
 $a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_postcode, 4);
 $a_formRules[] = new FormRule(FormRuleType::maximumLength, $o_fe_postcode, 4);
 //Additional rules for username
@@ -125,7 +126,8 @@ $a_formRules[] = new FormRule(FormRuleType::maximumValue, $o_fe_age, 100);
 $a_formRules[] = new FormRule(FormRuleType::date, $o_fe_dob, 'dd/mm/yyyy');
 //A unique case, when checking if passwords match pass the two fields as an array into the second argument.
 $a_formRules[] = new FormRule(FormRuleType::minimumLength, $o_fe_userPass, 8);
-$a_formRules[] = new FormRule(FormRuleType::fieldMatch, array($o_fe_userPass2,$o_fe_userPass), NULL, 'Passwords do not match');
+//You could also specify "user_pass" for the 3rd paramater. This string would attempt to map back to the form matching that id.
+$a_formRules[] = new FormRule(FormRuleType::fieldMatch,$o_fe_userPass2, $o_fe_userPass, 'Passwords do not match');
   
 /*----------------------------*/
 /*CREATE FORM AND ADD ELEMENTS*/

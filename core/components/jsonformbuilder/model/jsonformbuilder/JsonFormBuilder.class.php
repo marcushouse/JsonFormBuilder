@@ -1320,6 +1320,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         echo $this->getPostHookString();
         exit();
     }
+    
+    public function getElementById($id){
+        foreach ($this->_formElements as $o_el){
+            if(is_object($o_el) && $o_el->getId()===$id){
+                return $o_el;
+            }
+        }
+        return false;
+    }
 
     /**
      * jqueryValidateJSON($jqFieldProps,$jqFieldMessages,$jqFormRules,$jqFormMessages)
@@ -1409,11 +1418,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 }
             }
             if($b_found===false){
-                if(is_array($o_elFull)===true){
-                    //fieldMatch takes an array of elements... probably should be validated at some point. Should be rare.
-                }else{
-                    JsonFormBuilder::throwError('Rule "'.$rule->getType().'" for element "'.$o_elFull->getId().'" specified, but element is not in form.');
-                }
+                JsonFormBuilder::throwError('Rule "'.$rule->getType().'" for element "'.$o_elFull->getId().'" specified, but element is not in form.');
             }
                 
             if (is_array($o_elFull) === true) {
@@ -1444,12 +1449,19 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     }
                     break;
                 case FormRuleType::fieldMatch:
-                    $a_fieldProps_jqValidate[$elName][] = 'equalTo:"#' . $o_elFull[1]->getId() . '"';
+                    $val = $rule->getValue();
+                    if(is_a($val,'JsonFormBuilder_baseElement')===false){
+                        $val = $this->getElementById($val);
+                    }
+                    if(is_a($val,'JsonFormBuilder_baseElement')===false){
+                        JsonFormBuilder::throwError('Element for fieldMatch not found for "'.htmlspecialchars($elName).'" rule. Specify a valid ID or Element Object');
+                    }
+                    $a_fieldProps_jqValidate[$elName][] = 'equalTo:"#' . $val->getId() . '"';
                     $a_fieldProps_errstringJq[$elName][] = 'equalTo:"' . $s_validationMessage . '"';
                     
                     //validation check
-                    $val1 = $this->postVal($o_elFull[0]->getId());
-                    $val2 = $this->postVal($o_elFull[1]->getId());
+                    $val1 = $this->postVal($o_elFull->getId());
+                    $val2 = $this->postVal($val->getId());
                     if ($val1!==$val2) {
                         $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_validationMessage;
@@ -1529,8 +1541,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     break;
                 case FormRuleType::required:
                     $jqRequiredVal='true';
-                    $ruleCondition = $rule->getCondition();
                     
+                    $ruleCondition = $rule->getCondition();
+                    if(!empty($ruleCondition) && is_a($ruleCondition[0],'JsonFormBuilder_baseElement')===false){
+                        $ruleCondition[0] = $this->getElementById($ruleCondition[0]);
+                    }
                     $b_validateRequiredPost=true;
                     if(!empty($ruleCondition)){
                         $this_elID = $ruleCondition[0]->getId();
@@ -1669,7 +1684,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     break;
                 case FormRuleType::conditionShow:
                     $jqRequiredVal='true';
+                    
                     $ruleCondition = $rule->getCondition();
+                    if(!empty($ruleCondition) && is_a($ruleCondition[0],'JsonFormBuilder_baseElement')===false){
+                        $ruleCondition[0] = $this->getElementById($ruleCondition[0]);
+                    }
                     
                     $b_validateRequiredPost=true;
                     if(!empty($ruleCondition)){

@@ -1,0 +1,26 @@
+{
+    "id": "TestContactForm",
+    "redirectDocument": "3",
+    "emailToAddress": "marcus@datawebnet.com.au",
+    "emailFromAddress": "from@nowhere.com",
+    "emailFromName": "Test User",
+    "emailSubject": "JsonFormBuilder Contact Form Submission",
+    "emailHeadHtml": "<p>This is a response from the contact us form:</p>",
+    "jqueryValidation":true,
+    "placeholderJavascript":"JsonFormBuilder_myForm",
+
+    "elements": [
+        {"element":"text", "id":"name_full", "label":"Full Name", "rules":["required"]},
+        {"element":"text", "id":"email_address", "label":"Email Address", "rules":["required","email"]},
+        {"element":"select", "id":"havedog", "label":"Do you have a dog?" , "rules":["required"], "values":{
+            "":"Please select...",
+            "Yes":"Yes",
+            "No":"No"
+        }},
+        {"element":"text", "id":"dogname", "label":"Name of Dog", "rules":[
+            {"type":"conditionShow", "condition":["havedog","Yes"] },
+            {"type":"required", "validationMessage":"As you have a dog, please tell us its name", "condition":["havedog","Yes"] }
+        ]},
+        {"element":"button", "id":"submit", "label":"Submit From", "type":"Submit"}
+    ]
+}

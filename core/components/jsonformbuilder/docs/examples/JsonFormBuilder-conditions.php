@@ -2,10 +2,8 @@
 require_once $modx->getOption('core_path',null,MODX_CORE_PATH).'components/jsonformbuilder/model/jsonformbuilder/JsonFormBuilder.class.php';
 
 //CREATE FORM ELEMENTS
-$o_fe_name      = new JsonFormBuilder_elementText('name_full','Your Name');
+$o_fe_name      = new JsonFormBuilder_elementText('name_full','Full Name');
 $o_fe_email     = new JsonFormBuilder_elementText('email_address','Email Address');
-$o_fe_notes     = new JsonFormBuilder_elementTextArea('comments','Comments',5,30);
-
 $a_opts = array(
     ''=>'Please select...',
     'Yes'=>'Yes',
@@ -19,7 +17,7 @@ $o_fe_buttSubmit    = new JsonFormBuilder_elementButton('submit','Submit Form','
 //SET VALIDATION RULES
 $a_formRules=array();
 //Set required fields
-$a_formFields_required = array($o_fe_havedog,$o_fe_notes, $o_fe_name, $o_fe_email);
+$a_formFields_required = array($o_fe_havedog,$o_fe_name,$o_fe_email);
 foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
@@ -27,10 +25,13 @@ foreach($a_formFields_required as $field){
 
 //NOTE: Requires jQuery Validate to work.
 //Conditional required rule example
-$a_formRules[] = new FormRule(FormRuleType::required,$o_fe_dogname,NULL,'As you have a dog, please tell us its name.',array($o_fe_havedog,'Yes'));
+$r = new FormRule(FormRuleType::required,$o_fe_dogname,NULL,'As you have a dog, please tell us its name.');
+$r->setCondition(array('havedog','Yes'));
+$a_formRules[] = $r;
 //You can create a Show rule which will keep the field hidden, unless the value of another field is selected.
-$a_formRules[] = new FormRule(FormRuleType::conditionShow,$o_fe_dogname,NULL,NULL,array($o_fe_havedog,'Yes'));
-
+$r = new FormRule(FormRuleType::conditionShow,$o_fe_dogname);
+$r->setCondition(array($o_fe_havedog,'Yes'));
+$a_formRules[] = $r;
 
         
 //Make email field require a valid email address
@@ -51,7 +52,7 @@ $o_form->setPlaceholderJavascript('JsonFormBuilder_myForm');
 //ADD ELEMENTS TO THE FORM IN PREFERRED ORDER
 $o_form->addElements(
     array(
-        $o_fe_name,$o_fe_email,$o_fe_notes,$o_fe_havedog,$o_fe_dogname,$o_fe_buttSubmit
+        $o_fe_name,$o_fe_email,$o_fe_havedog,$o_fe_dogname,$o_fe_buttSubmit
     )
 );
 
