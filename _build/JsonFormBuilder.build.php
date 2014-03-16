@@ -52,6 +52,10 @@ $category->set('id',1);
 $category->set('category',PKG_NAME);
 
 
+function getSnippetCode($file){
+    $content = trim(file_get_contents($file));
+    return str_replace('<?php','',$content);
+}
 /* add snippets */
 $modx->log(modX::LOG_LEVEL_INFO,'Packaging in snippets...');
 $snippets = array();
@@ -61,7 +65,7 @@ $snippets[1]->fromArray(array(
     'id' => 1,
     'name' => 'JsonFormBuilder-fromJSON',
     'description' => 'Shorthand method of creating a simple form with JSON syntax.',
-    'snippet' => trim(file_get_contents($sources['elements'].'snippets/snippet.fromjson.php')),
+    'snippet' => getSnippetCode($sources['elements'].'snippets/snippet.fromjson.php'),
 ),'',true,true);
 
 $category->addMany($snippets);

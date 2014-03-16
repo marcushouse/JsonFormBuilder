@@ -1,7 +1,7 @@
 {
     "id": "TestContactForm",
     "redirectDocument": "3",
-    "emailToAddress": "marcus@datawebnet.com.au",
+    "emailToAddress": "your@address.com",
     "emailFromAddress": "from@nowhere.com",
     "emailFromName": "Test User",
     "emailSubject": "JsonFormBuilder Contact Form Submission",

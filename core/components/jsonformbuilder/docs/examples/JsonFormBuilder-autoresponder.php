@@ -31,8 +31,7 @@ $o_form->addRules($a_formRules);
 //Set email addresses and format
 $o_form->setAutoResponderToAddress($o_form->postVal('email_address')); //this must be the field ID for your return email, NOT the email address itself
 //You can also use an array of email addresses to send to multiple TO addresses.
-//$o_form->setAutoResponderToAddress(array('email@address1.com','email@address2.com'));
-$o_form->setAutoResponderToAddress(array('webmaster@walkerdesigns.com.au','marcus@datawebnet.com.au'));
+$o_form->setAutoResponderToAddress(array('email@address1.com','email@address2.com'));
 $o_form->setAutoResponderFromAddress('from@mybusiness.address');
 $o_form->setAutoResponderFromName('Business Title');
 $o_form->setAutoResponderReplyTo('reply@mybusiness.address');

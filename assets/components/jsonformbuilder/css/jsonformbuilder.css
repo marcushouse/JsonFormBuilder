@@ -9,7 +9,7 @@
     display: block;
     padding: 2px 0px 2px 0px;
     cursor: pointer;
-    color: #555555; }
+    color: #666666; }
   .form .formSegWrap .mainLabel:after {
     content: ":"; }
   .form .formSegWrap .elWrap {
@@ -19,7 +19,7 @@
       border: 1px solid #BBBBBB;
       border-radius: 2px;
       padding: 8px;
-      color: #444444;
+      color: #555555;
       transition: all 0.3s ease-out;
       -webkit-box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) inset;
       -moz-box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) inset;
@@ -40,13 +40,24 @@
       box-shadow: 0 0 3px red;
       border: 1px solid red; }
     .form .formSegWrap .elWrap input[type="submit"], .form .formSegWrap .elWrap input[type="button"], .form .formSegWrap .elWrap input[type="reset"] {
-      border: 1px solid #a9bbd6;
-      padding: 2px;
+      border: 1px solid #CCCCCC;
+      padding: 8px;
       min-width: 110px;
-      background-color: #b0cde8;
-      cursor: pointer; }
+      background-color: #f7f7f7;
+      color: #555555;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.3s ease-out;
+      -webkit-box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) outset;
+      -moz-box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) outset;
+      box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) outset;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -o-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      box-sizing: border-box; }
       .form .formSegWrap .elWrap input[type="submit"]:hover, .form .formSegWrap .elWrap input[type="button"]:hover, .form .formSegWrap .elWrap input[type="reset"]:hover {
-        background-color: #8ca2d9; }
+        background-color: #eeeeee; }
   .form .formSegWrap table.matrix {
     border-collapse: collapse;
     border-spacing: 0;

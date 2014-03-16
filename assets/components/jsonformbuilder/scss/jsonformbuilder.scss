@@ -23,8 +23,8 @@
 
 $borderCol:#dddddd;
 $errorCol:#FF0000;
-$typeCol:#444444;
-$labelCol:#555555;
+$typeCol:#555555;
+$labelCol:#666666;
 $focusCol:#f7f7f7;
                     
 /* JsonFormBuilder base rules */
@@ -75,13 +75,18 @@ $focusCol:#f7f7f7;
                 border: 1px solid $errorCol;
             }
             input[type="submit"], input[type="button"], input[type="reset"]{
-                border:1px solid #a9bbd6;
-                padding:2px;
+                border:1px solid #CCCCCC;
+                padding:8px;
                 min-width:110px;
-                background-color:#b0cde8;
+                background-color:$focusCol;
+                color:$typeCol;
                 cursor:pointer;
+                border-radius:2px;
+                @include transition();
+                @include box-shadow(2px, 3px, 3px, rgba(0, 0, 0, 0.08), outset);
+                @include box-sizing(border-box);
                 &:hover{
-                    background-color:#8ca2d9;
+                    background-color:#eeeeee;
                 }
             }
         }
