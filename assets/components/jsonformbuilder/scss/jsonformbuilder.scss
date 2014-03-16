@@ -5,9 +5,28 @@
     -ms-box-sizing: $type;
     box-sizing: $type;
 }
-$borderCol:#c8d3e3;
-$errorCol:#FF0000;
+@mixin box-shadow($top, $left, $blur, $color, $inset:"") {
+    -webkit-box-shadow:$top $left $blur $color #{$inset};
+    -moz-box-shadow:$top $left $blur $color #{$inset};
+    box-shadow:$top $left $blur $color #{$inset};
+}
 
+@mixin transition($properties: all, $duration: .3s, $easing: ease-out) {
+    @if length($properties) > 1 {
+        transition-property: $properties;
+        transition-duration: $duration;
+        transition-timing-function: $easing;
+    } @else {
+        transition: $properties $duration $easing;
+    }
+}
+
+$borderCol:#dddddd;
+$errorCol:#FF0000;
+$typeCol:#444444;
+$labelCol:#555555;
+$focusCol:#f7f7f7;
+                    
 /* JsonFormBuilder base rules */
 .form{
     h1,h2,h3,h4{
@@ -19,8 +38,9 @@ $errorCol:#FF0000;
         vertical-align:top;
         > label{
             display:block;
-            font-weight:bold;
             padding:2px 0px 2px 0px;
+            cursor:pointer;
+            color:$labelCol;
         }
         .mainLabel:after{
             content:":";
@@ -29,13 +49,19 @@ $errorCol:#FF0000;
             padding:2px 10px 2px 0px;
             input[type="text"], textarea, select, input[type="password"]{
                 width:100%;
-                border:1px solid #a9bbd6;
-                padding:3px;
-                color:#233156;
+                border:1px solid #BBBBBB;
+                border-radius:2px;
+                
+                padding:8px;
+                color:$typeCol;
+                
+                @include transition();
+                @include box-shadow(2px, 3px, 3px, rgba(0, 0, 0, 0.08), inset);
                 @include box-sizing(border-box);
+                
                 &:focus{
-                    background-color:#f4f7fb;
-                    border-color:#4586e7;  
+                    background-color:$focusCol;
+                    border-color:#838383;  
                 }
                 &.error{
                     background-color:#ffe8e8;
@@ -65,13 +91,14 @@ $errorCol:#FF0000;
             table-layout : fixed;
             width:100%;
             th{
-                background-color:#dfe5ee;
-                font-size:90%;
+                background-color:#F7F7F7;
+                font-size:85%;
             }
             th,td{
                 padding:3px;
                 border-bottom: 1px solid $borderCol;
                 border-right: 1px solid $borderCol;
+                font-size:85%;
             }
             th.columnHead{
                 text-align:center;
@@ -138,18 +165,18 @@ $errorCol:#FF0000;
         margin:10px 10px 10px 0px; 
     }
     label.mainLabelError{
-        font-weight:bold;
         color:#990000;
     }
 
     .errorContainer{
         display:block; /* for Non jQuery Validate form errors with multiple warnings */
+        padding-top:2px;
         label{
-            font-size:90%;
+            font-size:85%;
             display:block;
             color:$errorCol;
             clear:both;
-            padding: 3px 0;
+            cursor:pointer;
             span{
                 display:block;
             }
@@ -164,7 +191,9 @@ $errorCol:#FF0000;
         clear:both;
         label{
             display:inline-block;
+            width:80%;
             padding:2px;
+            cursor:pointer;
         }
         .radioEl{
             float:left;

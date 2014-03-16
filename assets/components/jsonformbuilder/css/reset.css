@@ -39,19 +39,19 @@ blockquote, q {
 /* Set some global basic rules such as font and font size etc */
 *, body {
   font-family: Helvetica,Arial,sans-serif;
-  font-size: 12px; }
+  font-size: 14px; }
 
 body {
   padding: 10px; }
 
 h1 {
-  font-size: 300%; }
+  font-size: 250%; }
 
 h2 {
-  font-size: 200%; }
+  font-size: 180%; }
 
 h3 {
-  font-size: 160%; }
+  font-size: 150%; }
 
 h1, h2, h3 {
   padding: 15px 0px 5px 0px; }

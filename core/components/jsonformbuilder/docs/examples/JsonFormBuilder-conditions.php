@@ -26,11 +26,11 @@ foreach($a_formFields_required as $field){
 //NOTE: Requires jQuery Validate to work.
 //Conditional required rule example
 $r1 = new FormRule(FormRuleType::required,$o_fe_dogname,NULL,'As you have a dog, please tell us its name.');
-$r->setCondition(array('havedog','Yes'));
+$r1->setCondition(array('havedog','Yes'));
 $a_formRules[] = $r1;
 //You can create a Show rule which will keep the field hidden, unless the value of another field is selected.
 $r2 = new FormRule(FormRuleType::conditionShow,$o_fe_dogname);
-$r->setCondition(array($o_fe_havedog,'Yes'));
+$r2->setCondition(array($o_fe_havedog,'Yes'));
 $a_formRules[] = $r2;
 
         

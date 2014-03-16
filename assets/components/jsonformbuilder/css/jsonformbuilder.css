@@ -7,25 +7,31 @@
   /* example extra classes */ }
   .form .formSegWrap > label {
     display: block;
-    font-weight: bold;
-    padding: 2px 0px 2px 0px; }
+    padding: 2px 0px 2px 0px;
+    cursor: pointer;
+    color: #555555; }
   .form .formSegWrap .mainLabel:after {
     content: ":"; }
   .form .formSegWrap .elWrap {
     padding: 2px 10px 2px 0px; }
     .form .formSegWrap .elWrap input[type="text"], .form .formSegWrap .elWrap textarea, .form .formSegWrap .elWrap select, .form .formSegWrap .elWrap input[type="password"] {
       width: 100%;
-      border: 1px solid #a9bbd6;
-      padding: 3px;
-      color: #233156;
+      border: 1px solid #BBBBBB;
+      border-radius: 2px;
+      padding: 8px;
+      color: #444444;
+      transition: all 0.3s ease-out;
+      -webkit-box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) inset;
+      -moz-box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) inset;
+      box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.08) inset;
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       -o-box-sizing: border-box;
       -ms-box-sizing: border-box;
       box-sizing: border-box; }
       .form .formSegWrap .elWrap input[type="text"]:focus, .form .formSegWrap .elWrap textarea:focus, .form .formSegWrap .elWrap select:focus, .form .formSegWrap .elWrap input[type="password"]:focus {
-        background-color: #f4f7fb;
-        border-color: #4586e7; }
+        background-color: #f7f7f7;
+        border-color: #838383; }
       .form .formSegWrap .elWrap input[type="text"].error, .form .formSegWrap .elWrap textarea.error, .form .formSegWrap .elWrap select.error, .form .formSegWrap .elWrap input[type="password"].error {
         background-color: #ffe8e8;
         border: 1px solid #c04242;
@@ -47,18 +53,19 @@
     table-layout: fixed;
     width: 100%; }
     .form .formSegWrap table.matrix th {
-      background-color: #dfe5ee;
-      font-size: 90%; }
+      background-color: #F7F7F7;
+      font-size: 85%; }
     .form .formSegWrap table.matrix th, .form .formSegWrap table.matrix td {
       padding: 3px;
-      border-bottom: 1px solid #c8d3e3;
-      border-right: 1px solid #c8d3e3; }
+      border-bottom: 1px solid #dddddd;
+      border-right: 1px solid #dddddd;
+      font-size: 85%; }
     .form .formSegWrap table.matrix th.columnHead {
       text-align: center;
-      border-top: 1px solid #c8d3e3; }
+      border-top: 1px solid #dddddd; }
     .form .formSegWrap table.matrix th.rowHead {
       text-align: left;
-      border-left: 1px solid #c8d3e3; }
+      border-left: 1px solid #dddddd; }
     .form .formSegWrap table.matrix th.spaceCell {
       background-color: transparent; }
     .form .formSegWrap table.matrix .optionCell {
@@ -94,17 +101,17 @@
   width: auto;
   margin: 10px 10px 10px 0px; }
 .form label.mainLabelError {
-  font-weight: bold;
   color: #990000; }
 .form .errorContainer {
   display: block;
-  /* for Non jQuery Validate form errors with multiple warnings */ }
+  /* for Non jQuery Validate form errors with multiple warnings */
+  padding-top: 2px; }
   .form .errorContainer label {
-    font-size: 90%;
+    font-size: 85%;
     display: block;
     color: red;
     clear: both;
-    padding: 3px 0; }
+    cursor: pointer; }
     .form .errorContainer label span {
       display: block; }
 .form .process_errors_wrap {
@@ -113,7 +120,9 @@
   clear: both; }
   .form .radioWrap label {
     display: inline-block;
-    padding: 2px; }
+    width: 80%;
+    padding: 2px;
+    cursor: pointer; }
   .form .radioWrap .radioEl {
     float: left;
     clear: both; }
