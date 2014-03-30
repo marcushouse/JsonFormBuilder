@@ -21,6 +21,7 @@ $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please pr
 //CREATE FORM AND SETUP
 $o_form = new JsonFormBuilder($modx,'contactForm');
 $o_form->setRedirectDocument(3);
+$o_form->setSpamProtection(true);
 $o_form->addRules($a_formRules);
 
 //SETUP EMAIL

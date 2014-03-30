@@ -1858,9 +1858,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $s_form.=$nl . '</div>';
 
         //wrap form elements in form tags
-        $s_form = '<form style="display:none;" action="/" method="' . htmlspecialchars($this->_method) . '"' . ($this->_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
-                . $s_form . $nl
-                . '</form><script type="text/javascript">var form = document.getElementById("'.$this->_id.'"); form.setAttribute("action","[[~[[*id]]]]"); form.style.display = "block";</script><noscript>Your browser does not support JavaScript! - You need JavaScript to view this form.</noscript> ';
+        $s_form = ''
+            . '<form '.($this->_spamProtection===true?'style="display:none;"':'').' action="'.($this->_spamProtection===true?'/':'[[~[[*id]]]]').'" method="' . htmlspecialchars($this->_method) . '"' . ($this->_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
+            . $s_form . $nl
+            . '</form>';
+        if($this->_spamProtection===true){
+            $s_form .='<script type="text/javascript">var form = document.getElementById("'.$this->_id.'"); form.setAttribute("action","[[~[[*id]]]]"); form.style.display = "block";</script><noscript>Your browser does not support JavaScript! - You need JavaScript to view this form.</noscript>';
+        }
         return $s_form;
     }
     

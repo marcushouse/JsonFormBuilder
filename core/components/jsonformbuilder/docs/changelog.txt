@@ -1,5 +1,8 @@
 Changelog for JsonFormBuilder
 =========================================
+JsonFormBuilder 1.0.19-pl - 30th Mar 2014
+=========================================
+- Add ability to disable spam protection.
 
 JsonFormBuilder 1.0.18-pl - 10th Mar 2014
 =========================================
