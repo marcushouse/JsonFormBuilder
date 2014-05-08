@@ -1,5 +1,11 @@
 Changelog for JsonFormBuilder
 =========================================
+
+JsonFormBuilder 1.0.20-pl - 8th May 2014
+=========================================
+- Added placeholders for JSON forms. Can now use placeholders such as [[++emailsender]] or [[+postVal.email_address]] etc.
+- Added ability to add any attribute you like to a form element. You can now add class, placeholder etc using "extraElementAttribs":{"placeholder":"test","class":"testing"} with JSON or the setExtraElementAttribs() method.
+
 JsonFormBuilder 1.0.19-pl - 30th Mar 2014
 =========================================
 - Add ability to disable spam protection.

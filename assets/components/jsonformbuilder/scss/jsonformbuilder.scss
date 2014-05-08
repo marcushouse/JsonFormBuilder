@@ -154,6 +154,10 @@ $focusCol:#f7f7f7;
             margin-right:5px;
         }
         /* example extra classes */
+        &.full{
+            width:100%;
+            clear:both;
+        }
         &.half{
             width:50%;
             float:left;

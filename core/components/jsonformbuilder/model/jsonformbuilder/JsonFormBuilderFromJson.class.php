@@ -13,9 +13,23 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
         }
         $this->modx = &$modx;
     }
-    
+
     function setJsonData($json){
-        $a_json = json_decode($json,true);
+        
+        //place all post values in chunk placeholders for use (sinple string types only)
+        $postVars = filter_input_array(INPUT_POST);
+        $a_processVars=array();
+        foreach($postVars as $key=>$val){
+            $thisVal = (string)$val;
+            $a_processVars['postVal.'.$key]=$thisVal;
+        }
+        
+        $uniqid = uniqid();
+        $chunk = $this->modx->newObject('modChunk', array('name' => "{tmp}-{$uniqid}"));
+        $chunk->setCacheable(false);        
+        $output = $chunk->process($a_processVars, $json);
+        
+        $a_json = json_decode($output,true);
         if(!empty($a_json)){
             $this->a_json = $a_json;
         }else{

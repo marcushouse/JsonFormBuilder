@@ -63,7 +63,7 @@ class JsonFormBuilder_elementCheckbox extends JsonFormBuilder_element{
 		}
 		//hidden field with same name is so we get a post value regardless of tick status
 		$s_ret='<input type="hidden" name="'.htmlspecialchars($this->_id).'" value="'.htmlspecialchars($a_uncheckedVal).'" />'
-		.'<input type="checkbox" id="'.htmlspecialchars($this->_id).'" name="'.htmlspecialchars($this->_id).'" value="'.htmlspecialchars($this->_value).'"'.$selectedStr.' />';
+		.'<input type="checkbox" id="'.htmlspecialchars($this->_id).'" name="'.htmlspecialchars($this->_id).'" value="'.htmlspecialchars($this->_value).'"'.$selectedStr.' '.$this->processExtraAttribsToStr().' />';
 		return $s_ret;
 	}
 }

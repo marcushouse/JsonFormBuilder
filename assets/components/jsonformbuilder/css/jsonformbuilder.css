@@ -101,6 +101,9 @@
   .form .formSegWrap.elementDate select {
     width: auto;
     margin-right: 5px; }
+  .form .formSegWrap.full {
+    width: 100%;
+    clear: both; }
   .form .formSegWrap.half {
     width: 50%;
     float: left; }

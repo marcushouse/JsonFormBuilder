@@ -141,7 +141,7 @@ class JsonFormBuilder_elementCheckboxGroup extends JsonFormBuilder_element{
 					$selectedStr=' checked="checked"';
 				}
 			}
-			$s_ret.=$selectedStr.' /></div>';
+			$s_ret.=$selectedStr.' '.$this->processExtraAttribsToStr().' /></div>';
 			if($this->_showIndividualLabels===true){
 				$s_ret.='<label for="'.htmlspecialchars($this->_id.'_'.$i).'">'.htmlspecialchars($value['title']).'</label>';
 			}

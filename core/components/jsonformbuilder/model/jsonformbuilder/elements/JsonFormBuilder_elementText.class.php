@@ -193,11 +193,7 @@ class JsonFormBuilder_elementText extends JsonFormBuilder_element{
 		if($this->_required===true){
 			$a_classes[]='required'; // for jquery validate (or for custom CSSing :) )
 		}
-		//add classes last
-		if(count($a_classes)>0){
-			$s_ret.=' class="'.implode(' ',$a_classes).'"';
-		}
-		$s_ret.=' />';
+		$s_ret.=$this->processExtraAttribsToStr($a_classes).' />';
 		return $s_ret;
 	}
 }

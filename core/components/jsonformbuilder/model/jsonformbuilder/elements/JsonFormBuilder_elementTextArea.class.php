@@ -58,10 +58,7 @@ class JsonFormBuilder_elementTextArea extends JsonFormBuilder_element{
 		
 		$s_ret='<textarea id="'.htmlspecialchars($this->_id).'" rows="'.htmlspecialchars($this->_rows).'" cols="'.htmlspecialchars($this->_columns).'" name="'.htmlspecialchars($this->_id).'"';
 		//add classes last
-		if(count($a_classes)>0){
-			$s_ret.=' class="'.implode(' ',$a_classes).'"';
-		}
-		$s_ret.='>'.$selectedStr.'</textarea>';
+		$s_ret.=' '.$this->processExtraAttribsToStr($a_classes).'>'.$selectedStr.'</textarea>';
 		return $s_ret;
 	}
 }

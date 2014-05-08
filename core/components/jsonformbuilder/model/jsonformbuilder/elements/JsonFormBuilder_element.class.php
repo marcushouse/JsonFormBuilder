@@ -40,6 +40,10 @@ abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
 	/**
 	 * @ignore
 	 */
+    protected $_extraElementAttribs;
+	/**
+	 * @ignore
+	 */
 	protected $_labelAfterElement;
     
     /**
@@ -108,6 +112,13 @@ abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
 	 */
 	public function getExtraClasses() { return $this->_extraClasses; }
 	/**
+	 * getElementAttribs()
+	 * 
+	 * Returns the array of extra attributes applied to the element.
+	 * @return array
+	 */
+    public function getElementAttribs() { return $this->_extraElementAttribs; }
+	/**
 	 * getLabelAfterElement()
 	 * 
 	 * Returns a boolean indicating if an element will output label HTML before (false) or after (true) the element.
@@ -115,6 +126,29 @@ abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
 	 */
 	public function getLabelAfterElement() { return $this->_labelAfterElement; }
 	
+    public function processExtraAttribsToStr($a_existingclasses=false){
+        if($a_existingclasses===false){
+            $a_existingclasses=array();
+        }
+        
+        $a_ret=array();
+        foreach($this->_extraElementAttribs as $attribKey=>$attribVal){
+            if($attribKey!='class'){
+                $a_ret[]=htmlspecialchars($attribKey).'="'.htmlspecialchars($attribVal).'"';
+            }
+        }
+        //add classes last
+        
+        $a_allClasses = $a_existingclasses;
+        if(empty($this->_extraElementAttribs['class'])===false){
+            $a_allClasses[]=htmlspecialchars($this->_extraElementAttribs['class']);
+        }
+        if(empty($a_allClasses)===false){
+            $a_ret[]='class="'.implode(' ',$a_allClasses).'"';
+        }
+        
+        return implode(' ',$a_ret);
+    }
 	
 	/**
 	 * setId($value)
@@ -151,6 +185,14 @@ abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
 	 * @param array $value An array of class strings.
 	 */
 	public function setExtraClasses($value) { $this->_extraClasses = self::forceArray($value); }
+    
+    /**
+	 * setExtraElementAttribs($a_value)
+	 * 
+	 * Allows you to add your own attributes to the element (placeholder, classes, etc).
+	 * @param array $value An array of class strings.
+	 */
+	public function setExtraElementAttribs($a_value) { $this->_extraElementAttribs = self::forceArray($a_value); }
 	
 	/**
 	 * setLabelAfterElement($value)

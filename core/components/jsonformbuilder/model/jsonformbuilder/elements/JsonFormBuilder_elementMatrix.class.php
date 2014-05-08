@@ -71,12 +71,12 @@ class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
                         }else{
                             $s_postVal = $this->postVal($this->_id.'_'.$r_cnt);
                         }
-						$s_cellHTML='<input '.($s_postVal!=='' && $s_postVal==$c_cnt?'checked="checked" ':'').'type="radio" id="'.htmlspecialchars($this->_id.'_'.$r_cnt.'_'.$c_cnt).'" name="'.htmlspecialchars($this->_id.'_'.$r_cnt).'" value="'.htmlspecialchars($c_cnt).'" />';
+						$s_cellHTML='<input '.($s_postVal!=='' && $s_postVal==$c_cnt?'checked="checked" ':'').'type="radio" id="'.htmlspecialchars($this->_id.'_'.$r_cnt.'_'.$c_cnt).'" name="'.htmlspecialchars($this->_id.'_'.$r_cnt).'" value="'.htmlspecialchars($c_cnt).'" '.$this->processExtraAttribsToStr().' />';
 						break;
 					case 'check':
                         $s_postVal = $this->postVal($this->_id.'_'.$r_cnt);
                         
-						$s_cellHTML='<input '.($s_postVal!=='' && in_array($c_cnt,$s_postVal)===true?'checked="checked" ':'').'type="checkbox" id="'.htmlspecialchars($this->_id.'_'.$r_cnt.'_'.$c_cnt).'" name="'.htmlspecialchars($this->_id.'_'.$r_cnt.'[]').'" value="'.$c_cnt.'" />';
+						$s_cellHTML='<input '.($s_postVal!=='' && in_array($c_cnt,$s_postVal)===true?'checked="checked" ':'').'type="checkbox" id="'.htmlspecialchars($this->_id.'_'.$r_cnt.'_'.$c_cnt).'" name="'.htmlspecialchars($this->_id.'_'.$r_cnt.'[]').'" value="'.$c_cnt.'" '.$this->processExtraAttribsToStr().' />';
 						break;
 				}
 				$c_cnt++;

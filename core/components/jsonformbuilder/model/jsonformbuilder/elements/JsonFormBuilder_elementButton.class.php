@@ -56,7 +56,7 @@ class JsonFormBuilder_elementButton extends JsonFormBuilder_element{
 				$s_ret.=' src="'.htmlspecialchars($this->_src).'"';
 			}
 		}
-		$s_ret.=' />';
+		$s_ret.=' '.$this->processExtraAttribsToStr().' />';
 		return $s_ret;
 	}
 }

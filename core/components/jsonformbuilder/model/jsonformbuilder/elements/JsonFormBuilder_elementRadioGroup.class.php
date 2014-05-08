@@ -88,7 +88,7 @@ class JsonFormBuilder_elementRadioGroup extends JsonFormBuilder_element{
 					$selectedStr=' checked="checked"';
 				}
 			}
-			$s_ret.=$selectedStr.' /></div></div>'."\r\n";
+			$s_ret.=$selectedStr.' '.$this->processExtraAttribsToStr().' /></div></div>'."\r\n";
 			$i++;
 		}
 		$s_ret.='</div>';

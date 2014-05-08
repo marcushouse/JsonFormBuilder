@@ -59,7 +59,7 @@ class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 		}else{
 			$selectedVal=$this->_defaultVal;
 		}
-		$s_ret='<select id="'.htmlspecialchars($this->_id).'" name="'.htmlspecialchars($this->_id).'">'."\r\n";
+		$s_ret='<select id="'.htmlspecialchars($this->_id).'" name="'.htmlspecialchars($this->_id).'" '.$this->processExtraAttribsToStr().'>'."\r\n";
 		foreach($this->_values as $key=>$value){
 			$selectedStr='';
 			if($this->postVal($this->_id)!==false){
