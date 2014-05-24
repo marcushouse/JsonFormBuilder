@@ -60,11 +60,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * @ignore 
      */
-    private $_postHookName;
-
-    /**
-     * @ignore 
-     */
     private $_emailFromAddress;
 
     /**
@@ -362,16 +357,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * getPostHookName()
-     * 
-     * Returns the post hook snippet name (normally set to the same snippet name for the JsonFormBuilder form)
-     * @return string
-     */
-    public function getPostHookName() {
-        return $this->_postHookName;
-    }
-
-    /**
      * getEmailFromAddress()
      * 
      * Returns the FROM email address used when sending email.
@@ -660,16 +645,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function setJqueryValidation($value) {
         $this->_jqueryValidation = self::forceBool($value);
-    }
-
-    /**
-     * setPostHookName($value)
-     * 
-     * Sets the post hook snippet name (normally set to the same snippet name for the JsonFormBuilder form).
-     * @param string $value
-     */
-    public function setPostHookName($value) {
-        $this->_postHookName = $value;
     }
 
     /**
@@ -1301,25 +1276,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         
     }
 
-    /**
-     * postHook() - SOON TO BE MADE PRIVATE - SHOULD CALL processCoreHook METHOD INSTEAD
-     * 
-     * Gets the post hook email template chunk string.
-     * @return string 
-     */
-    public function postHook() {
-        return $this->getPostHookString();
-    }
-
-    /**
-     * postHookRaw()
-     * 
-     * FOR DEBUGGING ONLY - Gets the post hook string and echos it out followed by a hard exit. This allows users to see the raw FormIt syntax to ensure the source is written as expected.
-     */
-    public function postHookRaw() {
-        echo $this->getPostHookString();
-        exit();
-    }
     
     public function getElementById($id){
         foreach ($this->_formElements as $o_el){
