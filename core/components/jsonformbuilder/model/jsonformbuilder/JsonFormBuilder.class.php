@@ -201,6 +201,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      * @ignore 
      */
     private $_autoResponderEmailContent;
+    
+     /**
+     * @ignore 
+     */
+    private $_formAction;
 
     /**
      * @ignore 
@@ -495,6 +500,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     public function getEmailBCCAddress() {
         return $this->_emailBCCAddress;
     }
+    
+    public function getFormAction() {
+        return $this->_formAction;
+    }
 
     /**
      * getStore()
@@ -605,6 +614,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function setMethod($value) {
         $this->_method = $value;
+    }
+    
+    public function setFormAction($value) {
+        $this->_formAction = $value;
     }
 
     /**
@@ -1814,12 +1827,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $s_form.=$nl . '</div>';
 
         //wrap form elements in form tags
+        $formAction = '[[~[[*id]]]]';
+        if(empty($this->_formAction)===false){
+            $formAction = $this->_formAction;
+        }
         $s_form = ''
-            . '<form '.($this->_spamProtection===true?'style="display:none;"':'').' action="'.($this->_spamProtection===true?'/':'[[~[[*id]]]]').'" method="' . htmlspecialchars($this->_method) . '"' . ($this->_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
+            . '<form '.($this->_spamProtection===true?'style="display:none;"':'').' action="'.($this->_spamProtection===true?'/':$formAction).'" method="' . htmlspecialchars($this->_method) . '"' . ($this->_attachmentIncluded ? ' enctype="multipart/form-data"' : '') . ' class="form" id="' . htmlspecialchars($this->_id) . '">' . $nl
             . $s_form . $nl
             . '</form>';
         if($this->_spamProtection===true){
-            $s_form .='<script type="text/javascript">var form = document.getElementById("'.$this->_id.'"); form.setAttribute("action","[[~[[*id]]]]"); form.style.display = "block";</script><noscript>Your browser does not support JavaScript! - You need JavaScript to view this form.</noscript>';
+            $s_form .='<script type="text/javascript">var form = document.getElementById("'.$this->_id.'"); form.setAttribute("action","'.$formAction.'"); form.style.display = "block";</script><noscript>Your browser does not support JavaScript! - You need JavaScript to view this form.</noscript>';
         }
         return $s_form;
     }
