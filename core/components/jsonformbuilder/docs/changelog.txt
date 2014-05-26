@@ -1,6 +1,11 @@
 Changelog for JsonFormBuilder
 =========================================
 
+JsonFormBuilder 1.0.21-pl - 26th May 2014
+=========================================
+- Add ability to read and modify form action via get/setFormAction methods (handy for custom posts to non MODX resources).
+- Remove old legacy posthook code.
+
 JsonFormBuilder 1.0.20-pl - 8th May 2014
 =========================================
 - Added placeholders for JSON forms. Can now use placeholders such as [[++emailsender]] or [[+postVal.email_address]] etc.
