@@ -28,7 +28,7 @@ class JsonFormBuilder_elementButton extends JsonFormBuilder_element{
 	 * @param string $buttonLabel The label of the button
 	 * @param string $type The button type, e.g button, image, reset, submit etc.
 	 */
-	function __construct($id, $buttonLabel, $type ) {
+	function __construct($id, $buttonLabel, $type=null ) {
 		parent::__construct($id,$buttonLabel);
 		$this->_showLabel = false;
 		$this->_showInEmail = false;

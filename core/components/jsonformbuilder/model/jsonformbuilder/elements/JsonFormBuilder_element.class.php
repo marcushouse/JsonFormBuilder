@@ -132,9 +132,11 @@ abstract class JsonFormBuilder_element extends JsonFormBuilder_baseElement{
         }
         
         $a_ret=array();
-        foreach($this->_extraElementAttribs as $attribKey=>$attribVal){
-            if($attribKey!='class'){
-                $a_ret[]=htmlspecialchars($attribKey).'="'.htmlspecialchars($attribVal).'"';
+        if(empty($this->_extraElementAttribs)===false){
+            foreach($this->_extraElementAttribs as $attribKey=>$attribVal){
+                if($attribKey!='class'){
+                    $a_ret[]=htmlspecialchars($attribKey).'="'.htmlspecialchars($attribVal).'"';
+                }
             }
         }
         //add classes last

@@ -1,5 +1,8 @@
 Changelog for JsonFormBuilder
 =========================================
+JsonFormBuilder 1.0.22-pl - 8th June 2014
+=========================================
+- Bug fixes to stop a few warnings writing to the MODX error logs.
 
 JsonFormBuilder 1.0.21-pl - 26th May 2014
 =========================================

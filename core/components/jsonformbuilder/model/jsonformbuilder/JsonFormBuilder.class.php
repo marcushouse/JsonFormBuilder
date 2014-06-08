@@ -1227,7 +1227,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress,' Issue with replyToAddress.'));
             /* handle file fields */
             foreach ($this->_formElements as $o_el) {
-                if (get_class($o_el) == 'JsonFormBuilder_elementFile') {
+                if (is_object($o_el) && get_class($o_el) == 'JsonFormBuilder_elementFile') {
                     if(isset($_FILES[$o_el->getId()])===true){
                         $file = $_FILES[$o_el->getId()];
                         $this->modx->mail->mailer->AddAttachment($file['tmp_name'],$file['name'],'base64',!empty($file['type']) ? $file['type'] : 'application/octet-stream');

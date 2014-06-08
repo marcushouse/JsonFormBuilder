@@ -33,7 +33,7 @@ class JsonFormBuilder_elementTextArea extends JsonFormBuilder_element{
 	 * @param int $cols The required cols (attribute value that must be set on a valid XHTML textarea tag)
 	 * @param string $defaultValue The default text to be written into the text area
 	 */
-	function __construct($id, $label, $rows, $cols, $defaultValue=NULL) {
+	function __construct($id, $label, $rows=NULL, $cols=NULL, $defaultValue=NULL) {
 		parent::__construct($id,$label);
 		$this->setDefaultVal($defaultValue);
         if(!empty($rows)){ $this->setRows($rows); }

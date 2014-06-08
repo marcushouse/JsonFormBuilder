@@ -41,7 +41,7 @@ class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 	 * @param array $values An array of title/value arrays in order of display
 	 * @param string $defaultValue The default value to select in the dropdown field 
 	 */
-	function __construct($id, $label, array $values, $defaultValue=null) {
+	function __construct($id, $label, $values=null, $defaultValue=null) {
 		parent::__construct($id,$label);
 		$this->setValues($values);
 		$this->setDefaultVal($defaultValue);

@@ -19,9 +19,11 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
         //place all post values in chunk placeholders for use (sinple string types only)
         $postVars = filter_input_array(INPUT_POST);
         $a_processVars=array();
-        foreach($postVars as $key=>$val){
-            $thisVal = (string)$val;
-            $a_processVars['postVal.'.$key]=$thisVal;
+        if(!empty($postVars)){
+            foreach($postVars as $key=>$val){
+                $thisVal = (string)$val;
+                $a_processVars['postVal.'.$key]=$thisVal;
+            }
         }
         
         $uniqid = uniqid();
@@ -98,18 +100,19 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
                         if(is_array($rule)){
                             //rule in assoc array
                             $r = new FormRule($rule['type'],$o_el,$rule['value']);
+                            $a_ruleignore = array('type');
+                            foreach($rule as $key=>$val){
+                                if(in_array($key,$a_ruleignore)){
+                                    continue;
+                                }
+                                $methodName = 'set'.ucfirst($key);
+                                $r->$methodName($val);
+                            }
                         }else{
                             //simple rule
                             $r = new FormRule($rule,$o_el);
                         }
-                        $a_ruleignore = array('type');
-                        foreach($rule as $key=>$val){
-                            if(in_array($key,$a_ruleignore)){
-                                continue;
-                            }
-                            $methodName = 'set'.ucfirst($key);
-                            $r->$methodName($val);
-                        }
+                        
                         $r->refresh(); // just in case
                         $a_formRulesToAdd[]=$r;
                     }
