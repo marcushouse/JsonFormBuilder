@@ -1,5 +1,10 @@
 Changelog for JsonFormBuilder
 =========================================
+
+JsonFormBuilder 1.0.23-pl - 25th July 2014
+=========================================
+- Fix to stop uppercase file extensions messing with fileExtValid checks.
+
 JsonFormBuilder 1.0.22-pl - 8th June 2014
 =========================================
 - Bug fixes to stop a few warnings writing to the MODX error logs.

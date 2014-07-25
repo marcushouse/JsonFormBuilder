@@ -1916,7 +1916,7 @@ jQuery.validator.addMethod("fileExtValid", function(value, element, a_ext) {
         b_retStatus=false;
         var a_valSplit = value.split(".");
         var ext = a_valSplit[a_valSplit.length-1];
-        var i; for(i=0;i<a_ext.length;i++){ if(a_ext[i]==ext){ b_retStatus=true; break; } }
+        var i; for(i=0;i<a_ext.length;i++){ if(a_ext[i].toLowerCase()==ext.toLowerCase()){ b_retStatus=true; break; } }
     }
 	return this.optional(element) || b_retStatus;
 }, "File type not allowed.");
