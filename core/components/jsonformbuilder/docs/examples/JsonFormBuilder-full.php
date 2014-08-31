@@ -23,6 +23,7 @@ $o_fe_postcode      = new JsonFormBuilder_elementText('postcode','Post Code');
 $o_fe_company       = new JsonFormBuilder_elementText('company','Company Name');
 $o_fe_companyPhone  = new JsonFormBuilder_elementText('company_phone','Company Phone');
 $o_fe_email         = new JsonFormBuilder_elementText('email_address','Email Address');
+$o_fe_website         = new JsonFormBuilder_elementText('web_site','Website Address');
 $o_fe_foodprefer    = new JsonFormBuilder_elementCheckboxGroup('food_most_like','Select your preferred two or three foods:',array(
     array('title'=>'Cheese','checked'=>false),
     array('title'=>'Grapes','checked'=>false),
@@ -105,6 +106,8 @@ foreach($a_formFields_required as $field){
     $a_formRules[] = new FormRule(FormRuleType::required,$field);
 }
 $a_formRules[] = new FormRule(FormRuleType::email, $o_fe_email, NULL, 'Please provide a valid email address');
+$a_formRules[] = new FormRule(FormRuleType::url, $o_fe_website);
+
 
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_checkTerms, NULL, 'You must agree to the terms and conditions');
 $a_formRules[] = new FormRule(FormRuleType::required, $o_fe_staff, NULL, 'Please select an option for staff performance');
@@ -157,9 +160,9 @@ $a_els = array($o_fe_name,$o_fe_age,$o_fe_dob,$o_fe_attend,$o_fe_username,$o_fe_
 foreach($a_els as $e){
     $e->setExtraClasses(array('half'));
 }
-$a_els = array($o_fe_company,  $o_fe_companyPhone, $o_fe_employees);
+$a_els = array($o_fe_company,  $o_fe_companyPhone, $o_fe_employees,$o_fe_website);
 foreach($a_els as $e){
-    $e->setExtraClasses(array('third'));
+    $e->setExtraClasses(array('quart'));
 }
 //Add elements to output along with any HTML as a string element.
 $o_form->addElements(
@@ -172,7 +175,7 @@ $o_form->addElements(
         '<h2>Address</h2>',
         $o_fe_address,  $o_fe_city, $o_fe_usstates, $o_fe_postcode,
         '<h2>Company Information</h2>',
-        $o_fe_company,  $o_fe_companyPhone, $o_fe_employees,
+        $o_fe_company,  $o_fe_companyPhone, $o_fe_employees, $o_fe_website,
         '<h2>Performance</h2>',
         $o_fe_staff, $o_fe_foodprefer,
         '<h2>Matrix/Group Elements</h2>',

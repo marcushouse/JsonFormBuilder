@@ -1411,10 +1411,21 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 case FormRuleType::email:
                     $a_fieldProps_jqValidate[$elName][] = 'email:true';
                     $a_fieldProps_errstringJq[$elName][] = 'email:"' . $s_validationMessage . '"';
-
-                    if (filter_var($s_postedValue, FILTER_VALIDATE_EMAIL) === false) {
-                        $this->_invalidElements[] = $o_el;
-                        $o_el->errorMessages[] = $s_validationMessage;
+                    if(!empty($s_postedValue)){
+                        if (filter_var($s_postedValue, FILTER_VALIDATE_EMAIL) === false) {
+                            $this->_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
+                    }
+                    break;
+                case FormRuleType::url:
+                    $a_fieldProps_jqValidate[$elName][] = 'url:true';
+                    $a_fieldProps_errstringJq[$elName][] = 'url:"' . $s_validationMessage . '"';
+                    if(!empty($s_postedValue)){
+                        if (filter_var($s_postedValue, FILTER_VALIDATE_URL) === false) {
+                            $this->_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_validationMessage;
+                        }
                     }
                     break;
                 case FormRuleType::fieldMatch:

@@ -1,6 +1,8 @@
 /* JsonFormBuilder base rules */
 .form h1, .form h2, .form h3, .form h4 {
   clear: both; }
+.form .clear {
+  clear: both; }
 .form .formSegWrap {
   padding-top: 5px;
   vertical-align: top;
@@ -37,8 +39,8 @@
         border: 1px solid #c04242;
         color: #c04242; }
     .form .formSegWrap .elWrap input[type="radio"].error, .form .formSegWrap .elWrap input[type="checkbox"].error {
-      box-shadow: 0 0 3px red;
-      border: 1px solid red; }
+      box-shadow: 0 0 3px #FF0000;
+      border: 1px solid #FF0000; }
     .form .formSegWrap .elWrap input[type="submit"], .form .formSegWrap .elWrap input[type="button"], .form .formSegWrap .elWrap input[type="reset"] {
       border: 1px solid #CCCCCC;
       padding: 8px;
@@ -97,7 +99,7 @@
     vertical-align: middle; }
   .form .formSegWrap.required .mainElLabel:after {
     content: " *";
-    color: red; }
+    color: #FF0000; }
   .form .formSegWrap.elementDate select {
     width: auto;
     margin-right: 5px; }
@@ -109,6 +111,9 @@
     float: left; }
   .form .formSegWrap.third {
     width: 33.3%;
+    float: left; }
+  .form .formSegWrap.quart {
+    width: 25%;
     float: left; }
 .form .formSegWrap_submit, .form .formSegWrap_reset {
   float: left;
@@ -123,13 +128,13 @@
   .form .errorContainer label {
     font-size: 85%;
     display: block;
-    color: red;
+    color: #FF0000;
     clear: both;
     cursor: pointer; }
     .form .errorContainer label span {
       display: block; }
 .form .process_errors_wrap {
-  color: red; }
+  color: #FF0000; }
 .form .radioWrap {
   clear: both; }
   .form .radioWrap label {
@@ -143,3 +148,5 @@
 .form .tiny .elWrap span.after:after, .form .tiny .elWrap span.after:before {
   content: "*";
   padding-left: 2px; }
+
+/*# sourceMappingURL=jsonformbuilder.css.map */

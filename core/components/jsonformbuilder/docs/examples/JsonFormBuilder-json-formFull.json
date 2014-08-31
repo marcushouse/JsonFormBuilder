@@ -64,15 +64,16 @@
         
         "<h2>Company Information</h2>",
         
-        {"element":"text", "id":"company", "label":"Company Name", "extraClasses":["third"]},
-        {"element":"text", "id":"company_phone", "label":"Company Phone", "extraClasses":["third"]},
-        {"element":"select", "id":"employees", "label":"Number of Employees", "defaultVal":"11 to 20", "extraClasses":["third"], "values":{
+        {"element":"text", "id":"company", "label":"Company Name", "extraClasses":["quart"]},
+        {"element":"text", "id":"company_phone", "label":"Company Phone", "extraClasses":["quart"]},
+        {"element":"select", "id":"employees", "label":"Number of Employees", "defaultVal":"11 to 20", "extraClasses":["quart"], "values":{
             "10":"Less than 10",
             "11 to 20":"11 to 20",
             "50":"21 to 50",
             "100":"51 to 100",
             "100+":"More than 10"
         }},
+        {"element":"text", "id":"web_address", "label":"Website Address", "extraClasses":["quart"], "rules":["url"] },
     
         "<h2>Performance</h2>",
         {"element":"radioGroup", "id":"staff_performance", "label":"How would you rate staff performance?", "extraClasses":["half"], "values":{

@@ -32,6 +32,9 @@ $focusCol:#f7f7f7;
     h1,h2,h3,h4{
         clear:both;
     }
+    .clear{
+        clear:both;
+    } 
 
     .formSegWrap{
         padding-top:5px;
@@ -164,6 +167,10 @@ $focusCol:#f7f7f7;
         }
         &.third{
             width:33.3%;
+            float:left;
+        }
+        &.quart{
+            width:25%;
             float:left;
         }
     }

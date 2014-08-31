@@ -1,6 +1,12 @@
 Changelog for JsonFormBuilder
 =========================================
 
+JsonFormBuilder 1.0.24-pl - 31st Aug 2014
+=========================================
+- Fix empty email field bug (was not possible to have a non required email ruled field until this fix).
+- Add URL rule type (and added website address in full examples)
+- A few small scss/css modifications in the assets folder.
+
 JsonFormBuilder 1.0.23-pl - 25th July 2014
 =========================================
 - Fix to stop uppercase file extensions messing with fileExtValid checks.
