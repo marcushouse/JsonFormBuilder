@@ -107,13 +107,8 @@ class JsonFormBuilderCore {
     }
 
     public function postVal($field) {
-        
-        if(isset($GLOBALS['JsonFormBuilder_currPostArray'])===false){
-            $a_postArray = filter_input_array(INPUT_POST);
-            $GLOBALS['JsonFormBuilder_currPostArray'] = $a_postArray;
-        }else{
-            $a_postArray = $GLOBALS['JsonFormBuilder_currPostArray'];
-        }
+
+        $a_postArray = $_POST;
         
         //safe get value and allow the linebreak (for nl2br)
         if(isset($a_postArray[$field])===false){
@@ -122,7 +117,7 @@ class JsonFormBuilderCore {
             if(is_array($a_postArray[$field])===false){
                 return trim($a_postArray[$field]);
             }else{
-                return $a_postArray[$field];
+                return trim($a_postArray[$field]);
             }
         }
     }

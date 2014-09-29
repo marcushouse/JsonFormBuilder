@@ -1,6 +1,16 @@
 Changelog for JsonFormBuilder
 =========================================
 
+JsonFormBuilder 1.0.25-pl - 29th Sep 2014
+=========================================
+- Add ability to have condition rules applied on change of a radio group option (previously only worked with a select field).
+- Add ability to add custom errors via the new addError element method.
+- Add ability to retrieve email content manually (handy to record in database table).
+- Fix bug with Checkbox group and minimum length (possible to require multiple item to be ticked, but only if something is ticked, users need to make the field required to force users to tick a box).
+- Clean up old redundant hook, $GLOBALS hacks and database entry code.
+- Change from filter_input_array(INPUT_POST); to $_POST (simply to allow scripts to modify values on the fly, a severe limitation to filter_input_array IMHO).
+- Add JsonFormBuilder-record-in-db example.
+
 JsonFormBuilder 1.0.24-pl - 31st Aug 2014
 =========================================
 - Fix empty email field bug (was not possible to have a non required email ruled field until this fix).

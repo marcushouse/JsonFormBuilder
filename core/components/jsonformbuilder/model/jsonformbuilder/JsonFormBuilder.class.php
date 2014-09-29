@@ -45,11 +45,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * @ignore 
      */
-    private $_hooks;
-
-    /**
-     * @ignore 
-     */
     private $_jqueryValidation;
 
     /**
@@ -106,16 +101,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      * @ignore 
      */
     private $_customValidators;
-
-    /**
-     * @ignore 
-     */
-    private $_databaseTableObjectName;
-
-    /**
-     * @ignore 
-     */
-    private $_databaseTableFieldMapping;
 
     /**
      * @ignore 
@@ -412,16 +397,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * getHooks()
-     * 
-     * Returns the list of hooks that are set in the formIT call. e.g. "spam","email","redirect" etc.
-     * @return array
-     */
-    public function getHooks() {
-        return $this->_hooks;
-    }
-
-    /**
      * getValidate()
      * 
      * Returns the custom validation methods used (doesnt include the validation rules automatically set by rules etc).
@@ -623,7 +598,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * setRedirectDocument($value)
      * 
-     * Sets the forms redirectDocument setting (used if the redirect hook is also set).
+     * Sets the forms redirectDocument setting.
      * @param string $value The resource ID of the page to redirect to post success.
      */
     public function setRedirectDocument($value) {
@@ -771,16 +746,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * setHooks($value)
-     * 
-     * Sets the list of hooks that are set in the formIT call. e.g. "spam","email","redirect" etc.
-     * @param array $value Array containing hook strings
-     */
-    public function setHooks($value) {
-        $this->_hooks = self::forceArray($value);
-    }
-
-    /**
      * setValidate($value)
      * 
      * Sets the custom validation methods used (doesnt include the validation rules automatically set by rules etc).
@@ -798,27 +763,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      */
     public function setCustomValidators($value) {
         $this->_customValidators = $value;
-    }
-
-    /**
-     * setDatabaseObjectForInsert($s_objName,$a_mapping)
-     * 
-     * Sets the database table object to use to automatically insert the form information on a successful submission.
-     * 
-     * <code>
-     * //Demo Table Mapping (Allows auto entry of data into an mysql Table (xPDO object)
-     * $o_form->setDatabaseObjectForInsert('tableClass',array(
-     * 	array($o_name,'name'),
-     * 	array($o_address,'address'),
-     * 	array($o_country,'country'),           
-     * ));
-     * </code>
-     * @param object $s_objName The table class name used by the XPDO object.
-     * @param array $a_mapping Should contain an array which maps each form object to a field key within the table.
-     */
-    public function setDatabaseObjectForInsert($s_objName, $a_mapping) {
-        $this->_databaseTableObjectName = $s_objName;
-        $this->_databaseTableFieldMapping = $a_mapping;
     }
 
     /**
@@ -998,41 +942,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
-     * processHooks($a_hookCommands)
-     * 
-     * Called from the JsonFormBuilder_hooks snippet. Not intended to be called publically in any other way. This process should be automatic.
-     * @param array $a_hookCommands
-     * @return boolean
-     */
-    public function processHooks($a_hookCommands) {
-        $i_okCount = 0;
-        foreach ($a_hookCommands as $a_cmd) {
-            $b_res = false;
-            if (isset($a_cmd['name'], $a_cmd['value']) === true) {
-                switch ($a_cmd['name']) {
-                    case 'dbEntry':
-                        if (isset($a_cmd['value']['tableObj'], $a_cmd['value']['mapping']) === true) {
-                            $b_res = $this->addToDatabase($a_cmd['value']['tableObj'], $a_cmd['value']['mapping']);
-                        } else {
-                            JsonFormBuilder::throwError('JsonFormBuilder processHooks failed. The tableObj or mapping attributes were not set for "' . $a_cmd['name'] . '".');
-                        }
-                        break;
-                }
-                if ($b_res === true) {
-                    $i_okCount++;
-                }
-            } else {
-                JsonFormBuilder::throwError('JsonFormBuilder processHooks failed. The name and value pair is not set.');
-            }
-        }
-        if ($i_okCount == count($a_hookCommands)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * getFormTableContent()
      * 
      * Gets the form value TABLE HTML content.
@@ -1149,33 +1058,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         return $s_ret;
     }
 
-    /**
-     * getPostHookString()
-     * 
-     * Gets the strink used for the post hook (email content).
-     * @return string 
-     * @ignore 
-     */
-    function getPostHookString() {
-        $NL = "\r\n";
-        $s_style = 'font-size:' . $this->_emailFontSize . '; font-family:' . $this->_emailFontFamily . ';';
-
-        $s_footHTML = str_replace(
-                array('{{fromEmailAddress}}', '{{subject}}'), array(htmlspecialchars($this->_emailFromAddress), htmlspecialchars($this->_emailSubject)), $this->_emailFootHtml
-        );
-
-        $s_ret = '<div style="' . $s_style . '">' . $NL . $this->_emailHeadHtml . $NL
-                . $this->getFormTableContent() . $NL
-                . $s_footHTML . $NL
-                . '</div>';
-
-        return $s_ret;
-    }
-
-    function sendEmails() {
-        
-        $this->modx->getService('mail', 'mail.modPHPMailer');
-        
+    public function getEmailContent(){
         $NL = "\r\n";
         $s_style = 'font-size:' . $this->_emailFontSize . '; font-family:' . $this->_emailFontFamily . ';';
 
@@ -1187,7 +1070,14 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 . $this->getFormTableContent() . $NL
                 . $s_footHTML . $NL
                 . '</div>';
-
+        return $s_emailContent;
+    } 
+    function sendEmails() {
+        
+        $this->modx->getService('mail', 'mail.modPHPMailer');
+        
+        
+        $s_emailContent = $this->getEmailContent();
         if(!empty($this->_emailToAddress)){
             $this->modx->mail->set(modMail::MAIL_BODY, $s_emailContent);
             $this->modx->mail->set(modMail::MAIL_FROM, self::forceEmail($this->_emailFromAddress,' Issue with emailFromAddress.'));
@@ -1298,7 +1188,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         }
         return false;
     }
-
+    public function addError($o_el,$s_validationMessage){
+        $this->_invalidElements[] = $o_el;
+        $o_el->errorMessages[] = $s_validationMessage;
+    }
     /**
      * jqueryValidateJSON($jqFieldProps,$jqFieldMessages,$jqFormRules,$jqFormMessages)
      * 
@@ -1485,10 +1378,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $a_fieldProps_errstringJq[$elName][] = 'minlength:"' . $s_validationMessage . '"';
                     if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
                         //validation check
-                        $a_elementsSelected = $this->postVal($o_el->getId());
-                        if (is_array($a_elementsSelected)===false || count($a_elementsSelected) < $val) {
-                            $this->_invalidElements[] = $o_el;
-                            $o_el->errorMessages[] = $s_validationMessage;
+                        if(count($a_elementsSelected)>0){ //ignore if not selected at all as "required" should pick this up.
+                            $a_elementsSelected = $this->postVal($o_el->getId());
+                            if (is_array($a_elementsSelected)===false || count($a_elementsSelected) < $val) {
+                                $this->_invalidElements[] = $o_el;
+                                $o_el->errorMessages[] = $s_validationMessage;
+                            }
                         }
                     } else {
                         //validation check
@@ -1529,7 +1424,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $b_validateRequiredPost=true;
                     if(!empty($ruleCondition)){
                         $this_elID = $ruleCondition[0]->getId();
-                        $jqRequiredVal='{depends:function(element){var v=jQuery("#'.$this_elID.'").val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';  
+                         if(is_a($ruleCondition[0],'JsonFormBuilder_elementRadioGroup')){
+                             $s_valJq = 'jQuery("input[type=radio][name='.$this_elID.']")';
+                         }else{
+                             $s_valJq = 'jQuery("#'.$this_elID.'")';
+                         }
+                        $jqRequiredVal='{depends:function(element){var v='.$s_valJq.'.val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';  
                         $b_validateRequiredPost=false;
                         if($this->postVal($this_elID)==$ruleCondition[1]){
                             $b_validateRequiredPost=true;
@@ -1676,10 +1576,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         if(count($a_footJavascript)==0){
                             $a_footJavascript[]='var a; var e; var v; var b_s; var w;';
                         }
+                        //input[type=radio][name=bedStatus]
                         $a_footJavascript[]=''
                             . 'b_v=false;'
-                            . 'a=jQuery("#'.$this_elID.'");'
-                            . 'v=a.val();'
+                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementRadioGroup')?'a=jQuery("input[type=radio][name='.$this_elID.']"); if(a.is(":checked")===false){v="";}else{v=a.val();}':'a=jQuery("#'.$this_elID.'"); v=a.val();')
                             . 'if(v=="'.rawurlencode($ruleCondition[1]).'"){ b_v=true; }'
                             . 'e=jQuery("#'.$o_elFull->getId().'");'
                             . 'w=e.parents(".formSegWrap");'
@@ -1736,19 +1636,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 }
             }
         }
-                
-
-
-        //if using database table then add call to final hook
-        $b_addFinalHooks = false;
-        $GLOBALS['JsonFormBuilder_hookCommands'] = array('formObj' => &$this, 'commands' => array());
-        if (empty($this->_databaseTableObjectName) === false) {
-            $GLOBALS['JsonFormBuilder_hookCommands']['commands'][] = array('name' => 'dbEntry', 'value' => array('tableObj' => $this->_databaseTableObjectName, 'mapping' => $this->_databaseTableFieldMapping));
-            $b_addFinalHooks = true;
-        }
-        if ($b_addFinalHooks === true) {
-            $this->_hooks[] = 'JsonFormBuilder_hooks';
-        }
 
         $this->_fieldProps_jqValidate=$a_fieldProps_jqValidate;
         $this->_fieldProps_jqValidateGroups=$a_fieldProps_jqValidateGroups;
@@ -1802,7 +1689,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $s_errorContainer = '<div class="errorContainer">';
                     if ($this->getIsSubmitted()) {
                         if (count($o_el->errorMessages) > 0) {
-                            $s_errorContainer.='<label class="error" ' . $s_forStr . '>' . implode('<br />', $o_el->errorMessages) . '</label>';
+                            $s_errorContainer.='<label class="postederror" ' . $s_forStr . '>' . implode('<br />', $o_el->errorMessages) . '</label>';
                         }
                     }
                     $s_errorContainer.='</div>';

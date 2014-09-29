@@ -17,7 +17,7 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
     function setJsonData($json){
         
         //place all post values in chunk placeholders for use (sinple string types only)
-        $postVars = filter_input_array(INPUT_POST);
+        $postVars = $_POST;
         $a_processVars=array();
         if(!empty($postVars)){
             foreach($postVars as $key=>$val){

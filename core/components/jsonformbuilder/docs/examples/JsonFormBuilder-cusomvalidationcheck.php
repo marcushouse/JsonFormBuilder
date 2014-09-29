@@ -28,6 +28,7 @@ $o_form->addElements(
     )
 );
 
+//must force form to run validate check prior to checking if submitted
 $o_form->validate();
 
 if($o_form->isSubmitted()===true && count($o_form->getInvalidElements())===0){
