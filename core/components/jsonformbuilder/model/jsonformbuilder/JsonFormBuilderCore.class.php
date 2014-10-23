@@ -115,7 +115,7 @@ class JsonFormBuilderCore {
             return false;
         }else{
             if(is_array($a_postArray[$field])===false){
-                return trim($a_postArray[$field]);
+                return $a_postArray[$field];
             }else{
                 return trim($a_postArray[$field]);
             }
