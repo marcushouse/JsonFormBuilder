@@ -1348,9 +1348,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
                         //validation check
                         $a_elementsSelected = $this->postVal($o_el->getId());
-                        if (is_array($a_elementsSelected)===false || count($a_elementsSelected) > $val) {
-                            $this->_invalidElements[] = $o_el;
-                            $o_el->errorMessages[] = $s_validationMessage;
+                        if(is_array($a_elementsSelected)===true && count($a_elementsSelected)>0){ //ignore if not selected at all as "required" should pick this up.
+                            if (is_array($a_elementsSelected)===false || count($a_elementsSelected) > $val) {
+                                $this->_invalidElements[] = $o_el;
+                                $o_el->errorMessages[] = $s_validationMessage;
+                            }
                         }
                     } else {
                         //validation check
@@ -1378,8 +1380,8 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $a_fieldProps_errstringJq[$elName][] = 'minlength:"' . $s_validationMessage . '"';
                     if (is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup')) {
                         //validation check
-                        if(count($a_elementsSelected)>0){ //ignore if not selected at all as "required" should pick this up.
-                            $a_elementsSelected = $this->postVal($o_el->getId());
+                        $a_elementsSelected = $this->postVal($o_el->getId());
+                        if(is_array($a_elementsSelected)===true && count($a_elementsSelected)>0){ //ignore if not selected at all as "required" should pick this up.
                             if (is_array($a_elementsSelected)===false || count($a_elementsSelected) < $val) {
                                 $this->_invalidElements[] = $o_el;
                                 $o_el->errorMessages[] = $s_validationMessage;
