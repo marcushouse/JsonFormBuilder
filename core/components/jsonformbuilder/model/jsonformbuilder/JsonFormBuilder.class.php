@@ -1668,11 +1668,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 } else {
                     $s_typeClass = substr($s_elClass, 16, strlen($s_elClass) - 16);
                     $forId = $o_el->getId();
-                    if (
-                            is_a($o_el, 'JsonFormBuilder_elementRadioGroup') === true || is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup') === true || is_a($o_el, 'JsonFormBuilder_elementDate') === true
-                    ) {
+                    if(is_a($o_el, 'JsonFormBuilder_elementRadioGroup') === true || is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup') === true || is_a($o_el, 'JsonFormBuilder_elementDate') === true) {
                         $forId = $o_el->getId() . '_0';
+                    }elseif(is_a($o_el, 'JsonFormBuilder_elementMatrix') === true) {
+                       $forId = $o_el->getId() . '_0_0'; 
                     }
+                   
+                    if(checkMatrix_0_0)
                     $s_forStr = ' for="' . htmlspecialchars($forId) . '"';
 
                     if (is_a($o_el, 'JsonFormBuilder_elementReCaptcha') === true) {

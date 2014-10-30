@@ -110,12 +110,14 @@ class JsonFormBuilder_elementDate extends JsonFormBuilder_element{
 			$a_days[$a.$ordinalSuffix]=$a.$ordinalSuffix;
 		}
 		//month options
-		$s_monthStr=',January,February,March,April,May,June,July,August,September,October,November,December';
+		$s_monthStr='January,February,March,April,May,June,July,August,September,October,November,December';
 		$a_temp=explode(',',$s_monthStr);
 		$a_months=array(''=>' --- ');
+        
 		foreach($a_temp as $opt){
 			$a_months[$opt]=$opt;
 		}
+        
 		//year options
 		$a_years=array();
 		if($this->_yearStart>$this->_yearEnd){
