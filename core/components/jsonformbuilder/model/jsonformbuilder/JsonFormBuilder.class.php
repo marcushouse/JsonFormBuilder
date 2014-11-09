@@ -1674,7 +1674,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                        $forId = $o_el->getId() . '_0_0'; 
                     }
                    
-                    if(checkMatrix_0_0)
                     $s_forStr = ' for="' . htmlspecialchars($forId) . '"';
 
                     if (is_a($o_el, 'JsonFormBuilder_elementReCaptcha') === true) {
