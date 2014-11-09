@@ -1,6 +1,13 @@
 Changelog for JsonFormBuilder
 =========================================
 
+JsonFormBuilder 1.0.26-pl - 9th Nov 2014
+=========================================
+- Bug fix for checkbox group (Thanks Ian!, please give that a try).
+- Fixed several validation issues (Thanks startexe for the report).
+- Fix bug in minlength/maxlength for JsonFormBuilder_elementCheckboxGroup
+- Minor bug for for postVal($field) function.
+
 JsonFormBuilder 1.0.25-pl - 29th Sep 2014
 =========================================
 - Add ability to have condition rules applied on change of a radio group option (previously only worked with a select field).
