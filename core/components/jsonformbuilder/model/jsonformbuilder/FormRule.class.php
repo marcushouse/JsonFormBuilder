@@ -147,6 +147,7 @@ class FormRule extends JsonFormBuilderCore {
     public function refresh() {
         $type = $this->getType();
         $validationMessage = $this->getValidationMessage();
+
         $element = $this->getElement();
         $value = $this->getValue();
         if (empty($type) || empty($element)) {
@@ -195,12 +196,13 @@ class FormRule extends JsonFormBuilderCore {
             case FormRuleType::maximumLength:
                 if ($value) {
                     $value = JsonFormBuilder::forceNumber($value);
-                    if (is_a($element, 'JsonFormBuilder_elementCheckboxGroup')) {
-                        $this->_validationMessage = $element->getLabel() . ' must have less than ' . ($value + 1) . ' selected';
-                    } else {
-                        $this->_validationMessage = $element->getLabel() . ' can only contain up to ' . $value . ' characters';
+                    if ($validationMessage === NULL) {
+                        if (is_a($element, 'JsonFormBuilder_elementCheckboxGroup')) {
+                            $this->_validationMessage = $element->getLabel() . ' must have less than ' . ($value + 1) . ' selected';
+                        } else {
+                            $this->_validationMessage = $element->getLabel() . ' can only contain up to ' . $value . ' characters';
+                        }
                     }
-
                     $element->setMaxLength($value);
                 }
                 break;

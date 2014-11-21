@@ -63,13 +63,13 @@ class JsonFormBuilder_elementSelect extends JsonFormBuilder_element{
 		foreach($this->_values as $key=>$value){
 			$selectedStr='';
 			if($this->postVal($this->_id)!==false){
-				if($this->postVal($this->_id)==$key){
-					$selectedStr=' selected="selected"';
-				}
+                            if((string)$this->postVal($this->_id)===(string)$key){
+                                $selectedStr=' selected="selected"';
+                            }
 			}else{
-				if($this->_defaultVal==$key){
-					$selectedStr=' selected="selected"';
-				}
+                            if((string)$this->_defaultVal===(string)$key){
+                                $selectedStr=' selected="selected"';
+                            }
 			}
 			//trims here so we can force space
 			$s_ret.='<option value="'.htmlspecialchars(trim($key)).'"'.$selectedStr.'>'.htmlspecialchars($value).'</option>'."\r\n";

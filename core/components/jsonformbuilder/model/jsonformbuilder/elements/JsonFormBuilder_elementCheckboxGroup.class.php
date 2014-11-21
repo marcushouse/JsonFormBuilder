@@ -130,7 +130,11 @@ class JsonFormBuilder_elementCheckboxGroup extends JsonFormBuilder_element{
 			$s_ret.='<div class="checkboxWrap">';
 			// changed input type to checkbox
 			// added [] to name
-			$s_ret.='<div class="checkboxEl"><input type="checkbox" id="'.htmlspecialchars($this->_id.'_'.$i).'" name="'.htmlspecialchars($this->_name).'" value="'.htmlspecialchars($value['title']).'"';
+                        $s_checkboxVal = $value['title'];
+                        if(isset($value['value'])){
+                            $s_checkboxVal = $value['value'];
+                        }
+			$s_ret.='<div class="checkboxEl"><input type="checkbox" id="'.htmlspecialchars($this->_id.'_'.$i).'" name="'.htmlspecialchars($this->_name).'" value="'.htmlspecialchars($s_checkboxVal).'"';
 			$selectedStr='';
 			if($this->postVal($this->_id)!==false){
 				if(in_array($value['title'],$this->postVal($this->_id))===true){

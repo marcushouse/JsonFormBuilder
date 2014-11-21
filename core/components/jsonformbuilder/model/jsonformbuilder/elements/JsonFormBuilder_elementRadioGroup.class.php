@@ -80,11 +80,11 @@ class JsonFormBuilder_elementRadioGroup extends JsonFormBuilder_element{
 			$s_ret.='<div class="radioEl"><input type="radio" id="'.htmlspecialchars($this->_id.'_'.$i).'" name="'.htmlspecialchars($this->_id).'" value="'.htmlspecialchars($key).'"';
 			$selectedStr='';
 			if($this->postVal($this->_id)!==false){
-				if($this->postVal($this->_id)==$key){
+				if((string)$this->postVal($this->_id)===(string)$key){
 					$selectedStr=' checked="checked"';
 				}
 			}else{
-				if($this->_defaultVal==$key){
+				if((string)$this->_defaultVal===(string)$key){
 					$selectedStr=' checked="checked"';
 				}
 			}
