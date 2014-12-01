@@ -1,6 +1,16 @@
 Changelog for JsonFormBuilder
 =========================================
 
+JsonFormBuilder 1.0.27-pl - 1st Dec 2014
+=========================================
+- Changed many private vars and methods to protected so they can be extended.
+- Fixed broken custom validation message from maximumLength on checkbox groups.
+- Added more helpful error messaging in a  few places.
+- Fixed issues with requires vs empty (a few "0" chars were being marked as empty).
+- Added better string encoding for validation messages
+- Fix bug in checkbox value to allow "0" as a value.
+- Fix bug in select to allow "0" as a valid value.
+
 JsonFormBuilder 1.0.26-pl - 9th Nov 2014
 =========================================
 - Bug fix for checkbox group (Thanks Ian!, please give that a try).
