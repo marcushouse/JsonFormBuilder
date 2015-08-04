@@ -399,7 +399,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * getValidate()
      * 
-     * Returns the custom validation methods used (doesnt include the validation rules automatically set by rules etc).
+     * Returns the custom validation methods used (doesn't include the validation rules automatically set by rules etc).
      * @return string 
      */
     public function getValidate() {
@@ -748,7 +748,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     /**
      * setValidate($value)
      * 
-     * Sets the custom validation methods used (doesnt include the validation rules automatically set by rules etc).
+     * Sets the custom validation methods used (doesn't include the validation rules automatically set by rules etc).
      * @param string $value 
      */
     public function setValidate($value) {
@@ -1044,6 +1044,84 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
+     * toJSON()
+     * 
+     * Returns form data as JSON array.
+     * @return string 
+     * @ignore 
+     */
+    public function toJSON() {
+        $a_data = array();
+        foreach ($this->_formElements as $o_el) {
+            if (is_object($o_el)===false) {
+                //do nothing.. this is a simple text element for form html block etc.
+            } else {
+                    $elType = get_class($o_el);
+                    $elId = $o_el->getId();
+
+                    switch ($elType) {
+                        case 'JsonFormBuilder_elementMatrix':
+                            $s_val='elementMatrix not supported';
+                            break;
+                            /*
+                            $type = $o_el->getType();
+                            $cols = $o_el->getColumns();
+                            $rows = $o_el->getRows();
+                            $r_cnt = 0;
+                            $s_val = array();
+                            $c_cnt = 0;
+                            foreach ($rows as $row) {
+                                $a_row = array();
+                                $c_cnt = 0;
+                                foreach ($cols as $column) {
+                                    switch ($type) {
+                                        case 'text':
+                                            $a_row[] =htmlspecialchars($this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt));
+                                            //$s_val.=htmlspecialchars($this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt));
+                                            break;
+                                        case 'radio':
+                                            $a_row[] =($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? '&#10004;' : '-');
+                                            //$s_val.=($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? '&#10004;' : '-');
+                                            break;
+                                        case 'check':
+                                            $s_postVal = $this->postVal($elId . '_' . $r_cnt);
+                                            $a_row[] = $s_postVal;
+                                            /*
+                                            if (empty($s_postVal) === false && in_array($c_cnt, $s_postVal) === true) {
+                                                $s_val.='&#10004;';
+                                            } else {
+                                                $s_val.='-';
+                                            }
+                                            */
+                        /*
+                                            break;
+                                    }
+                                    $c_cnt++;
+                                }
+                                $r_cnt++;
+                            }
+                            break;
+                             */
+                        case 'JsonFormBuilder_elementFile':
+                            //Don't add File Element to JSON output.
+                            continue;
+                        case 'JsonFormBuilder_elementDate':
+                            $s_val = $this->postVal($o_el->getId() . '_0') . ' ' . $this->postVal($o_el->getId() . '_1') . ' ' . $this->postVal($o_el->getId() . '_2');
+                            break;
+                        default:
+                            $s_val = $this->postVal($o_el->getId());
+                            break;
+                    }
+                    if(empty($s_val)===false){
+                        $a_data[] = array('label'=>$o_el->getLabel(),'value'=>$s_val);
+                    }
+            }
+        }
+        $s_ret=  json_encode($a_data);
+        return $s_ret;
+    }
+    
+    /**
      * autoResponderEmailStr()
      * 
      * Gets the Auto Responder email content.
@@ -1119,7 +1197,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress,' Issue with replyToAddress.'));
             /* handle file fields */
             foreach ($this->_formElements as $o_el) {
-                if (is_object($o_el) && get_class($o_el) == 'JsonFormBuilder_elementFile') {
+                if (is_object($o_el) && get_class($o_el) == 'JsonFormBuilder_elementFile' && $o_el->showInEmail() === true) {
                     if(isset($_FILES[$o_el->getId()])===true){
                         $file = $_FILES[$o_el->getId()];
                         $this->modx->mail->mailer->AddAttachment($file['tmp_name'],$file['name'],'base64',!empty($file['type']) ? $file['type'] : 'application/octet-stream');
@@ -1240,16 +1318,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         }
     }
     public function validate(){
-        //prepare can be called multiple times for simplicity, but should only run once.
+        //Prepare can be called multiple times for simplicity, but should only run once.
         if($this->b_validated===true){
             return;
         }else{
             $this->b_validated=true;
         }       
         
-        //if security field has been filled, kill script with a false thankyou.
+        //If security field has been filled, kill script with a false thank you.
         $secVar = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk');
-        //This vields value is set with javascript. If the field does not equal the secredvalue
+        //This field's value is set with javascript. If the field does not equal the secredvalue
         $secVar2 = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk2');
         if(strlen($secVar)>0){
             $this->spamDetectExit(1);
@@ -1264,7 +1342,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $this->setIsSubmitted(true);
         }
 
-        //process and add form rules
+        //Process and add form rules
         $a_fieldProps_jqValidate = array();
         $a_fieldProps_jqValidateGroups = array();
         $a_fieldProps_errstringJq = array();
@@ -1273,7 +1351,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         //Keep tally of all validation errors. If posted and 0, form will continue.
         foreach ($this->_rules as $rule) {
             $o_elFull = $rule->getElement();
-            //verify this element is actually in the form
+            //Verify this element is actually in the form
             $b_found=false;
             foreach ($this->_formElements as $o_el){
                 if($o_elFull===$o_el){
@@ -1648,7 +1726,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
     
     protected function buildForm(){
-        //build inner form html
+        //build inner form HTML
         
         $nl = "\r\n";
         $s_recaptchaJS = '';
@@ -1679,7 +1757,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $s_forStr = ' for="' . htmlspecialchars($forId) . '"';
 
                     if (is_a($o_el, 'JsonFormBuilder_elementReCaptcha') === true) {
-                        $s_forStr = ''; // dont use for attrib for Recaptcha (as it is an external program outside control of JsonFormBuilder
+                        $s_forStr = ''; // don't use for attrib for Recaptcha (as it is an external program outside control of JsonFormBuilder
                         $s_recaptchaJS = $o_el->getJsonConfig();
                     }
 
@@ -1894,7 +1972,7 @@ hiddenFields.change(function(){
         if($this->getIsSubmitted()){
             if (count($this->_invalidElements) === 0) {
 
-                //If for submitten very quickly, assume robot.
+                //If form submitted very quickly, assume robot.
                 $minimumTimeSecs=2; //was set to 5, but kept tripping it myself when testing basic form. 2 seems to be better.
                 $secsSinceFormOpen = time()-$_SESSION[$s_timerVar];
                 if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
@@ -1908,7 +1986,7 @@ hiddenFields.change(function(){
                 }
             }
         }else{
-            //user has not yet posted, set session variable and track time it took to fill out form.
+            //User has not yet posted, set session variable and track time it took to fill out form.
             $_SESSION[$s_timerVar]=time();
         }
         $s_js = $this->buildFormJavascript();

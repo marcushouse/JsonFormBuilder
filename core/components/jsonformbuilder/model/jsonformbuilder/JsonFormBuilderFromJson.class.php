@@ -16,7 +16,7 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
 
     function setJsonData($json){
         
-        //place all post values in chunk placeholders for use (sinple string types only)
+        //place all post values in chunk placeholders for use (simple string types only)
         $postVars = $_POST;
         $a_processVars=array();
         if(!empty($postVars)){
@@ -82,7 +82,7 @@ class JsonFormBuilderFromJson extends JsonFormBuilderCore {
                 $a_formElsToAdd[] = $element;
             }else{
                 $elementMethod = 'JsonFormBuilder_element'.ucfirst($this->getJsonVal($element,'element',true));
-                //required to set id and label in constructors.. all elements have id and label
+                //Required to set ID and label in constructors. All elements have ID and label.
                 $o_el =  new $elementMethod($element['id'],$element['label']);
                 $a_ignore = array('element','rules','id','label');
                 foreach($element as $key=>$val){
