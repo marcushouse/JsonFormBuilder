@@ -1327,7 +1327,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         
         //If security field has been filled, kill script with a false thank you.
         $secVar = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk');
-        //This field's value is set with javascript. If the field does not equal the secredvalue
+        //This field's value is set with javascript. If the field does not equal the second value, it will exit.
         $secVar2 = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk2');
         if(strlen($secVar)>0){
             $this->spamDetectExit(1);
