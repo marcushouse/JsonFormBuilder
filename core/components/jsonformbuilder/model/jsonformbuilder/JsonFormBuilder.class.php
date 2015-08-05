@@ -1061,9 +1061,6 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
                     switch ($elType) {
                         case 'JsonFormBuilder_elementMatrix':
-                            $s_val='elementMatrix not supported';
-                            break;
-                            /*
                             $type = $o_el->getType();
                             $cols = $o_el->getColumns();
                             $rows = $o_el->getRows();
@@ -1076,24 +1073,19 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                 foreach ($cols as $column) {
                                     switch ($type) {
                                         case 'text':
-                                            $a_row[] =htmlspecialchars($this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt));
-                                            //$s_val.=htmlspecialchars($this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt));
+                                            $a_row[] =$this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt);
                                             break;
                                         case 'radio':
-                                            $a_row[] =($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? '&#10004;' : '-');
-                                            //$s_val.=($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? '&#10004;' : '-');
+                                            $a_row[] =($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? true : false);
                                             break;
                                         case 'check':
                                             $s_postVal = $this->postVal($elId . '_' . $r_cnt);
-                                            $a_row[] = $s_postVal;
-                                            /*
                                             if (empty($s_postVal) === false && in_array($c_cnt, $s_postVal) === true) {
                                                 $s_val.='&#10004;';
+                                                $a_row[] = true;
                                             } else {
-                                                $s_val.='-';
+                                                $a_row[] = false;
                                             }
-                                            */
-                        /*
                                             break;
                                     }
                                     $c_cnt++;
@@ -1101,7 +1093,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                 $r_cnt++;
                             }
                             break;
-                             */
+                             
                         case 'JsonFormBuilder_elementFile':
                             //Don't add File Element to JSON output.
                             continue;
