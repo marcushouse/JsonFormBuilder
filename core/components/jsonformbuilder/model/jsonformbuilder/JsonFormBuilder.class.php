@@ -18,185 +18,185 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     protected $b_validated=false;
     protected $_attachmentIncluded=false;
     /**
-     * @ignore 
+     * @ignore
      */
     protected $modx;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_method;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_id;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_redirectDocument;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_redirectParams;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_jqueryValidation;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_formElements;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailFromAddress;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailSubject;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailToAddress;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailFontSize;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailFontFamily;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailHeadHtml;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailFootHtml;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_rules;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_validate;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_customValidators;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_store;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_placeholderJavascript;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailFromName;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailToName;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailReplyToAddress;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailReplyToName;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailCCAddress;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_emailBCCAddress;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderSubject;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderToAddress;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderFromAddress;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderFromName;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderReplyTo;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderReplyToName;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderCC;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderBCC;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_autoResponderEmailContent;
-    
+
      /**
-     * @ignore 
+     * @ignore
      */
     protected $_formAction;
 
     /**
-     * @ignore 
+     * @ignore
      */
     protected $_submitVar;
-    
+
     protected $_isSubmitted;
     protected function setIsSubmitted($value) {
         $this->_isSubmitted = self::forceBool($value);
@@ -207,13 +207,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     public function isSubmitted() {
         return $this->_isSubmitted;
     }
-    
+
     protected $_invalidElements=array();
     public function getInvalidElements() {
         return $this->_invalidElements;
     }
     /**
-    * @ignore 
+    * @ignore
     */
     protected $_spamProtection;
     public function setSpamProtection($value) {
@@ -222,17 +222,17 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     public function getSpamProtection() {
         return $this->_spamProtection;
     }
-    
+
     protected $_fieldProps_jqValidate=array();
     protected $_fieldProps_jqValidateGroups=array();
     protected $_fieldProps_errstringJq=array();
     protected $_footJavascript=array();
 
-    
+
 
     /**
      * JsonFormBuilder
-     * 
+     *
      * The main construction for JsonFormBuilder. All elements and rules are attached to this object.
      * @param modx &$modx Reference to the core modX object
      * @param string $id Id of the form
@@ -262,9 +262,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * addRule(FormRule $formRule)
-     * 
+     *
      * Adds a single rule to the JsonFormBuilder object.
-     * @param FormRule $formRule 
+     * @param FormRule $formRule
      */
     public function addRule(FormRule $formRule) {
         if (is_a($formRule, 'FormRule') === false) {
@@ -276,9 +276,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * addRules($rules)
-     * 
+     *
      * Adds multiple FormRule objects to the JsonFormBuilder object.
-     * @param array $rules 
+     * @param array $rules
      */
     public function addRules($rules) {
         foreach ($rules as $rule) {
@@ -288,9 +288,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getMethod()
-     * 
+     *
      * Returns the form method (get, post etc)
-     * @return string 
+     * @return string
      */
     public function getMethod() {
         return $this->_method;
@@ -298,7 +298,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getId()
-     * 
+     *
      * Returns the form ID.
      * @return string
      */
@@ -308,7 +308,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getRedirectDocument()
-     * 
+     *
      * Returns the forms redirectDocument setting.
      * @return string
      */
@@ -318,7 +318,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getRedirectParams()
-     * 
+     *
      * Returns the forms redirectDocument parameters.
      * @return string
      */
@@ -328,7 +328,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getSubmitVar()
-     * 
+     *
      * Returns any custom set submitVar. Will return NULL by default as normally this is an automated post variable.
      * @return string
      */
@@ -338,7 +338,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getJqueryValidation()
-     * 
+     *
      * Returns the forms jQuery validate setting.
      * @return boolean
      */
@@ -348,7 +348,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailFromAddress()
-     * 
+     *
      * Returns the FROM email address used when sending email.
      * @return string
      */
@@ -358,7 +358,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailToAddress()
-     * 
+     *
      * Returns the TO email address used when sending email.
      * @return string
      */
@@ -368,7 +368,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailSubject()
-     * 
+     *
      * Returns the email subject used when sending email.
      * @return string
      */
@@ -378,7 +378,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailHeadHtml()
-     * 
+     *
      * Returns the header HTML used in the email.
      * @return string
      */
@@ -388,7 +388,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailFootHtml()
-     * 
+     *
      * Returns the footer HTML used in the email.
      * @return string
      */
@@ -398,9 +398,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getValidate()
-     * 
+     *
      * Returns the custom validation methods used (doesn't include the validation rules automatically set by rules etc).
-     * @return string 
+     * @return string
      */
     public function getValidate() {
         return $this->_validate;
@@ -408,7 +408,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getCustomValidators()
-     * 
+     *
      * Returns any customValidator settings used by the form. (Used with the FormIT "validate" command to create custom validation. See customValidators in FormIt documentation for more information).
      * @return string
      */
@@ -418,7 +418,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailFromName()
-     * 
+     *
      * Returns the FROM email name used when sending email.
      * @return string
      */
@@ -428,9 +428,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailToName()
-     * 
+     *
      * Returns the TO email name used when sending email.
-     * @return string 
+     * @return string
      */
     public function getEmailToName() {
         return $this->_emailToName;
@@ -438,9 +438,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailReplyToAddress()
-     * 
+     *
      * Returns the REPLY-TO email address used when sending email.
-     * @return string 
+     * @return string
      */
     public function getEmailReplyToAddress() {
         return $this->_emailReplyToAddress;
@@ -448,9 +448,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailReplyToName()
-     * 
+     *
      * Returns the REPLY-TO email name used when sending email.
-     * @return string 
+     * @return string
      */
     public function getEmailReplyToName() {
         return $this->_emailReplyToName;
@@ -458,9 +458,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailCCAddress()
-     * 
+     *
      * Returns the CC email address used when sending email.
-     * @return string 
+     * @return string
      */
     public function getEmailCCAddress() {
         return $this->_emailCCAddress;
@@ -468,21 +468,21 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getEmailBCCAddress()
-     * 
+     *
      * Returns the BCC email address used when sending email.
-     * @return string 
+     * @return string
      */
     public function getEmailBCCAddress() {
         return $this->_emailBCCAddress;
     }
-    
+
     public function getFormAction() {
         return $this->_formAction;
     }
 
     /**
      * getStore()
-     * 
+     *
      * Returns the store option used. See the FormIt "store" option.
      * @return boolean
      */
@@ -492,7 +492,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getPlaceholderJavascript()
-     * 
+     *
      * Returns javascript placeholder setting used.
      * @return string
      */
@@ -502,7 +502,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /*
      * getAutoResponderSubject()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder subject used in the email.
      * @return string
      */
@@ -513,7 +513,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getAutoResponderToAddress()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder TO email address used in the email.
      * @return string
      */
@@ -523,7 +523,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getAutoResponderFromAddress()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder FROM email address used in the email.
      * @return string
      */
@@ -533,7 +533,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getAutoResponderFromName()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder FROM email name used in the email.
      * @return string
      */
@@ -543,7 +543,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getAutoResponderReplyTo()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder REPLY-TO email address used in the email.
      * @return string
      */
@@ -553,7 +553,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getAutoResponderCC()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder CC email address used in the email.
      * @return string
      */
@@ -563,7 +563,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getAutoResponderBCC()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder BCC email address used in the email.
      * @return string
      */
@@ -573,7 +573,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getAutoResponderEmailContent()
-     * 
+     *
      * Auto Responder - Returns the Auto Responder email content.
      * @return string
      */
@@ -583,21 +583,21 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setMethod($value)
-     * 
+     *
      * Sets the form method (get, post etc)
-     * @param string $value 
+     * @param string $value
      */
     public function setMethod($value) {
         $this->_method = $value;
     }
-    
+
     public function setFormAction($value) {
         $this->_formAction = $value;
     }
 
     /**
      * setRedirectDocument($value)
-     * 
+     *
      * Sets the forms redirectDocument setting.
      * @param string $value The resource ID of the page to redirect to post success.
      */
@@ -607,7 +607,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setSubmitVar($value)
-     * 
+     *
      * Sets the submission variable. This
      * @param string $value A JSON object of parameters to pass in the redirect URL. e.g. {"user":"123","success":"1"}
      */
@@ -617,7 +617,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setRedirectParams($value)
-     * 
+     *
      * If set, will not begin form processing if this POST variable is not passed. Useful to disable automatic processing. Normally this process is handled automatically.
      * @param string $value Required post variable before form processing will occur.
      */
@@ -627,7 +627,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setJqueryValidation($value)
-     * 
+     *
      * Sets the forms jQuery validate setting. When set to true extra javascript is output for "jQuery Validate" to use. If jQuery Validate is installed correctly, forms should validate with inline javascript (jQuery) as well as with FormIt validation with PHP.
      * @param boolean $value
      */
@@ -637,7 +637,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailFromAddress($value)
-     * 
+     *
      * Sets the FROM email address used when sending email.
      * @param string $value
      */
@@ -647,7 +647,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailToAddress($value)
-     * 
+     *
      * Sets the TO email address used when sending email.
      * @param string $value
      */
@@ -657,7 +657,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailFromName($value)
-     * 
+     *
      * Sets the FROM email address used when sending email.
      * @param string $value
      */
@@ -667,7 +667,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailToName($value)
-     * 
+     *
      * Sets the TO email name used when sending email.
      * @param string $value
      */
@@ -677,7 +677,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailReplyToAddress($value)
-     * 
+     *
      * Sets the REPLY-TO email address used when sending email.
      * @param string $value
      */
@@ -687,7 +687,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailReplyToName($value)
-     * 
+     *
      * Sets the REPLY-TO email name used when sending email.
      * @param string $value
      */
@@ -697,7 +697,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailCCAddress($value)
-     * 
+     *
      * Sets the CC email address used when sending email.
      * @param string $value
      */
@@ -707,7 +707,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailBCCAddress($value)
-     * 
+     *
      * Sets the BCC email address used when sending email.
      * @param string $value
      */
@@ -717,7 +717,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailSubject($value)
-     * 
+     *
      * Sets the email subject used when sending email.
      * @param string $value
      */
@@ -727,7 +727,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailHeadHtml($value)
-     * 
+     *
      * Sets the header HTML used in the email.
      * @param string $value
      */
@@ -737,7 +737,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setEmailFootHtml($value)
-     * 
+     *
      * Sets the footer HTML used in the email.
      * @param string $value
      */
@@ -747,9 +747,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setValidate($value)
-     * 
+     *
      * Sets the custom validation methods used (doesn't include the validation rules automatically set by rules etc).
-     * @param string $value 
+     * @param string $value
      */
     public function setValidate($value) {
         $this->_validate = $value;
@@ -757,9 +757,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setCustomValidators($value)
-     * 
+     *
      * Sets the customValidator settings used by the form. (Used with the FormIT "validate" command to create custom validation. See customValidators in FormIt documentation for more information).
-     * @param string $value 
+     * @param string $value
      */
     public function setCustomValidators($value) {
         $this->_customValidators = $value;
@@ -767,9 +767,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setStore($value)
-     * 
+     *
      * Sets the store option used by FormIt. If true, will store the data in the cache for retrieval using the FormItRetriever snippet.
-     * @param boolean $value 
+     * @param boolean $value
      */
     public function setStore($value) {
         $this->_store = self::forceBool($value);
@@ -777,9 +777,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setPlaceholderJavascript($value)
-     * 
+     *
      * Sets a placeholder to use to inject any javascript used to control the form (jQuery Validate etc). By default any javascript required for forms is output inline after the closeure of the form (as you can see when viewing the HTML source). This may not be desirable for some developers as javascript order may be an issue. For simplicity it has been set this way by default for the majority of users that want to get their form up and running with minimal fuss.
-     * 
+     *
      * To do this add the following code to your form object.
      * <code>
      * $o_form->setPlaceholderJavascript('FormItBuilder_javascript_myForm');
@@ -788,7 +788,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
      * <code>
      * [[+FormItBuilder_javascript_myForm]]
      * </code>
-     * @param string $value 
+     * @param string $value
      */
     public function setPlaceholderJavascript($value) {
         $this->_placeholderJavascript = $value;
@@ -796,9 +796,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderSubject($value)
-     * 
+     *
      * Auto Responder - The subject of the email.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderSubject($value) {
         $this->_autoResponderSubject = $value;
@@ -806,9 +806,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderToAddress($value)
-     * 
+     *
      * Auto Responder - The to address to use to send the email.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderToAddress($value) {
         $this->_autoResponderToAddress = $value;
@@ -816,9 +816,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderFromAddress($value)
-     * 
+     *
      * Auto Responder - Optional. If set, will specify the From: address for the email. Defaults to the `emailsender` system setting.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderFromAddress($value) {
         $this->_autoResponderFromAddress = $value;
@@ -826,9 +826,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderFromName($value)
-     * 
+     *
      * Auto Responder - Optional. If set, will specify the From: name for the email.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderFromName($value) {
         $this->_autoResponderFromName = $value;
@@ -836,9 +836,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderReplyTo($value)
-     * 
+     *
      * Auto Responder - An email to set as the reply-to.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderReplyTo($value) {
         $this->_autoResponderReplyTo = $value;
@@ -846,9 +846,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderReplyToName($value)
-     * 
+     *
      * Auto Responder - Optional. The name for the Reply-To field.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderReplyToName($value) {
         $this->_autoResponderReplyToName = $value;
@@ -856,9 +856,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderCC($value)
-     * 
+     *
      * Auto Responder - Optional. A comma-separated list of emails to send via cc.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderCC($value) {
         $this->_autoResponderCC = $value;
@@ -866,9 +866,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderBCC($value)
-     * 
+     *
      * Auto Responder - Optional. A comma-separated list of emails to send via bcc.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderBCC($value) {
         $this->_autoResponderBCC = $value;
@@ -876,9 +876,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * setAutoResponderEmailContent($value)
-     * 
+     *
      * Auto Responder - Sets the email content.
-     * @param string $value 
+     * @param string $value
      */
     public function setAutoResponderEmailContent($value) {
         $this->_autoResponderEmailContent = $value;
@@ -886,9 +886,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * addElement(JsonFormBuilder_baseElement $o_formElement)
-     * 
+     *
      * Adds a single element object to the main JsonFormBuilder object.
-     * @param $o_formElement 
+     * @param $o_formElement
      */
     public function addElement($o_formElement) {
         if(empty($o_formElement)){
@@ -907,9 +907,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * addElements($a_elements)
-     * 
+     *
      * Adds multiple element objects to the main JsonFormBuilder object.
-     * @param array $a_elements An array of objects that extend JsonFormBuilder_baseElement. 
+     * @param array $a_elements An array of objects that extend JsonFormBuilder_baseElement.
      */
     public function addElements($a_elements) {
         foreach ($a_elements as $o_formElement) {
@@ -919,12 +919,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * addToDatabase($s_ObjName,$a_mapping)
-     * 
+     *
      * Adds the form element objects content to an XPDO table.
      * @param string $s_ObjName
      * @param array $a_mapping
-     * @return boolean 
-     * @ignore 
+     * @return boolean
+     * @ignore
      */
     protected function addToDatabase($s_ObjName, $a_mapping) {
         //inspired by http://bobsguides.com/custom-db-tables.html
@@ -945,10 +945,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * getFormTableContent()
-     * 
+     *
      * Gets the form value TABLE HTML content.
-     * @return string 
-     * @ignore 
+     * @return string
+     * @ignore
      */
     protected function getFormTableContent() {
         $s_style = 'font-size:' . $this->_emailFontSize . '; font-family:' . $this->_emailFontFamily . ';';
@@ -1045,10 +1045,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
     /**
      * toJSON()
-     * 
+     *
      * Returns form data as JSON array.
-     * @return string 
-     * @ignore 
+     * @return string
+     * @ignore
      */
     public function toJSON() {
         $a_data = array();
@@ -1093,10 +1093,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                 $r_cnt++;
                             }
                             break;
-                             
+
                         case 'JsonFormBuilder_elementFile':
                             //Don't add File Element to JSON output.
-                            continue;
+                            continue 2;
                         case 'JsonFormBuilder_elementDate':
                             $s_val = $this->postVal($o_el->getId() . '_0') . ' ' . $this->postVal($o_el->getId() . '_1') . ' ' . $this->postVal($o_el->getId() . '_2');
                             break;
@@ -1112,13 +1112,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $s_ret=  json_encode($a_data);
         return $s_ret;
     }
-    
+
     /**
      * autoResponderEmailStr()
-     * 
+     *
      * Gets the Auto Responder email content.
-     * @return string 
-     * @ignore 
+     * @return string
+     * @ignore
      */
     protected function autoResponderEmailStr() {
         $NL = "\r\n";
@@ -1143,12 +1143,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 . $s_footHTML . $NL
                 . '</div>';
         return $s_emailContent;
-    } 
+    }
     function sendEmails() {
-        
+
         $this->modx->getService('mail', 'mail.modPHPMailer');
-        
-        
+
+
         $s_emailContent = $this->getEmailContent();
         if(!empty($this->_emailToAddress)){
             $this->modx->mail->set(modMail::MAIL_BODY, $s_emailContent);
@@ -1195,15 +1195,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         $this->modx->mail->mailer->AddAttachment($file['tmp_name'],$file['name'],'base64',!empty($file['type']) ? $file['type'] : 'application/octet-stream');
                     }
                 }
-            }  
+            }
             $this->modx->mail->setHTML(true);
             if (!$this->modx->mail->send()) {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the email: ' . $this->modx->mail->mailer->ErrorInfo);
             }
             $this->modx->mail->reset();
         }
-        
-        
+
+
         //Handle auto responders if needed.
         if(!empty($this->_autoResponderToAddress)){
             $this->modx->mail->set(modMail::MAIL_BODY, $this->autoResponderEmailStr());
@@ -1238,7 +1238,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     }
                 }else{
                     $this->modx->mail->address('bcc', self::forceEmail($this->_autoResponderBCC,' Issue with autoResponderBCC (ARRAY).'));
-                }        
+                }
             }
 
             $this->modx->mail->address('reply-to', self::forceEmail($this->_autoResponderFromAddress,' Issue with autoResponderFromAddress.'));
@@ -1248,10 +1248,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             }
             $this->modx->mail->reset();
         }
-        
+
     }
 
-    
+
     public function getElementById($id){
         foreach ($this->_formElements as $o_el){
             if(is_object($o_el) && $o_el->getId()===$id){
@@ -1266,14 +1266,14 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
     /**
      * jqueryValidateJSON($jqFieldProps,$jqFieldMessages,$jqFormRules,$jqFormMessages)
-     * 
+     *
      * Processes the fields into jQueryValidate output
      * @param string $jqFieldProps
      * @param string $jqFieldMessages
      * @param string $jqFormRules
      * @param string $jqFormMessages
-     * @return string 
-     * @ignore 
+     * @return string
+     * @ignore
      */
     protected function jqueryValidateJSON($jqFieldProps, $jqFieldMessages, $jqGroups) {
         $a_ruleSegs = array();
@@ -1303,7 +1303,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
         return $s_js;
     }
-    
+
     protected function spamDetectExit($code){
         if($this->getSpamProtection()){
             echo 'Form was unable to submit (CODE: '.$code.').'; exit();
@@ -1315,8 +1315,8 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             return;
         }else{
             $this->b_validated=true;
-        }       
-        
+        }
+
         //If security field has been filled, kill script with a false thank you.
         $secVar = $this->postVal($this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk');
         //This field's value is set with javascript. If the field does not equal the second value, it will exit.
@@ -1327,7 +1327,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         if($secVar2!==false && $secVar2!='1962'){
             $this->spamDetectExit(2);
         }
-        
+
         $this->setIsSubmitted(false);
         $s_submittedVal = $this->postVal('submitVar_' . $this->_id);
         if (empty($s_submittedVal) === false) {
@@ -1354,7 +1354,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             if($b_found===false){
                 JsonFormBuilder::throwError('Rule "'.$rule->getType().'" for element "'.$o_elFull->getId().'" specified, but element is not in form.');
             }
-                
+
             if (is_array($o_elFull) === true) {
                 $o_el = $o_elFull[0];
             } else {
@@ -1403,7 +1403,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     }
                     $a_fieldProps_jqValidate[$elName][] = 'equalTo:"#' . $val->getId() . '"';
                     $a_fieldProps_errstringJq[$elName][] = 'equalTo:'.json_encode($s_validationMessage);
-                    
+
                     //validation check
                     $val1 = $this->postVal($o_elFull->getId());
                     $val2 = $this->postVal($val->getId());
@@ -1411,7 +1411,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         $this->_invalidElements[] = $o_el;
                         $o_el->errorMessages[] = $s_validationMessage;
                     }
-                    
+
                     break;
                 case FormRuleType::maximumLength:
                     $val = (int) $rule->getValue();
@@ -1490,7 +1490,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     break;
                 case FormRuleType::required:
                     $jqRequiredVal='true';
-                    
+
                     $ruleCondition = $rule->getCondition();
                     if(!empty($ruleCondition) && is_a($ruleCondition[0],'JsonFormBuilder_baseElement')===false){
                         $ruleCondition[0] = $this->getElementById($ruleCondition[0]);
@@ -1503,7 +1503,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                          }else{
                              $s_valJq = 'jQuery("#'.$this_elID.'")';
                          }
-                        $jqRequiredVal='{depends:function(element){var v='.$s_valJq.'.val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';  
+                        $jqRequiredVal='{depends:function(element){var v='.$s_valJq.'.val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';
                         $b_validateRequiredPost=false;
                         if($this->postVal($this_elID)==$ruleCondition[1]){
                             $b_validateRequiredPost=true;
@@ -1541,7 +1541,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                 break;
                         }
                         $a_fieldProps_jqValidateGroups[$elName] = implode(' ', $a_namesForGroup);
-                        
+
                         //validation check
                         $b_isMatrixValid = JsonFormBuilder::is_matrix_required_valid($o_el);
                         if ($b_validateRequiredPost && $b_isMatrixValid===false) {
@@ -1555,7 +1555,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
-                        
+
                     } else if (is_a($o_el, 'JsonFormBuilder_elementFile')) {
                         //validation check
                         if(isset($_FILES[$o_el->getId()])===true && $_FILES[$o_el->getId()]['size']!=0){
@@ -1569,7 +1569,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     } else if (is_a($o_el, 'JsonFormBuilder_elementDate')) {
                         $a_fieldProps_jqValidate[$elName . '_0'][] = 'required:'.$jqRequiredVal.',dateElementRequired:true';
                         $a_fieldProps_errstringJq[$elName . '_0'][] = 'required:'.json_encode($s_validationMessage).',dateElementRequired:'.json_encode($s_validationMessage);
-                        
+
                         //validation check
                         $elID = $o_el->getId();
                         $postVal0 = $this->postVal($elID.'_0');
@@ -1583,7 +1583,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                                 $o_el->errorMessages[] = $s_validationMessage;
                             }
                         }
-                        
+
                     } else {
                         $a_fieldProps_jqValidate[$elName][] = 'required:'.$jqRequiredVal;
                         $a_fieldProps_errstringJq[$elName][] = 'required:'.json_encode($s_validationMessage);
@@ -1617,7 +1617,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         if(!empty($custRuleParam)){
                             $custval = json_encode($custRuleParam);
                         }
-                        
+
                         $a_fieldProps_jqValidate[$elName][] = $custRuleName.':'.$custval;
                         $a_fieldProps_errstringJq[$elName][] = $custRuleName.':'.json_encode($s_validationMessage);
                         //validation check
@@ -1638,12 +1638,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     break;
                 case FormRuleType::conditionShow:
                     $jqRequiredVal='true';
-                    
+
                     $ruleCondition = $rule->getCondition();
                     if(!empty($ruleCondition) && is_a($ruleCondition[0],'JsonFormBuilder_baseElement')===false){
                         $ruleCondition[0] = $this->getElementById($ruleCondition[0]);
                     }
-                    
+
                     $b_validateRequiredPost=true;
                     if(!empty($ruleCondition)){
                         $this_elID = $ruleCondition[0]->getId();
@@ -1674,7 +1674,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 if ($s_elClass == 'JsonFormBuilder_elementFile') {
                     $this->_attachmentIncluded = true;
                     $id = $o_el->getId();
-                    
+
                     $a_allowedExtenstions = $o_el->getAllowedExtensions();
                     $i_maxSize = $o_el->getMaxFilesize();
                     if($a_allowedExtenstions){
@@ -1693,15 +1693,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         $a_fieldProps_jqValidate[$id][] = 'fileSizeValid:'.$i_maxSize;
                         $a_fieldProps_errstringJq[$id][] = 'fileSizeValid:"' . $s_sizeInvalidMessage . '"';
                     }
-                    
+
                     //validation
                     if(isset($_FILES[$id]['size'])===true && $_FILES[$id]['size']>0){
-                        
+
                         if($o_el->isAllowedFilename($_FILES[$id]['name'])===false){
                             $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_extInvalidMessage;
                         }
-                        
+
                         if($o_el->isAllowedSize($_FILES[$id]['size'])===false){
                             $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_sizeInvalidMessage;
@@ -1716,14 +1716,14 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $this->_fieldProps_errstringJq=$a_fieldProps_errstringJq;
         $this->_footJavascript=$a_footJavascript;
     }
-    
+
     protected function buildForm(){
         //build inner form HTML
-        
+
         $nl = "\r\n";
         $s_recaptchaJS = '';
         $fieldThatNeedsToBeFilled = $this->_id.'_fke' . date('Y') . 'Sp' . date('m') . 'Blk2';
-        
+
         $s_form = '<div>' . $nl
                 . $nl . '<div class="process_errors_wrap"><div class="process_errors">[[!+fi.error_message:notempty=`[[!+fi.error_message]]`]]</div></div>'
                 . $nl . '<input type="hidden" name="submitVar_'.$this->_id.'" value="1" />'
@@ -1734,7 +1734,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             if(is_object($o_el)===false){
                 $s_form.=$o_el; //plain text or html
             }else{
-                $s_elClass = get_class($o_el);               
+                $s_elClass = get_class($o_el);
                 if (is_a($o_el, 'JsonFormBuilder_elementHidden')) {
                     $s_form.=$o_el->outputHTML();
                 } else {
@@ -1743,9 +1743,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     if(is_a($o_el, 'JsonFormBuilder_elementRadioGroup') === true || is_a($o_el, 'JsonFormBuilder_elementCheckboxGroup') === true || is_a($o_el, 'JsonFormBuilder_elementDate') === true) {
                         $forId = $o_el->getId() . '_0';
                     }elseif(is_a($o_el, 'JsonFormBuilder_elementMatrix') === true) {
-                       $forId = $o_el->getId() . '_0_0'; 
+                       $forId = $o_el->getId() . '_0_0';
                     }
-                   
+
                     $s_forStr = ' for="' . htmlspecialchars($forId) . '"';
 
                     if (is_a($o_el, 'JsonFormBuilder_elementReCaptcha') === true) {
@@ -1760,7 +1760,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     }
 
                     $b_required = $o_el->isRequired();
-                    
+
                     $s_errorContainer = '<div class="errorContainer">';
                     if ($this->getIsSubmitted()) {
                         if (count($o_el->errorMessages) > 0) {
@@ -1768,7 +1768,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         }
                     }
                     $s_errorContainer.='</div>';
-                    
+
                     $s_form.='<div title="' . $o_el->getLabel() . '" class="formSegWrap formSegWrap_' . htmlspecialchars($o_el->getId()) . ' ' . $s_typeClass . ($b_required === true ? ' required' : '') . $s_extraClasses . '">';
                     $s_labelHTML = '';
                     if ($o_el->showLabel() === true) {
@@ -1813,11 +1813,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         }
         return $s_form;
     }
-    
+
     protected function buildFormJavascript(){
         $s_js='';
         if ($this->_jqueryValidation === true) {
-            $s_js .= '	
+            $s_js .= '
 jQuery().ready(function() {
 
 jQuery.validator.addMethod("dateFormat", function(value, element, format) {
@@ -1938,7 +1938,7 @@ hiddenFields.change(function(){
     var elId = $(this).attr("id");
     var removeButt = $("#"+elId+"_remove");
     removeButt.show();
-});	
+});
 ' .implode("\r\n",$this->_footJavascript).
 //Force validation on load if already posted
 ($this->getIsSubmitted()? 'thisFormEl.valid();' : '')
@@ -1950,10 +1950,10 @@ hiddenFields.change(function(){
     }
     /**
      * getJsonFormBuilderOutput()
-     * 
+     *
      * Constructs the JsonFormBuilder source. This is the main processing function.
      * @return string
-     * @ignore 
+     * @ignore
      */
     protected function getJsonFormBuilderOutput() {
         //prepare if not already done
@@ -1974,7 +1974,7 @@ hiddenFields.change(function(){
                 if($this->_redirectDocument){
                     $url = $this->modx->makeUrl($this->_redirectDocument);
                     $this->modx->sendRedirect($url);
-                    
+
                 }
             }
         }else{
@@ -1994,12 +1994,12 @@ hiddenFields.change(function(){
             // ]]>
             </script>';
         }
-        
+
     }
 
     /**
      * output()
-     * 
+     *
      * Output the FormItBuilder source.
      * @return string
      */
