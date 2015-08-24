@@ -87,7 +87,7 @@ class JsonFormBuilderCore {
     }
 
     /**
-     * Throws an error (probably should be logged to modx instead of an Exception, but makes for easier debugging).
+     * Throws an error (probably should be logged to MODX instead of an Exception, but makes for easier debugging).
      * @param string $errorString String to output in the error
      * @ignore
      */
