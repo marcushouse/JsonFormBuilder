@@ -1461,7 +1461,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                         }
                     } else {
                         //validation check
-                        if (strlen($s_postedValue) < $val) {
+                        if (strlen($s_postedValue) > 0 && strlen($s_postedValue) < $val) {
                             $this->_invalidElements[] = $o_el;
                             $o_el->errorMessages[] = $s_validationMessage;
                         }
