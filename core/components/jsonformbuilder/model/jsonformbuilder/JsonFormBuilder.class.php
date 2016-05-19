@@ -1186,7 +1186,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 }
             }
             //reply address
-            $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress,' Issue with replyToAddress.'));
+            if(!empty($this->_emailReplyToAddress)){
+                $this->modx->mail->address('reply-to', self::forceEmail($this->_emailReplyToAddress,' Issue with replyToAddress.'));
+            }else{
+                $this->modx->mail->address('reply-to', self::forceEmail($this->_emailFromAddress,' Issue with replyToAddress.'));
+            }
             /* handle file fields */
             foreach ($this->_formElements as $o_el) {
                 if (is_object($o_el) && get_class($o_el) == 'JsonFormBuilder_elementFile' && $o_el->showInEmail() === true) {
