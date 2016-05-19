@@ -257,7 +257,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $this->_autoResponderEmailContent = '<p>Thank you for your submission. A copy of the information you sent is shown below.</p>{{tableContent}}';
         $this->_emailFontSize = '13px';
         $this->_emailFontFamily = 'Helvetica,Arial,sans-serif';
-        $this->_emailFootHtml = '<p>You can use this link to reply: <a href="mailto:{{fromEmailAddress}}?subject=RE: {{subject}}">{{fromEmailAddress}}</a></p>';
+        $this->_emailFootHtml = '<p>You can use this link to reply: <a href="mailto:{{replyToEmailAddress}}?subject=RE: {{subject}}">{{replyToEmailAddress}}</a></p>';
     }
 
     /**
@@ -1133,9 +1133,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     public function getEmailContent(){
         $NL = "\r\n";
         $s_style = 'font-size:' . $this->_emailFontSize . '; font-family:' . $this->_emailFontFamily . ';';
-
+        if(!empty($this->_emailReplyToAddress)){
+            $replyToAddress = $this->_emailReplyToAddress;
+        }else{
+            $replyToAddress = $this->_emailFromAddress;
+        }
         $s_footHTML = str_replace(
-                array('{{fromEmailAddress}}', '{{subject}}'), array(htmlspecialchars($this->_emailFromAddress), htmlspecialchars($this->_emailSubject)), $this->_emailFootHtml
+                array('{{replyToEmailAddress}}', '{{subject}}'), array(htmlspecialchars($replyToAddress), htmlspecialchars($this->_emailSubject)), $this->_emailFootHtml
         );
 
         $s_emailContent = '<div style="' . $s_style . '">' . $NL . $this->_emailHeadHtml . $NL
