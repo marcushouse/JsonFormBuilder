@@ -1142,10 +1142,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 array('{{replyToEmailAddress}}', '{{subject}}'), array(htmlspecialchars($replyToAddress), htmlspecialchars($this->_emailSubject)), $this->_emailFootHtml
         );
 
-        $s_emailContent = '<div style="' . $s_style . '">' . $NL . $this->_emailHeadHtml . $NL
+        $s_emailContent = '<!DOCTYPE HTML><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head><body><div style="' . $s_style . '">' . $NL . $this->_emailHeadHtml . $NL
                 . $this->getFormTableContent() . $NL
                 . $s_footHTML . $NL
-                . '</div>';
+                . '</div></body></html>';
         return $s_emailContent;
     }
     function sendEmails() {
