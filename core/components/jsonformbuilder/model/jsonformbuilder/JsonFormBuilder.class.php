@@ -1274,10 +1274,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             if(!empty($this->_emailBCCAddress)){
                 if(is_array($this->_emailBCCAddress)===true){
                     foreach($this->_emailBCCAddress as $add){
-                        $this->modx->mail->address('cc', self::forceEmail($add,' Issue with emailBCCAddress (ARRAY).'));
+                        $this->modx->mail->address('bcc', self::forceEmail($add,' Issue with emailBCCAddress (ARRAY).'));
                     }
                 }else{
-                    $this->modx->mail->address('cc', self::forceEmail($this->_emailBCCAddress,' Issue with emailBCCAddress.'));
+                    $this->modx->mail->address('bcc', self::forceEmail($this->_emailBCCAddress,' Issue with emailBCCAddress.'));
                 }
             }
             //reply address
