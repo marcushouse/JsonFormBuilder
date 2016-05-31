@@ -1042,6 +1042,95 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $s_ret.='</table>';
         return $s_ret;
     }
+    
+    /**
+     * getPlainTextEmailContent()
+     *
+     * Gets the form value PLAIN TEXT content.
+     * @return string
+     * @ignore
+     */
+   protected function getPlainTextEmailContent() {
+        $rowCount = 0;
+        $s_ret = '';
+        foreach ($this->_formElements as $o_el) {
+            if (is_object($o_el)===false) {
+                //do nothing.. this is a simple text element for form html block etc.
+            } else {
+                if ($o_el->showInEmail() === true) {
+
+                    $elType = get_class($o_el);
+                    $elId = $o_el->getId();
+
+                    switch ($elType) {
+                        case 'JsonFormBuilder_elementMatrix':
+                            $type = $o_el->getType();
+                            $cols = $o_el->getColumns();
+                            $rows = $o_el->getRows();
+                            $r_cnt = 0;
+                            $s_val = '';
+                            $c_cnt = 0;
+                            foreach ($cols as $column) {
+                                $s_val.= htmlspecialchars($column) . '';
+                                $c_cnt++;
+                            }
+                            $s_val.="\r\n";
+                            foreach ($rows as $row) {
+                                $c_cnt = 0;
+                                $s_val.= htmlspecialchars($row) . ' ';
+                                foreach ($cols as $column) {
+                                    switch ($type) {
+                                        case 'text':
+                                            $s_val.=htmlspecialchars($this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt));
+                                            break;
+                                        case 'radio':
+                                            $s_val.=($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? 'YES' : 'NO');
+                                            break;
+                                        case 'check':
+                                            $s_postVal = $this->postVal($elId . '_' . $r_cnt);
+                                            if (empty($s_postVal) === false && in_array($c_cnt, $s_postVal) === true) {
+                                                $s_val.='YES';
+                                            } else {
+                                                $s_val.='NO';
+                                            }
+                                            break;
+                                    }
+                                    $s_val.=' ';
+                                    $c_cnt++;
+                                }
+                                $r_cnt++;
+                                $s_val.= "\r\n";
+                            }
+                            $s_val.= "\r\n";
+                            break;
+                        case 'JsonFormBuilder_elementFile':
+                            if (isset($_FILES[$elId])) {
+                                $s_val = $_FILES[$elId]['name'];
+                                if ($_FILES[$elId]['size'] == 0) {
+                                    $s_val = 'None';
+                                }
+                            }
+                            break;
+                        case 'JsonFormBuilder_elementCheckboxGroup':
+                            $s_val = implode(', ',$this->postVal($o_el->getId()));
+                            break;
+                        case 'JsonFormBuilder_elementDate':
+                            $s_val = $this->postVal($o_el->getId() . '_0') . ' ' . $this->postVal($o_el->getId() . '_1') . ' ' . $this->postVal($o_el->getId() . '_2');
+                            break;
+                        default:
+                            $s_val = nl2br(htmlspecialchars($this->postVal($o_el->getId())));
+                            break;
+                    }
+                    if(empty($s_val)===false){
+                        $s_ret.= htmlspecialchars($o_el->getLabel()) . ' : ' . $s_val . "\r\n";
+                    }
+                    $rowCount++;
+                }
+            }
+        }
+        $s_ret.="\r\n";
+        return $s_ret;
+    }
 
     /**
      * toJSON()
@@ -1142,10 +1231,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 array('{{replyToEmailAddress}}', '{{subject}}'), array(htmlspecialchars($replyToAddress), htmlspecialchars($this->_emailSubject)), $this->_emailFootHtml
         );
 
-        $s_emailContent = '<div style="' . $s_style . '">' . $NL . $this->_emailHeadHtml . $NL
+        $s_emailContent = '<!DOCTYPE HTML><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head><body><div style="' . $s_style . '">' . $NL . $this->_emailHeadHtml . $NL
                 . $this->getFormTableContent() . $NL
                 . $s_footHTML . $NL
-                . '</div>';
+                . '</div></body></html>';
         return $s_emailContent;
     }
     function sendEmails() {
@@ -1154,8 +1243,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
 
         $s_emailContent = $this->getEmailContent();
+        $s_plainTextEmailContent = $this->getPlainTextEmailContent();
         if(!empty($this->_emailToAddress)){
             $this->modx->mail->set(modMail::MAIL_BODY, $s_emailContent);
+            $this->modx->mail->set(modMail::MAIL_BODY_TEXT, $s_plainTextEmailContent);
             $this->modx->mail->set(modMail::MAIL_FROM, self::forceEmail($this->_emailFromAddress,' Issue with emailFromAddress.'));
             if (empty($this->_emailFromName) === false) {
                 $this->modx->mail->set(modMail::MAIL_FROM_NAME, $this->_emailFromName);
@@ -1183,10 +1274,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             if(!empty($this->_emailBCCAddress)){
                 if(is_array($this->_emailBCCAddress)===true){
                     foreach($this->_emailBCCAddress as $add){
-                        $this->modx->mail->address('cc', self::forceEmail($add,' Issue with emailBCCAddress (ARRAY).'));
+                        $this->modx->mail->address('bcc', self::forceEmail($add,' Issue with emailBCCAddress (ARRAY).'));
                     }
                 }else{
-                    $this->modx->mail->address('cc', self::forceEmail($this->_emailBCCAddress,' Issue with emailBCCAddress.'));
+                    $this->modx->mail->address('bcc', self::forceEmail($this->_emailBCCAddress,' Issue with emailBCCAddress.'));
                 }
             }
             //reply address
