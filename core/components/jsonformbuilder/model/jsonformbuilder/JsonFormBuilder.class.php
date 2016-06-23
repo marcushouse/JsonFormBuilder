@@ -1033,7 +1033,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             break;
                     }
                     if(empty($s_val)===false){
-                        $s_ret.='<tr valign="top" bgcolor="' . $bgCol . '"><td><b>' . htmlspecialchars($o_el->getLabel()) . ':</b></td><td>' . $s_val . '</td></tr>';
+                        $s_ret.='<tr valign="top" bgcolor="' . $bgCol . '"><td><b>' . htmlspecialchars(strip_tags($o_el->getLabel())) . ':</b></td><td>' . $s_val . '</td></tr>';
                     }
                     $rowCount++;
                 }
@@ -1071,17 +1071,17 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $s_val = '';
                             $c_cnt = 0;
                             foreach ($cols as $column) {
-                                $s_val.= htmlspecialchars($column) . '';
+                                $s_val.= $column . '';
                                 $c_cnt++;
                             }
                             $s_val.="\r\n";
                             foreach ($rows as $row) {
                                 $c_cnt = 0;
-                                $s_val.= htmlspecialchars($row) . ' ';
+                                $s_val.= $row . ' ';
                                 foreach ($cols as $column) {
                                     switch ($type) {
                                         case 'text':
-                                            $s_val.=htmlspecialchars($this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt));
+                                            $s_val.=$this->postVal($elId . '_' . $r_cnt . '_' . $c_cnt);
                                             break;
                                         case 'radio':
                                             $s_val.=($c_cnt == $this->postVal($elId . '_' . $r_cnt) ? 'YES' : 'NO');
@@ -1118,11 +1118,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $s_val = $this->postVal($o_el->getId() . '_0') . ' ' . $this->postVal($o_el->getId() . '_1') . ' ' . $this->postVal($o_el->getId() . '_2');
                             break;
                         default:
-                            $s_val = nl2br(htmlspecialchars($this->postVal($o_el->getId())));
+                            $s_val = $this->postVal($o_el->getId());
                             break;
                     }
                     if(empty($s_val)===false){
-                        $s_ret.= htmlspecialchars($o_el->getLabel()) . ' : ' . $s_val . "\r\n";
+                        $s_ret.= strip_tags($o_el->getLabel()) . ' : ' . strip_tags($s_val) . "\r\n";
                     }
                     $rowCount++;
                 }
