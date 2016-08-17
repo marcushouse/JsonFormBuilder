@@ -1754,10 +1754,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             . 'b_v=false;'
                             . (is_a($ruleCondition[0],'JsonFormBuilder_elementRadioGroup')?'a=jQuery("input[type=radio][name='.$this_elID.']"); if(a.is(":checked")===false){v="";}else{v=a.val();}':'a=jQuery("#'.$this_elID.'"); v=a.val();')
                             . 'if(v=="'.rawurlencode($ruleCondition[1]).'"){ b_v=true; }'
-                            . 'e=jQuery("#'.$o_elFull->getId().'");'
+                            . 'e=jQuery("[name='.$o_elFull->getId().']");'
                             . 'w=e.parents(".formSegWrap");'
                             . 'if(b_v){w.show();}else{ w.hide(); }'
-                            . 'a.change(function(){ var e=jQuery("#'.$o_elFull->getId().'"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"){ w.show(); }else{ w.hide(); } });'
+                            . 'a.change(function(){ var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"){ w.show(); }else{ w.hide(); } });'
                             . '';
                     }
                     break;
