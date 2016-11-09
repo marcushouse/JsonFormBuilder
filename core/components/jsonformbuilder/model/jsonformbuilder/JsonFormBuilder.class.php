@@ -1296,10 +1296,13 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 }
             }
             $this->modx->mail->setHTML(true);
-            if (!$this->modx->mail->send()) {
+            $b_success = $this->modx->mail->send();
+
+            if (!$b_success) {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the email: ' . $this->modx->mail->mailer->ErrorInfo);
             }
             $this->modx->mail->reset();
+            return $b_success;
         }
 
 
@@ -2075,11 +2078,14 @@ hiddenFields.change(function(){
                 if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
 
                 //If form is posted and valid, no need to continue output, send email and redirect.
-                $this->sendEmails();
+                $b_result = $this->sendEmails();
+                $a_args = array();
+                if(!$b_result){
+                    $a_args['errors'] = 'mailSending';
+                }
                 if($this->_redirectDocument){
-                    $url = $this->modx->makeUrl($this->_redirectDocument);
+                    $url = $this->modx->makeUrl($this->_redirectDocument,'',$a_args);
                     $this->modx->sendRedirect($url);
-
                 }
             }
         }else{
