@@ -228,7 +228,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     protected $_fieldProps_errstringJq=array();
     protected $_footJavascript=array();
 
-
+    /**
+    * @ignore
+    */
+    protected $_submitHandler;
 
     /**
      * JsonFormBuilder
@@ -582,6 +585,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
+     * getSubmitHandler()
+     *
+     * jQuery Validate - Returns the submit handler.
+     * @return string
+     */
+    public function getSubmitHandler(){
+        return $this->_submitHandler;
+    }
+    
+    /**
      * setMethod($value)
      *
      * Sets the form method (get, post etc)
@@ -884,6 +897,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $this->_autoResponderEmailContent = $value;
     }
 
+    /**
+     * setSubmitHandler($value)
+     *
+     * jQuery Validate - Sets the submit handler.
+     * @param string $value
+     */
+    public function setSubmitHandler($value){
+        $this->_submitHandler = $value;
+    }
+    
     /**
      * addElement(JsonFormBuilder_baseElement $o_formElement)
      *
@@ -1238,7 +1261,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         return $s_emailContent;
     }
     function sendEmails() {
-
+        $b_success = true;
         $this->modx->getService('mail', 'mail.modPHPMailer');
 
 
@@ -1296,15 +1319,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                 }
             }
             $this->modx->mail->setHTML(true);
-            $b_success = $this->modx->mail->send();
-
-            if (!$b_success) {
+            if (!$this->modx->mail->send()) {
+                $b_success = false;
                 $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the email: ' . $this->modx->mail->mailer->ErrorInfo);
             }
             $this->modx->mail->reset();
-            return $b_success;
         }
-
 
         //Handle auto responders if needed.
         if(!empty($this->_autoResponderToAddress)){
@@ -1346,11 +1366,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $this->modx->mail->address('reply-to', self::forceEmail($this->_autoResponderFromAddress,' Issue with autoResponderFromAddress.'));
             $this->modx->mail->setHTML(true);
             if (!$this->modx->mail->send()) {
+                $b_success = false;
                 $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the auto repsonder email: ' . $this->modx->mail->mailer->ErrorInfo);
             }
             $this->modx->mail->reset();
         }
-
+        return $b_success;
     }
 
 
@@ -2031,7 +2052,7 @@ thisFormEl.validate({errorPlacement:function(error, element) {
 },ignore:":hidden",' .
 $this->jqueryValidateJSON(
         $this->_fieldProps_jqValidate, $this->_fieldProps_errstringJq, $this->_fieldProps_jqValidateGroups
-) . '});
+) .(!empty($this->_submitHandler)?',submitHandler:function(form){'.$this->_submitHandler.'}':'') .'});
 
 var hiddenFields = thisFormEl.find(".formSegWrap.elementFile input");
 hiddenFields.each(function(){
