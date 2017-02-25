@@ -228,7 +228,10 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     protected $_fieldProps_errstringJq=array();
     protected $_footJavascript=array();
 
-
+    /**
+    * @ignore
+    */
+    protected $_submitHandler;
 
     /**
      * JsonFormBuilder
@@ -582,6 +585,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
     }
 
     /**
+     * getSubmitHandler()
+     *
+     * jQuery Validate - Returns the submit handler.
+     * @return string
+     */
+    public function getSubmitHandler(){
+        return $this->_submitHandler;
+    }
+    
+    /**
      * setMethod($value)
      *
      * Sets the form method (get, post etc)
@@ -884,6 +897,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         $this->_autoResponderEmailContent = $value;
     }
 
+    /**
+     * setSubmitHandler($value)
+     *
+     * jQuery Validate - Sets the submit handler.
+     * @param string $value
+     */
+    public function setSubmitHandler($value){
+        $this->_submitHandler = $value;
+    }
+    
     /**
      * addElement(JsonFormBuilder_baseElement $o_formElement)
      *
@@ -1238,7 +1261,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
         return $s_emailContent;
     }
     function sendEmails() {
-
+        $b_success = true;
         $this->modx->getService('mail', 'mail.modPHPMailer');
 
 
@@ -1297,11 +1320,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             }
             $this->modx->mail->setHTML(true);
             if (!$this->modx->mail->send()) {
+                $b_success = false;
                 $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the email: ' . $this->modx->mail->mailer->ErrorInfo);
             }
             $this->modx->mail->reset();
         }
-
 
         //Handle auto responders if needed.
         if(!empty($this->_autoResponderToAddress)){
@@ -1343,11 +1366,12 @@ class JsonFormBuilder extends JsonFormBuilderCore {
             $this->modx->mail->address('reply-to', self::forceEmail($this->_autoResponderFromAddress,' Issue with autoResponderFromAddress.'));
             $this->modx->mail->setHTML(true);
             if (!$this->modx->mail->send()) {
+                $b_success = false;
                 $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to send the auto repsonder email: ' . $this->modx->mail->mailer->ErrorInfo);
             }
             $this->modx->mail->reset();
         }
-
+        return $b_success;
     }
 
 
@@ -1602,7 +1626,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                          }else{
                              $s_valJq = 'jQuery("#'.$this_elID.'")';
                          }
-                        $jqRequiredVal='{depends:function(element){var v='.$s_valJq.'.val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';
+                        if(is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')){
+                            $jqRequiredVal='{depends:function(element){var $_this = '.$s_valJq.'; var v=$_this.val(); var c=$_this.prop("checked"); return (v=="'.rawurlencode($ruleCondition[1]).'"?c:!c); }}';
+                        }else{
+                            $jqRequiredVal='{depends:function(element){var v='.$s_valJq.'.val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';
+                        }
                         $b_validateRequiredPost=false;
                         if($this->postVal($this_elID)==$ruleCondition[1]){
                             $b_validateRequiredPost=true;
@@ -1747,17 +1775,19 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     if(!empty($ruleCondition)){
                         $this_elID = $ruleCondition[0]->getId();
                         if(count($a_footJavascript)==0){
-                            $a_footJavascript[]='var a; var e; var v; var b_s; var w;';
+                            $a_footJavascript[]='';  //var a; var e; var w; var v;  var b_s;
                         }
+                        
                         //input[type=radio][name=bedStatus]
                         $a_footJavascript[]=''
-                            . 'b_v=false;'
-                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementRadioGroup')?'a=jQuery("input[type=radio][name='.$this_elID.']"); if(a.is(":checked")===false){v="";}else{v=a.val();}':'a=jQuery("#'.$this_elID.'"); v=a.val();')
-                            . 'if(v=="'.rawurlencode($ruleCondition[1]).'"){ b_v=true; }'
-                            . 'e=jQuery("#'.$o_elFull->getId().'");'
-                            . 'w=e.parents(".formSegWrap");'
-                            . 'if(b_v){w.show();}else{ w.hide(); }'
-                            . 'a.change(function(){ var e=jQuery("#'.$o_elFull->getId().'"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"){ w.show(); }else{ w.hide(); } });'
+                            . 'var b_v=false;'
+                            . 'var v;'
+                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementRadioGroup')?' var a=jQuery("input[type=radio][name='.$this_elID.']"); if(a.is(":checked")===false){v="";}else{v=a.val();}':'var a=jQuery("#'.$this_elID.'"); v=a.val();')
+                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')?'var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); var c=$("input[type=checkbox][name='.$this_elID.']").prop("checked"); var s = ($("input[type=checkbox][name='.$this_elID.']").val()=="'.rawurlencode($ruleCondition[1]).'"?c:!c);  if(s){ b_v=true;  }else{ b_v=false;  }':'if(v=="'.rawurlencode($ruleCondition[1]).'"){ b_v=true; }')
+                            . 'var e=jQuery("[name='.$o_elFull->getId().']");'
+                            . 'var p=e.parents(".formSegWrap");'
+                            . 'if(b_v){p.show();}else{ p.hide(); }'
+                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')?'a.change(function(){ var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); var c=$(this).prop("checked"); var s = (jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"?c:!c); if(s){ w.show(); }else{ w.hide(); } });':'a.change(function(){ var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"){ w.show(); }else{ w.hide(); } });')
                             . '';
                     }
                     break;
@@ -2022,7 +2052,7 @@ thisFormEl.validate({errorPlacement:function(error, element) {
 },ignore:":hidden",' .
 $this->jqueryValidateJSON(
         $this->_fieldProps_jqValidate, $this->_fieldProps_errstringJq, $this->_fieldProps_jqValidateGroups
-) . '});
+) .(!empty($this->_submitHandler)?',submitHandler:function(form){'.$this->_submitHandler.'}':'') .'});
 
 var hiddenFields = thisFormEl.find(".formSegWrap.elementFile input");
 hiddenFields.each(function(){
@@ -2069,11 +2099,14 @@ hiddenFields.change(function(){
                 if($secsSinceFormOpen<$minimumTimeSecs){ $this->spamDetectExit(3); }
 
                 //If form is posted and valid, no need to continue output, send email and redirect.
-                $this->sendEmails();
+                $b_result = $this->sendEmails();
+                $a_args = array();
+                if(!$b_result){
+                    $a_args['errors'] = 'mailSending';
+                }
                 if($this->_redirectDocument){
-                    $url = $this->modx->makeUrl($this->_redirectDocument);
+                    $url = $this->modx->makeUrl($this->_redirectDocument,'',$a_args);
                     $this->modx->sendRedirect($url);
-
                 }
             }
         }else{
