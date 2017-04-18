@@ -1627,9 +1627,9 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                              $s_valJq = 'jQuery("#'.$this_elID.'")';
                          }
                         if(is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')){
-                            $jqRequiredVal='{depends:function(element){var $_this = '.$s_valJq.'; var v=$_this.val(); var c=$_this.prop("checked"); return (v=="'.rawurlencode($ruleCondition[1]).'"?c:!c); }}';
+                            $jqRequiredVal='{depends:function(element){var $_this = '.$s_valJq.'; var v=$_this.val(); var c=$_this.prop("checked"); return (v=='.json_encode($ruleCondition[1]).'?c:!c); }}';
                         }else{
-                            $jqRequiredVal='{depends:function(element){var v='.$s_valJq.'.val(); return (v=="'.rawurlencode($ruleCondition[1]).'"?true:false); }}';
+                            $jqRequiredVal='{depends:function(element){var v='.$s_valJq.'.val(); return (v=='.json_encode($ruleCondition[1]).'?true:false); }}';
                         }
                         $b_validateRequiredPost=false;
                         if($this->postVal($this_elID)==$ruleCondition[1]){
@@ -1783,11 +1783,11 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             . 'var b_v=false;'
                             . 'var v;'
                             . (is_a($ruleCondition[0],'JsonFormBuilder_elementRadioGroup')?' var a=jQuery("input[type=radio][name='.$this_elID.']"); if(a.is(":checked")===false){v="";}else{v=a.val();}':'var a=jQuery("#'.$this_elID.'"); v=a.val();')
-                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')?'var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); var c=$("input[type=checkbox][name='.$this_elID.']").prop("checked"); var s = ($("input[type=checkbox][name='.$this_elID.']").val()=="'.rawurlencode($ruleCondition[1]).'"?c:!c);  if(s){ b_v=true;  }else{ b_v=false;  }':'if(v=="'.rawurlencode($ruleCondition[1]).'"){ b_v=true; }')
+                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')?'var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); var c=$("input[type=checkbox][name='.$this_elID.']").prop("checked"); var s = ($("input[type=checkbox][name='.$this_elID.']").val()=='.json_encode($ruleCondition[1]).'?c:!c);  if(s){ b_v=true;  }else{ b_v=false;  }':'if(v=='.json_encode($ruleCondition[1]).'){ b_v=true; }')
                             . 'var e=jQuery("[name='.$o_elFull->getId().']");'
                             . 'var p=e.parents(".formSegWrap");'
                             . 'if(b_v){p.show();}else{ p.hide(); }'
-                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')?'a.change(function(){ var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); var c=$(this).prop("checked"); var s = (jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"?c:!c); if(s){ w.show(); }else{ w.hide(); } });':'a.change(function(){ var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=="'.rawurlencode($ruleCondition[1]).'"){ w.show(); }else{ w.hide(); } });')
+                            . (is_a($ruleCondition[0],'JsonFormBuilder_elementCheckbox')?'a.change(function(){ var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); var c=$(this).prop("checked"); var s = (jQuery(this).val()=='.json_encode($ruleCondition[1]).'?c:!c); if(s){ w.show(); }else{ w.hide(); } });':'a.change(function(){ var e=jQuery("[name='.$o_elFull->getId().']"); var w=e.parents(".formSegWrap"); if(jQuery(this).val()=='.json_encode($ruleCondition[1]).'){ w.show(); }else{ w.hide(); } });')
                             . '';
                     }
                     break;
