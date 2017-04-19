@@ -1733,11 +1733,15 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                     $s_thisErrorMsg = str_replace('===dateformat===', $s_thisVal, $s_validationMessage);
                     $a_fieldProps_jqValidate[$elName][] = 'dateFormat:\'' . $s_thisVal . '\'';
                     $a_fieldProps_errstringJq[$elName][] = 'dateFormat:'.json_encode($s_thisErrorMsg);
-                    //validation check
-                    $a_formatInfo = JsonFormBuilder::is_valid_date($s_postedValue,$s_thisVal);
-                    if ($b_validateRequiredPost && $a_formatInfo['status']===false) {
-                        $this->_invalidElements[] = $o_el;
-                        $o_el->errorMessages[] = $s_thisErrorMsg;
+
+                   //don't trigger if empty (as a required field rule should do that).
+                    if(empty($s_thisVal)) {
+                        //validation check
+                        $a_formatInfo = JsonFormBuilder::is_valid_date($s_postedValue, $s_thisVal);
+                        if ($b_validateRequiredPost && $a_formatInfo['status'] === false) {
+                            $this->_invalidElements[] = $o_el;
+                            $o_el->errorMessages[] = $s_thisErrorMsg;
+                        }
                     }
                     break;
                 case FormRuleType::custom:
