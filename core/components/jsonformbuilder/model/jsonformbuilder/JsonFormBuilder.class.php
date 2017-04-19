@@ -1217,7 +1217,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             break;
                     }
                     if(empty($s_val)===false){
-                        $a_data[] = array('label'=>$o_el->getLabel(),'value'=>$s_val);
+                        $a_data[] = array('el_id'=>$elId,'label'=>$o_el->getLabel(),'value'=>$s_val);
                     }
             }
         }
