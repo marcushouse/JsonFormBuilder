@@ -1055,10 +1055,16 @@ class JsonFormBuilder extends JsonFormBuilderCore {
                             $s_val = nl2br(htmlspecialchars($this->postVal($o_el->getId())));
                             break;
                     }
-                    if(empty($s_val)===false){
-                        $s_ret.='<tr valign="top" bgcolor="' . $bgCol . '"><td><b>' . htmlspecialchars(strip_tags($o_el->getLabel())) . ':</b></td><td>' . $s_val . '</td></tr>';
+
+                    if($elType==='JsonFormBuilder_elementEmailHtml'){
+                        $s_ret.=$o_el->outputEmailHTML();
+                    }else{
+                        if(empty($s_val)===false){
+                            $s_ret.='<tr valign="top" bgcolor="' . $bgCol . '"><td><b>' . htmlspecialchars(strip_tags($o_el->getLabel())) . ':</b></td><td>' . $s_val . '</td></tr>';
+                            $rowCount++;
+                        }
                     }
-                    $rowCount++;
+
                 }
             }
         }

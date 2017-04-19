@@ -14,6 +14,7 @@ require_once dirname(__FILE__).'/JsonFormBuilder_elementRadioGroup.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementReCaptcha.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementSelect.class.php';
 require_once dirname(__FILE__).'/JsonFormBuilder_elementTextArea.class.php';
+require_once dirname(__FILE__).'/JsonFormBuilder_elementEmailHtml.class.php';
 /**
  * A primitive form element used as a base to extend into a variety of elements
  * @package JsonFormBuilder
