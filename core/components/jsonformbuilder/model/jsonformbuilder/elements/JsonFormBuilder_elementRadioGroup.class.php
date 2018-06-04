@@ -42,7 +42,7 @@ class JsonFormBuilder_elementRadioGroup extends JsonFormBuilder_element{
 	 * @param array $values An array of title/value arrays in order of display
 	 * @param string $defaultValue The value of the default selected radio option
 	 */
-	function __construct($id, $label, array $values, $defaultValue=null) {
+	function __construct($id, $label, array $values=null, $defaultValue=null) {
 		parent::__construct($id,$label);
 		$this->_showIndividualLabels = true;
 		$this->setValues($values);
