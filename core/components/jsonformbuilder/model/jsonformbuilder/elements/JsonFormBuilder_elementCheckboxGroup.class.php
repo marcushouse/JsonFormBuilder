@@ -54,7 +54,7 @@ class JsonFormBuilder_elementCheckboxGroup extends JsonFormBuilder_element{
 	 * @param string $label Label of the select element
 	 * @param array $values Array of title/value arrays in order of display.
 	 */
-	function __construct($id, $label, array $values) {
+	function __construct($id, $label, array $values=null) {
 		parent::__construct($id,$label);
 		$this->_name = $id.'[]';
 		$this->_values = $values;

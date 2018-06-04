@@ -4,7 +4,7 @@ class JsonFormBuilder_elementMatrix extends JsonFormBuilder_element{
 	private $a_columns;
 	private $s_type;
 	
-	function __construct($id, $label, $type, $rowLabels, $columnLabels ){
+	function __construct($id, $label, $type=null, $rowLabels=null, $columnLabels=null ){
 		parent::__construct($id,$label);
         if($columnLabels){ $this->setColumns($columnLabels); }
         if($rowLabels){ $this->setRows($rowLabels); }
