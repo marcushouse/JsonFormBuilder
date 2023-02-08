@@ -1894,7 +1894,7 @@ class JsonFormBuilder extends JsonFormBuilderCore {
 
                     $s_extraClasses = '';
                     $a_exClasses = $o_el->getExtraClasses();
-                    if (count($a_exClasses) > 0) {
+                    if (is_countable($a_exClasses) && count($a_exClasses) > 0) {
                         $s_extraClasses = ' ' . implode(' ', $o_el->getExtraClasses());
                     }
 
